@@ -10,6 +10,13 @@ class Customer extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $appends = ['full_name'];
+
+    public function getFullNameAttribute()
+    {
+        return ucwords($this->name) . ' ' . ucwords($this->surname);
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class);

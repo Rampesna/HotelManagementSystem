@@ -19,4 +19,19 @@ class Reservation extends Model
     {
         return $this->belongsTo(ReservationStatus::class);
     }
+
+    public function roomType()
+    {
+        return $this->belongsTo(RoomType::class);
+    }
+
+    public function panType()
+    {
+        return $this->belongsTo(PanType::class);
+    }
+
+    public function room()
+    {
+        return $this->belongsTo(Room::class);
+    }
 }

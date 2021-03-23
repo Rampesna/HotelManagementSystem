@@ -21,11 +21,19 @@ Route::get('/', function () {
 });
 Route::middleware(['auth'])->namespace('App\\Http\\Controllers')->group(function () {
     Route::prefix('management')->namespace('Management')->group(function () {
+
         Route::prefix('dashboard')->group(function () {
             Route::get('/', function () {
                 return redirect()->route('management.dashboard.index');
             });
             Route::get('index', 'DashboardController@index')->name('management.dashboard.index')->middleware('Authority:1');
+        });
+
+        Route::prefix('reservation')->group(function () {
+            Route::get('/', function () {
+                return redirect()->route('management.reservation.index');
+            });
+            Route::get('index', 'ReservationController@index')->name('management.reservation.index')->middleware('Authority:1');
         });
     });
 });

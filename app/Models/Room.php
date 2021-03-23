@@ -29,4 +29,9 @@ class Room extends Model
     {
         return $this->belongsTo(BadType::class);
     }
+
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
 }
