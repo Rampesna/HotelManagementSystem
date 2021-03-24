@@ -45,9 +45,6 @@
                             <select required class="selectpicker form-control" id="room_type_id_create" data-live-search="true">
 
                             </select>
-                            <div class="input-group-append">
-                                <button class="btn btn-secondary" type="button">+</button>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -58,9 +55,16 @@
                             <select required class="selectpicker form-control" id="pan_type_id_create" data-live-search="true">
 
                             </select>
-                            <div class="input-group-append">
-                                <button class="btn btn-secondary" type="button">+</button>
-                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4">
+                    <div class="form-group">
+                        <label for="room_id_create">Oda Seçimi</label>
+                        <div class="input-group" id="createReservationRoomSearchBox">
+                            <select required class="selectpicker form-control" id="room_id_create" data-live-search="true">
+
+                            </select>
                         </div>
                     </div>
                 </div>

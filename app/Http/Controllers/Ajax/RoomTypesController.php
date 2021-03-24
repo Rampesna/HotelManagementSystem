@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Ajax;
 
 use App\Http\Controllers\Controller;
-use App\Services\CustomersService;
+use App\Services\CustomerService;
 use App\Services\RoomTypeService;
 use Illuminate\Http\Request;
 

@@ -51,6 +51,7 @@
     var customerSelector = $("#customer_id_create");
     var roomTypeSelector = $("#room_type_id_create");
     var panTypeSelector = $("#pan_type_id_create");
+    var roomSelector = $("#room_id_create");
 
     function approve() {
         var reservationsArray = [];
@@ -217,6 +218,7 @@
                 },
                 success: function (roomTypes) {
                     roomTypeSelector.html('').selectpicker('refresh');
+                    roomTypeSelector.append(`<option selected hidden disabled></option>`);
                     $.each(roomTypes, function (index) {
                         roomTypeSelector.append(`<option value="${roomTypes[index].id}">${roomTypes[index].name}</option>`);
                     });
@@ -243,10 +245,11 @@
                 data: {
                     keyword: keyword
                 },
-                success: function (roomTypes) {
+                success: function (panTypes) {
                     panTypeSelector.html('').selectpicker('refresh');
-                    $.each(roomTypes, function (index) {
-                        panTypeSelector.append(`<option value="${roomTypes[index].id}">${roomTypes[index].name}</option>`);
+                    panTypeSelector.append(`<option selected hidden disabled></option>`);
+                    $.each(panTypes, function (index) {
+                        panTypeSelector.append(`<option value="${panTypes[index].id}">${panTypes[index].name}</option>`);
                     });
                     panTypeSelector.selectpicker('refresh');
                 },
@@ -256,4 +259,38 @@
             });
         }
     }
+
+    function getRooms() {
+        var room_type_id = roomTypeSelector.val();
+        var pan_type_id = panTypeSelector.val();
+
+        if (room_type_id != null && pan_type_id != null) {
+            $.ajax({
+                type: 'get',
+                url: '{{ route('ajax.getRoomsByPanTypeAndRoomType') }}',
+                data: {
+                    room_type_id: room_type_id,
+                    pan_type_id: pan_type_id
+                },
+                success: function (rooms) {
+                    roomSelector.html('').selectpicker('refresh');
+                    roomSelector.append(`<option selected hidden disabled></option>`);
+                    $.each(rooms, function (index) {
+                        roomSelector.append(`<option value="${rooms[index].id}">${rooms[index].name}</option>`);
+                    });
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            });
+        }
+    }
+
+    roomTypeSelector.on('change', function () {
+        getRooms();
+    });
+
+    panTypeSelector.on('change', function () {
+        getRooms();
+    });
 </script>

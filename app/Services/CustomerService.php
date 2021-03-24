@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Customer;
 
-class CustomersService
+class CustomerService
 {
     private $customer;
 
