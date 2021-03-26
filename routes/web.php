@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/test', function () {
+    return bcrypt("123456");
+});
+
 Auth::routes();
 
 Route::get('/', function () {

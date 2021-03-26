@@ -1,6 +1,7 @@
 @extends('layouts.master')
 @section('title', 'Rezervasyonlar')
 @php(setlocale(LC_ALL, 'tr_TR.UTF-8'))
+@php(setlocale(LC_TIME, 'Turkish'))
 
 @section('content')
 
@@ -23,26 +24,26 @@
                             <th>Müşteri</th>
                             <th>Geliş Tarihi</th>
                             <th>Gidiş Tarihi</th>
+                            <th>Durum</th>
                             <th>Oda Türü</th>
                             <th>Pan Türü</th>
                             <th>Oda Numarası</th>
                             <th>Ücret</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        @foreach($reservations as $reservation)
-                            <tr>
-                                <td>#{{ $reservation->id }}</td>
-                                <td>{{ $reservation->customer->full_name }}</td>
-                                <td data-sort="{{ date('Y-m-d H:i:s', strtotime($reservation->start_date)) }}">{{ strftime('%d %B %Y, %H:%M', strtotime($reservation->start_date)) }}</td>
-                                <td data-sort="{{ date('Y-m-d H:i:s', strtotime($reservation->end_date)) }}">{{ strftime('%d %B %Y, %H:%M', strtotime($reservation->end_date)) }}</td>
-                                <td>{{ $reservation->roomType->name }}</td>
-                                <td>{{ $reservation->panType->name }}</td>
-                                <td>{{ $reservation->room->number }}</td>
-                                <td>{{ $reservation->price }}</td>
-                            </tr>
-                        @endforeach
-                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <th>#</th>
+                            <th>Müşteri</th>
+                            <th>Geliş Tarihi</th>
+                            <th>Gidiş Tarihi</th>
+                            <th>Durum</th>
+                            <th>Oda Türü</th>
+                            <th>Pan Türü</th>
+                            <th>Oda Numarası</th>
+                            <th>Ücret</th>
+                        </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>

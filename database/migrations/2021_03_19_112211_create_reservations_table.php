@@ -22,6 +22,7 @@ class CreateReservationsTable extends Migration
             $table->bigInteger('room_type_id')->unsigned();
             $table->bigInteger('pan_type_id')->unsigned();
             $table->bigInteger('room_id')->unsigned();
+            $table->tinyInteger('room_use_type_id')->unsigned();
             $table->float('price')->unsigned();
             $table->timestamps();
             $table->softDeletes();
