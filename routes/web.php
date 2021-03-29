@@ -39,5 +39,12 @@ Route::middleware(['auth'])->namespace('App\\Http\\Controllers')->group(function
             });
             Route::get('index', 'ReservationController@index')->name('management.reservation.index')->middleware('Authority:1');
         });
+
+        Route::prefix('room')->group(function () {
+            Route::get('/', function () {
+                return redirect()->route('management.room.index');
+            });
+            Route::get('index', 'RoomController@index')->name('management.room.index')->middleware('Authority:1');
+        });
     });
 });
