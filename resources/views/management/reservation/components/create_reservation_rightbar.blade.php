@@ -3,6 +3,7 @@
 
     </div>
     <form id="createReservationForm">
+        <input type="hidden" id="create_reservation_deleting_customer_id">
         <div class="offcanvas-content">
             <div class="offcanvas-wrapper mb-5 scroll-pull">
                 <div class="row">
@@ -14,14 +15,9 @@
                 <div class="row mt-6">
                     <div class="col-xl-6">
                         <div class="form-group">
-                            <label for="customer_id_create">Müşteri Seçiniz</label>
+                            <label for="customer_name_create">Rezervasyonu Yaptıran Müşteri Adını Giriniz</label>
                             <div class="input-group" id="createReservationCustomerSearchBox">
-                                <select required class="selectpicker form-control" id="customer_id_create" data-live-search="true">
-
-                                </select>
-                                <div class="input-group-append">
-                                    <button class="btn btn-secondary" type="button">+</button>
-                                </div>
+                                <input type="text" id="customer_name_create" name="customer_name_create" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -39,7 +35,7 @@
                     </div>
                 </div>
                 <div class="row mt-6">
-                    <div class="col-xl-4">
+                    <div class="col-xl-3">
                         <div class="form-group">
                             <label for="room_type_id_create">Oda Tipi</label>
                             <div class="input-group" id="createReservationRoomTypeSearchBox">
@@ -49,7 +45,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-4">
+                    <div class="col-xl-3">
                         <div class="form-group">
                             <label for="pan_type_id_create">Pan Tipi</label>
                             <div class="input-group" id="createReservationPanTypeSearchBox">
@@ -59,7 +55,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-4">
+                    <div class="col-xl-3">
                         <div class="form-group">
                             <label for="room_id_create">Oda Seçimi</label>
                             <div class="input-group" id="createReservationRoomSearchBox">
@@ -69,9 +65,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row mt-6">
-                    <div class="col-xl-4">
+                    <div class="col-xl-3">
                         <div class="form-group">
                             <label for="room_use_type_id_create">Oda Kullanım Tipi</label>
                             <select id="room_use_type_id_create" class="form-control">
@@ -81,11 +75,31 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-xl-4">
-                        <div class="form-group">
-                            <label for="price_create">Fiyat</label>
-                            <input type="text" id="price_create" class="form-control">
-                        </div>
+                </div>
+            </div>
+            <hr>
+            <div class="offcanvas-wrapper mb-5 scroll-pull">
+                <div class="row">
+                    <div class="col-xl-10">
+                        <h5>Misafir Listesi <i data-toggle="modal" data-target="#CreateCustomerModal" class="ml-2 fa fa-plus-circle text-success cursor-pointer"></i></h5>
+                    </div>
+                </div>
+                <div class="row mt-6">
+                    <div class="col-xl-12">
+                        <table class="table" id="reservationCustomers">
+                            <thead>
+                            <tr>
+                                <th>Adı</th>
+                                <th>Soyadı</th>
+                                <th>Ünvan</th>
+                                <th>Uyruk</th>
+                                <th>Cinsiyet</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

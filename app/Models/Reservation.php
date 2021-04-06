@@ -14,9 +14,9 @@ class Reservation extends Model
 {
     use HasFactory, SoftDeletes;
 
-    public function customer()
+    public function customers()
     {
-        return $this->morphTo();
+        return $this->belongsToMany(Customer::class);
     }
 
     public function status()

@@ -27,13 +27,13 @@ class ReservationService
 
     public function save(Request $request)
     {
-        $this->reservation->customer_type = $request->customer_type;
-        $this->reservation->customer_id = $request->customer_id;
+        $this->reservation->customer_name = $request->customer_name;
         $this->reservation->start_date = $request->start_date;
         $this->reservation->end_date = $request->end_date;
         $this->reservation->room_type_id = $request->room_type_id;
         $this->reservation->pan_type_id = $request->pan_type_id;
         $this->reservation->room_id = $request->room_id;
+        $this->reservation->use_type_id = $request->room_use_type_id;
         $this->reservation->price = $request->price;
         $this->reservation->status_id = $request->status_id;
         $this->reservation->save();

@@ -51,9 +51,9 @@
                                         <ul class="navi navi-hover">
                                             @foreach($roomStatuses as $roomStatus)
                                             <li class="navi-item">
-                                                <a class="navi-link cursor-pointer roomStatusSelector" id="room_status_selector_id_{{ $room->id }}">
+                                                <a data-id="{{ $room->id }}" data-status-id="{{ $roomStatus->id }}" class="navi-link cursor-pointer roomStatusSelector" id="room_status_selector_id_{{ $room->id }}">
                                                     <span class="navi-icon">
-                                                        <i class="fa fa-check-circle @if($room->status->id == $roomStatus->id) text-success @endif"></i>
+                                                        <i data-test="{{ $room->id . '_' . $roomStatus->id }}" class="dropdown_icon_selector fa fa-check-circle @if($room->status->id == $roomStatus->id) text-success @endif"></i>
                                                     </span>
                                                     <span class="navi-text">{{ $roomStatus->name }}</span>
                                                 </a>

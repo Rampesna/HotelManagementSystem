@@ -6,7 +6,11 @@
 @section('content')
 
     @include('management.reservation.components.create_reservation_rightbar')
+    @include('management.reservation.components.edit_reservation_rightbar')
+    @include('management.reservation.modals.create-customer')
+    @include('management.reservation.modals.edit-reservation-create-customer')
 
+    <button id="edit_reservation_rightbar_toggle" style="display: none"></button>
     <div class="row">
         <div class="col-xl-12">
             <button id="create_reservation_rightbar_toggle" class="btn btn-primary">Yeni Rezervasyon Oluştur</button>
@@ -50,24 +54,35 @@
         </div>
     </div>
 
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="context-menu" style="width: 250px">
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="context-menu" style="width: 300px">
+        <div id="editable-context-menu">
+            <a class="dropdown-item" id="editReservationContext">
+                <div class="row">
+                    <div class="col-xl-12 cursor-pointer">
+                        <i class="fa fa-edit text-dark-75"></i><span class="ml-4">Düzenle</span>
+                    </div>
+                </div>
+            </a>
+            <hr>
+        </div>
+        <a onclick="setWaiting()" class="dropdown-item">
+            <div class="row">
+                <div class="col-xl-12 cursor-pointer">
+                    <i class="fas fa-clock text-warning"></i><span class="ml-4">Seçilenleri Beklemeye Al</span>
+                </div>
+            </div>
+        </a>
         <a onclick="approve()" class="dropdown-item">
             <div class="row">
-                <div class="col-xl-4">
-                    <i class="fas fa-check text-success"></i>
-                </div>
-                <div class="col-xl-8">
-                    <span>Seçilenleri Onayla</span>
+                <div class="col-xl-12 cursor-pointer">
+                    <i class="fas fa-check text-success"></i><span class="ml-4">Seçilenleri Onayla</span>
                 </div>
             </div>
         </a>
         <a onclick="deny()" class="dropdown-item">
             <div class="row">
-                <div class="col-xl-4">
-                    <i class="fas fa-times text-danger"></i>
-                </div>
-                <div class="col-xl-8">
-                    <span>Seçilenleri İptal Et</span>
+                <div class="col-xl-12 cursor-pointer">
+                    <i class="fas fa-times text-danger"></i><span class="ml-4">Seçilenleri İptal Et</span>
                 </div>
             </div>
         </a>

@@ -23,14 +23,6 @@ class ReservationsController extends Controller
         setlocale(LC_TIME, 'Turkish');
 
         return Datatables::of(Reservation::query())->
-        filterColumn('customer_id', function ($reservation, $keyword) {
-            $ids = [];
-            $customers = Customer::where('name', 'like', '%' . $keyword . '%')->get();
-            foreach ($customers as $customer) {
-                $ids[] = $customer->id;
-            }
-            return $reservation->whereIn('customer_id', $ids)->where('customer_type', 'App\Models\Customer');
-        })->
         filterColumn('status_id', function ($reservation, $id) {
             return $id == 0 ? $reservation : $reservation->where('status_id', $id);
         })->
@@ -67,11 +59,11 @@ class ReservationsController extends Controller
         editColumn('id', function ($reservation) {
             return '#' . $reservation->id;
         })->
-        editColumn('customer_id', function ($reservation) {
-            return $reservation->customer->full_name;
-        })->
         editColumn('start_date', function ($reservation) {
             return strftime('%d %B %Y, %H:%M', strtotime($reservation->start_date));
+        })->
+        editColumn('end_date', function ($reservation) {
+            return strftime('%d %B %Y, %H:%M', strtotime($reservation->end_date));
         })->
         editColumn('status_id', function ($reservation) {
             return '<span id="reservation_' . $reservation->id . '_status" class="btn btn-pill btn-sm btn-' . $reservation->status->color . '" style="font-size: 11px; height: 20px; padding-top: 2px">' . $reservation->status->name . '</span>';
@@ -89,20 +81,37 @@ class ReservationsController extends Controller
         make(true);
     }
 
-    public function create(Request $request)
+    public function edit(Request $request)
+    {
+        return response()->json(Reservation::with([
+            'customers' => function ($customers) {
+                $customers->with([
+                    'nationality'
+                ]);
+            },
+            'status',
+            'roomType',
+            'panType',
+            'roomUseType',
+            'room'
+        ])->find($request->reservation_id), 200);
+    }
+
+    public function save(Request $request)
     {
         $reservationService = new ReservationService;
-        $reservationService->setReservation(new Reservation);
+        $reservationService->setReservation($request->reservation_id ? Reservation::find($request->reservation_id) : new Reservation);
         $reservation = $reservationService->save($request);
-        return response()->json(Reservation::with([
-            'customer',
+        $getReservation = Reservation::with([
             'status',
             'roomType',
             'roomType',
             'panType',
             'roomUseType',
             'room'
-        ])->find($reservation->id), 200);
+        ])->find($reservation->id);
+        $getReservation->customers()->sync($request->customers);
+        return response()->json($getReservation, 200);
     }
 
     public function setStatus(Request $request)

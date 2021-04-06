@@ -1,0 +1,129 @@
+<div id="edit_reservation_rightbar" style="width: 1200px" class="offcanvas offcanvas-right p-10">
+    <div class="offcanvas-header d-flex align-items-center justify-content-between pb-7">
+        <div class="row">
+            <div class="col-xl-4">
+                <div class="form-group">
+                    <label for=""></label>
+                </div>
+            </div>
+            <div class="col-xl-4">
+                <div class="form-group">
+                    <label for=""></label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form id="editReservationForm">
+        <input type="hidden" id="editing_reservation_deleting_customer_id">
+        <input type="hidden" id="editing_reservation_id">
+        <input type="hidden" id="editing_reservation_status_id">
+        <div class="offcanvas-content">
+            <div class="offcanvas-wrapper mb-5 scroll-pull">
+                <div class="row">
+                    <div class="col-xl-10">
+                        <h5>Rezervasyon Düzenle</h5>
+                    </div>
+                </div>
+                <hr>
+                <div class="row mt-6">
+                    <div class="col-xl-6">
+                        <div class="form-group">
+                            <label for="customer_name_edit">Rezervasyonu Yaptıran Müşteri Adını Giriniz</label>
+                            <div class="input-group" id="editReservationCustomerSearchBox">
+                                <input type="text" id="customer_name_edit" name="customer_name_edit" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3">
+                        <div class="form-group">
+                            <label for="start_date_edit">Geliş Tarihi</label>
+                            <input type="datetime-local" class="form-control" id="start_date_edit">
+                        </div>
+                    </div>
+                    <div class="col-xl-3">
+                        <div class="form-group">
+                            <label for="end_date_edit">Gidiş Tarihi</label>
+                            <input type="datetime-local" class="form-control" id="end_date_edit">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-6">
+                    <div class="col-xl-3">
+                        <div class="form-group">
+                            <label for="room_type_id_edit">Oda Tipi</label>
+                            <div class="input-group" id="editReservationRoomTypeSearchBox">
+                                <select required class="selectpicker form-control" id="room_type_id_edit" data-live-search="true">
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3">
+                        <div class="form-group">
+                            <label for="pan_type_id_edit">Pan Tipi</label>
+                            <div class="input-group" id="editReservationPanTypeSearchBox">
+                                <select required class="selectpicker form-control" id="pan_type_id_edit" data-live-search="true">
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3">
+                        <div class="form-group">
+                            <label for="room_id_edit">Oda Seçimi</label>
+                            <div class="input-group" id="editReservationRoomSearchBox">
+                                <select required class="selectpicker form-control" id="room_id_edit" data-live-search="true">
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3">
+                        <div class="form-group">
+                            <label for="room_use_type_id_edit">Oda Kullanım Tipi</label>
+                            <select id="room_use_type_id_edit" class="form-control">
+                                @foreach($roomUseTypes as $roomUseType)
+                                    <option value="{{ $roomUseType->id }}">{{ $roomUseType->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="offcanvas-wrapper mb-5 scroll-pull">
+                <div class="row">
+                    <div class="col-xl-8">
+                        <h5>Misafir Listesi <i data-toggle="modal" data-target="#EditReservationCreateCustomerModal" class="ml-2 fa fa-plus-circle text-success cursor-pointer"></i></h5>
+                    </div>
+                    <div class="col-xl-4 text-right">
+                        <i class="fa fa-trash text-danger cursor-pointer" id="reservationEditCustomersDeleteRowButton"></i>
+                    </div>
+                </div>
+                <div class="row mt-6">
+                    <div class="col-xl-12">
+                        <table class="table" id="reservationEditCustomers">
+                            <thead>
+                            <tr>
+                                <th>Adı</th>
+                                <th>Soyadı</th>
+                                <th>Ünvan</th>
+                                <th>Uyruk</th>
+                                <th>Cinsiyet</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="offcanvas-footer">
+                <div class="row">
+                    <div class="col-xl-12 text-right">
+                        <button type="button" class="btn btn-success" id="updateReservationButton">Güncelle</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

@@ -34,6 +34,6 @@ class Customer extends Model
 
     public function reservations()
     {
-        return $this->morphMany(Reservation::class, 'customer');
+        return $this->belongsToMany(Reservation::class);
     }
 }
