@@ -80,8 +80,41 @@
             <hr>
             <div class="offcanvas-wrapper mb-5 scroll-pull">
                 <div class="row">
-                    <div class="col-xl-10">
-                        <h5>Misafir Listesi <i data-toggle="modal" data-target="#CreateCustomerModal" class="ml-2 fa fa-plus-circle text-success cursor-pointer"></i></h5>
+                    <div class="col-xl-8">
+                        <h5>Misafir Listesi
+                            <div class="dropdown dropdown-inline">
+                                <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="ml-2 fa fa-plus-circle text-success cursor-pointer"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-sm dropdown-menu-left" style="width: 250px">
+                                    <ul class="navi navi-hover">
+
+                                        <li class="navi-item">
+                                            <a data-toggle="modal" data-target="#CreateCustomerModal" class="navi-link cursor-pointer">
+                                                <span class="navi-icon">
+                                                    <i class="fa fa-plus-circle"></i>
+                                                </span>
+                                                <span class="navi-text">Yeni Oluştur</span>
+                                            </a>
+                                        </li>
+
+                                        <li class="navi-item">
+                                            <a data-toggle="modal" data-target="#CreateReservationSelectCustomerModal" class="navi-link cursor-pointer">
+                                                <span class="navi-icon">
+                                                    <i class="fas fa-user-plus"></i>
+                                                </span>
+                                                <span class="navi-text">Var Olan Müşterilerden Seç</span>
+                                            </a>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </h5>
+                    </div>
+                    <div class="col-xl-4 text-right">
+                        <i class="fa fa-trash text-danger cursor-pointer" id="customersDeleteRowButton"></i>
                     </div>
                 </div>
                 <div class="row mt-6">

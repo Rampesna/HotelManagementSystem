@@ -7,8 +7,12 @@
 
     @include('management.reservation.components.create_reservation_rightbar')
     @include('management.reservation.components.edit_reservation_rightbar')
+
     @include('management.reservation.modals.create-customer')
+    @include('management.reservation.modals.select-customer')
+
     @include('management.reservation.modals.edit-reservation-create-customer')
+    @include('management.reservation.modals.edit-reservation-select-customer')
 
     <button id="edit_reservation_rightbar_toggle" style="display: none"></button>
     <div class="row">

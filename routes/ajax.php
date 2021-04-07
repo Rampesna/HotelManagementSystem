@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
     Route::prefix('customers')->group(function () {
+        Route::any('index', 'CustomersController@index')->name('ajax.customers.index');
         Route::post('create', 'CustomersController@create')->name('ajax.customers.create');
+        Route::get('edit', 'CustomersController@edit')->name('ajax.customers.edit');
         Route::get('getCustomersByKeyword', 'CustomersController@getCustomersByKeyword')->name('ajax.customers.getCustomersByKeyword');
     });
 

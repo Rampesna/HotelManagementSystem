@@ -19,6 +19,11 @@ class Reservation extends Model
         return $this->belongsToMany(Customer::class);
     }
 
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
     public function status()
     {
         return $this->belongsTo(ReservationStatus::class);

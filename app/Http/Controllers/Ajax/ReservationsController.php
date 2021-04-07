@@ -3,16 +3,15 @@
 namespace App\Http\Controllers\Ajax;
 
 use App\Http\Controllers\Controller;
-use App\Models\Customer;
 use App\Models\PanType;
 use App\Models\Reservation;
-use App\Models\ReservationStatus;
 use App\Models\Room;
-use App\Models\RoomStatus;
 use App\Models\RoomType;
-use App\Models\User;
+use App\Models\SafeActivity;
 use App\Services\ReservationService;
+use App\Services\SafeActivityService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Yajra\DataTables\DataTables;
 
 class ReservationsController extends Controller
@@ -102,7 +101,7 @@ class ReservationsController extends Controller
         $reservationService = new ReservationService;
         $reservationService->setReservation($request->reservation_id ? Reservation::find($request->reservation_id) : new Reservation);
         $reservation = $reservationService->save($request);
-        $getReservation = Reservation::with([
+        $reservation = Reservation::with([
             'status',
             'roomType',
             'roomType',
@@ -110,18 +109,20 @@ class ReservationsController extends Controller
             'roomUseType',
             'room'
         ])->find($reservation->id);
-        $getReservation->customers()->sync($request->customers);
-        return response()->json($getReservation, 200);
+        $reservation->customers()->sync($request->customers);
+        return response()->json($reservation, 200);
     }
 
     public function setStatus(Request $request)
     {
         try {
             if ($request->reservations) {
-                foreach ($request->reservations as $id) {
-                    $service = new ReservationService;
-                    $service->setReservation(Reservation::find($id));
-                    $service->setStatus($request->status_id);
+                foreach ($request->reservations as $reservationId) {
+                    $reservationService = new ReservationService;
+                    $reservationService->setReservation($reservation = Reservation::with([
+                        'room'
+                    ])->find($reservationId));
+                    $reservationService->setStatus($request->status_id);
                 }
             }
 

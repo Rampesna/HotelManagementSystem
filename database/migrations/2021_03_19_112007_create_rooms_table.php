@@ -21,6 +21,7 @@ class CreateRoomsTable extends Migration
             $table->bigInteger('bad_type_id')->unsigned();
             $table->string('number')->unique();
             $table->tinyInteger('person_count')->unsigned();
+            $table->double('price')->unsigned()->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -28,4 +28,10 @@ class RoomService
     {
         return Room::where('room_type_id', $roomType)->where('pan_type_id', $panType)->get();
     }
+
+    public function setStatus($statusId)
+    {
+        $this->room->room_status_id = $statusId;
+        $this->room->save();
+    }
 }

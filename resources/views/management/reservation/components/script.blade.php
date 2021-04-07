@@ -9,8 +9,10 @@
     }
 
     reservationEditCustomersDeleteRowButton = $("#reservationEditCustomersDeleteRowButton");
+    customersDeleteRowButton = $("#customersDeleteRowButton");
 
     reservationEditCustomersDeleteRowButton.hide();
+    customersDeleteRowButton.hide();
 
     const months = [
         'Ocak',
@@ -164,6 +166,130 @@
         select: true
     });
 
+    var createReservationSelectCustomerTable = $('#createReservationSelectCustomerTable').DataTable({
+        language: {
+            info: "_TOTAL_ Kayıttan _START_ - _END_ Arasındaki Kayıtlar Gösteriliyor.",
+            infoEmpty: "Gösterilecek Hiç Kayıt Yok.",
+            loadingRecords: "Kayıtlar Yükleniyor.",
+            zeroRecords: "Tablo Boş",
+            search: "Arama:",
+            infoFiltered: "(Toplam _MAX_ Kayıttan Filtrelenenler)",
+            lengthMenu: "Sayfa Başı _MENU_ Kayıt Göster",
+            sProcessing: "Yükleniyor...",
+            paginate: {
+                first: "İlk",
+                previous: "Önceki",
+                next: "Sonraki",
+                last: "Son"
+            },
+            select: {
+                rows: {
+                    "_": "%d kayıt seçildi",
+                    "0": "",
+                    "1": "1 kayıt seçildi"
+                }
+            },
+            buttons: {
+                print: {
+                    title: 'Yazdır'
+                }
+            }
+        },
+
+        dom: 'rtp',
+
+        initComplete: function () {
+            var r = $('#createReservationSelectCustomerTable tfoot tr');
+            $('#createReservationSelectCustomerTable thead').append(r);
+            this.api().columns().every(function (index) {
+                var column = this;
+                var input = document.createElement('input');
+                input.className = 'form-control';
+                $(input).appendTo($(column.footer()).empty())
+                    .on('change', function () {
+                        column.search($(this).val(), false, false, true).draw();
+                    });
+            });
+        },
+
+        processing: true,
+        serverSide: true,
+        ajax: '{!! route('ajax.customers.index') !!}',
+        columns: [
+            {data: 'id', name: 'id', width: "3%"},
+            {data: 'name', name: 'name'},
+            {data: 'surname', name: 'surname'},
+            {data: 'title', name: 'title'},
+            {data: 'identity_number', name: 'identity_number'},
+            {data: 'gender', name: 'gender'}
+        ],
+
+        responsive: true,
+        select: 'single'
+    });
+
+    var editReservationSelectCustomerTable = $('#editReservationSelectCustomerTable').DataTable({
+        language: {
+            info: "_TOTAL_ Kayıttan _START_ - _END_ Arasındaki Kayıtlar Gösteriliyor.",
+            infoEmpty: "Gösterilecek Hiç Kayıt Yok.",
+            loadingRecords: "Kayıtlar Yükleniyor.",
+            zeroRecords: "Tablo Boş",
+            search: "Arama:",
+            infoFiltered: "(Toplam _MAX_ Kayıttan Filtrelenenler)",
+            lengthMenu: "Sayfa Başı _MENU_ Kayıt Göster",
+            sProcessing: "Yükleniyor...",
+            paginate: {
+                first: "İlk",
+                previous: "Önceki",
+                next: "Sonraki",
+                last: "Son"
+            },
+            select: {
+                rows: {
+                    "_": "%d kayıt seçildi",
+                    "0": "",
+                    "1": "1 kayıt seçildi"
+                }
+            },
+            buttons: {
+                print: {
+                    title: 'Yazdır'
+                }
+            }
+        },
+
+        dom: 'rtp',
+
+        initComplete: function () {
+            var r = $('#editReservationSelectCustomerTable tfoot tr');
+            $('#editReservationSelectCustomerTable thead').append(r);
+            this.api().columns().every(function (index) {
+                var column = this;
+                var input = document.createElement('input');
+                input.className = 'form-control';
+                $(input).appendTo($(column.footer()).empty())
+                    .on('change', function () {
+                        column.search($(this).val(), false, false, true).draw();
+                    });
+            });
+        },
+
+        processing: true,
+        serverSide: true,
+        ajax: '{!! route('ajax.customers.index') !!}',
+        columns: [
+            {data: 'id', name: 'id', width: "3%"},
+            {data: 'name', name: 'name'},
+            {data: 'surname', name: 'surname'},
+            {data: 'title', name: 'title'},
+            {data: 'identity_number', name: 'identity_number'},
+            {data: 'gender', name: 'gender'}
+        ],
+
+        responsive: true,
+        select: 'single'
+    });
+
     var reservationCustomers = $('#reservationCustomers').DataTable({
         language: {
             info: "_TOTAL_ Kayıttan _START_ - _END_ Arasındaki Kayıtlar Gösteriliyor.",
@@ -244,12 +370,12 @@
     var editReservationCreateCustomerButton = $("#editReservationCreateCustomerButton");
     var updateReservationButton = $("#updateReservationButton");
     var createCustomerButton = $("#createCustomerButton");
+    var createReservationSelectCustomerButton = $("#createReservationSelectCustomerButton");
+    var editReservationSelectCustomerButton = $("#editReservationSelectCustomerButton");
     var editReservationContext = $("#editReservationContext");
-
     var roomTypeSelector = $("#room_type_id_create");
     var panTypeSelector = $("#pan_type_id_create");
     var roomSelector = $("#room_id_create");
-
     var roomTypeEditSelector = $("#room_type_id_edit");
     var panTypeEditSelector = $("#pan_type_id_edit");
     var roomEditSelector = $("#room_id_edit");
@@ -1006,7 +1132,7 @@
         if (selectedRows.count() > 0) {
             reservationEditCustomersDeleteRowButton.show();
             if (type === 'row') {
-                var data = reservationEditCustomers.rows(indexes).data()[0]['DT_RowId'].replace('customer_id_','');
+                var data = reservationEditCustomers.rows(indexes).data()[0]['DT_RowId'].replace('customer_id_', '');
                 $("#editing_reservation_deleting_customer_id").val(data);
             }
         } else {
@@ -1018,5 +1144,114 @@
     reservationEditCustomersDeleteRowButton.click(function () {
         var customer_id = $("#editing_reservation_deleting_customer_id").val();
         reservationEditCustomers.row('#customer_id_' + customer_id).remove().draw();
+    });
+
+    reservationCustomers.on('select deselect', function (e, dt, type, indexes) {
+        var selectedRows = reservationCustomers.rows({selected: true});
+        if (selectedRows.count() > 0) {
+            customersDeleteRowButton.show();
+            if (type === 'row') {
+                var data = reservationCustomers.rows(indexes).data()[0]['DT_RowId'].replace('customer_id_', '');
+                $("#create_reservation_deleting_customer_id").val(data);
+            }
+        } else {
+            customersDeleteRowButton.hide();
+            $("#create_reservation_deleting_customer_id").val(null);
+        }
+    });
+
+    customersDeleteRowButton.click(function () {
+        var customer_id = $("#create_reservation_deleting_customer_id").val();
+        reservationCustomers.row('#customer_id_' + customer_id).remove().draw();
+    });
+
+    createReservationSelectCustomerTable.on('select deselect', function (e, dt, type, indexes) {
+        var selectedRows = createReservationSelectCustomerTable.rows({selected: true});
+        if (selectedRows.count() > 0) {
+            createReservationSelectCustomerButton.show();
+            if (type === 'row') {
+                var data = createReservationSelectCustomerTable.rows(indexes).data()[0]['id'];
+                $("#create_reservation_selected_customer_id").val(data);
+            }
+        } else {
+            createReservationSelectCustomerButton.hide();
+            $("#create_reservation_selected_customer_id").val(null);
+        }
+    });
+
+    createReservationSelectCustomerButton.click(function () {
+        var customer_id = $("#create_reservation_selected_customer_id").val();
+
+        $.ajax({
+            type: 'get',
+            url: '{{ route('ajax.customers.edit') }}',
+            data: {
+                customer_id: customer_id
+            },
+            success: function (customer) {
+                var newCustomer = $.parseHTML(`` +
+                    `<tr id="customer_id_${customer.id}">` +
+                    `<td>${customer.name}</td>` +
+                    `<td>${customer.surname}</td>` +
+                    `<td>${customer.title ?? ''}</td>` +
+                    `<td>${customer.nationality.name}</td>` +
+                    `<td>${customer.gender === 1 ? 'Erkek' : 'Kadın'}</td>` +
+                    `</tr>` +
+                    ``)[0];
+
+                reservationCustomers.row.add(newCustomer);
+                reservationCustomers.draw(false);
+
+                $("#CreateReservationSelectCustomerModal").modal('hide');
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    });
+
+    editReservationSelectCustomerTable.on('select deselect', function (e, dt, type, indexes) {
+        var selectedRows = editReservationSelectCustomerTable.rows({selected: true});
+        if (selectedRows.count() > 0) {
+            editReservationSelectCustomerButton.show();
+            if (type === 'row') {
+                var data = editReservationSelectCustomerTable.rows(indexes).data()[0]['id'];
+                $("#edit_reservation_selected_customer_id").val(data);
+            }
+        } else {
+            editReservationSelectCustomerButton.hide();
+            $("#edit_reservation_selected_customer_id").val(null);
+        }
+    });
+
+    editReservationSelectCustomerButton.click(function () {
+        var customer_id = $("#edit_reservation_selected_customer_id").val();
+
+        $.ajax({
+            type: 'get',
+            url: '{{ route('ajax.customers.edit') }}',
+            data: {
+                customer_id: customer_id
+            },
+            success: function (customer) {
+                var newCustomer = $.parseHTML(`` +
+                    `<tr id="customer_id_${customer.id}">` +
+                    `<td>${customer.name}</td>` +
+                    `<td>${customer.surname}</td>` +
+                    `<td>${customer.title ?? ''}</td>` +
+                    `<td>${customer.nationality.name}</td>` +
+                    `<td>${customer.gender === 1 ? 'Erkek' : 'Kadın'}</td>` +
+                    `</tr>` +
+                    ``)[0];
+
+                reservationEditCustomers.row.add(newCustomer);
+                reservationEditCustomers.draw(false);
+
+                $("#EditReservationSelectCustomerModal").modal('hide');
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
     });
 </script>
