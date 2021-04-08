@@ -30,14 +30,18 @@ class SafeActivityService
         $reservationId,
         $direction,
         $price,
-        $processId = null
+        $description = null,
+        $date = null,
+        $extraId = null
     )
     {
         $this->safeActivity->safe_id = $safeId;
         $this->safeActivity->reservation_id = $reservationId;
-        $this->safeActivity->process_id = $processId;
+        $this->safeActivity->extra_id = $extraId;
         $this->safeActivity->direction = $direction;
         $this->safeActivity->price = $price;
+        $this->safeActivity->description = $description;
+        $this->safeActivity->date = $date;
         $this->safeActivity->save();
 
         return $this->safeActivity;

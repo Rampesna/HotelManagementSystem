@@ -6,15 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-/**
- * @method static where($column, $parameter)
- */
-class SafeActivity extends Model
+class Extra extends Model
 {
     use HasFactory, SoftDeletes;
 
-    public function extra()
+    public function safeActivities()
     {
-        return $this->belongsTo(Extra::class);
+        return $this->hasMany(SafeActivity::class);
     }
 }

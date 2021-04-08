@@ -17,9 +17,11 @@ class CreateSafeActivitiesTable extends Migration
             $table->id();
             $table->bigInteger('safe_id')->unsigned();
             $table->bigInteger('reservation_id')->unsigned();
-            $table->bigInteger('process_id')->unsigned()->nullable();
+            $table->bigInteger('extra_id')->unsigned()->nullable();
             $table->boolean('direction');
             $table->double('price')->unsigned();
+            $table->text('description')->nullable();
+            $table->dateTime('date')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -1,27 +1,19 @@
 @extends('layouts.master')
-@section('title', 'Rezervasyonlar')
+@section('title', 'Konaklayanlar')
 @php(setlocale(LC_ALL, 'tr_TR.UTF-8'))
 @php(setlocale(LC_TIME, 'Turkish'))
 
 @section('content')
 
-    @include('management.reservation.components.create_reservation_rightbar')
-    @include('management.reservation.components.edit_reservation_rightbar')
+    @include('management.stayer.components.edit_reservation_rightbar')
 
-    @include('management.reservation.modals.create-customer')
-    @include('management.reservation.modals.select-customer')
-
-    @include('management.reservation.modals.edit-reservation-create-customer')
-    @include('management.reservation.modals.edit-reservation-select-customer')
+    @include('management.stayer.modals.edit-reservation-create-customer')
+    @include('management.stayer.modals.edit-reservation-select-customer')
+    @include('management.stayer.modals.add-extra-reservation')
 
     <button id="edit_reservation_rightbar_toggle" style="display: none"></button>
+    <input type="hidden" id="selected_reservation_id">
 
-    <div class="row">
-        <div class="col-xl-12">
-            <button id="create_reservation_rightbar_toggle" class="btn btn-primary">Yeni Rezervasyon Oluştur</button>
-        </div>
-    </div>
-    <hr>
     <div class="row">
         <div class="col-xl-12">
             <div class="card" id="reservationsCard">
@@ -70,39 +62,20 @@
             </a>
             <hr>
         </div>
-        <div id="reservationStartStayContext">
-            <a onclick="setStatus(4)" class="dropdown-item cursor-pointer">
+        <div>
+            <a class="dropdown-item cursor-pointer" data-toggle="modal" data-target="#AddExtraReservationModal">
                 <div class="row">
                     <div class="col-xl-12">
-                        <i class="fa fa-play-circle text-info"></i><span class="ml-4">Konaklamayı Başlat</span>
+                        <i class="fa fa-plus-circle text-success"></i><span class="ml-4">Ekstra Ekle</span>
                     </div>
                 </div>
             </a>
         </div>
-        <div id="reservationStopStayContext">
+        <div>
             <a onclick="setStatus(5)" class="dropdown-item cursor-pointer">
                 <div class="row">
                     <div class="col-xl-12">
                         <i class="fa fa-stop-circle text-dark-75"></i><span class="ml-4">Konaklamayı Sonlandır</span>
-                    </div>
-                </div>
-            </a>
-            <hr>
-        </div>
-        <div id="reservationApproveContext">
-            <a onclick="setStatus(2)" class="dropdown-item cursor-pointer">
-                <div class="row">
-                    <div class="col-xl-12">
-                        <i class="fas fa-check text-success"></i><span class="ml-4">Rezervasyonu Onayla</span>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div id="reservationDenyContext">
-            <a onclick="setStatus(3)" class="dropdown-item cursor-pointer">
-                <div class="row">
-                    <div class="col-xl-12">
-                        <i class="fas fa-times text-danger"></i><span class="ml-4">Rezervasyonu İptal Et</span>
                     </div>
                 </div>
             </a>
@@ -112,9 +85,9 @@
 @endsection
 
 @section('page-styles')
-    @include('management.reservation.components.style')
+    @include('management.stayer.components.style')
 @stop
 
 @section('page-script')
-    @include('management.reservation.components.script')
+    @include('management.stayer.components.script')
 @stop

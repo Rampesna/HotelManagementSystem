@@ -40,6 +40,20 @@ Route::middleware(['auth'])->namespace('App\\Http\\Controllers')->group(function
             Route::get('index', 'ReservationController@index')->name('management.reservation.index')->middleware('Authority:1');
         });
 
+        Route::prefix('safe')->group(function () {
+            Route::get('/', function () {
+                return redirect()->route('management.safe.index');
+            });
+            Route::get('index', 'SafeController@index')->name('management.safe.index')->middleware('Authority:1');
+        });
+
+        Route::prefix('stayer')->group(function () {
+            Route::get('/', function () {
+                return redirect()->route('management.stayer.index');
+            });
+            Route::get('index', 'StayerController@index')->name('management.stayer.index')->middleware('Authority:1');
+        });
+
         Route::prefix('room')->group(function () {
             Route::get('/', function () {
                 return redirect()->route('management.room.index');

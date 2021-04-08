@@ -12,17 +12,14 @@ use App\Services\ReservationService;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
-class ReservationsController extends Controller
+class SafesController extends Controller
 {
-    public function index(Request $request)
+    public function reservations(Request $request)
     {
         setlocale(LC_ALL, 'tr_TR.UTF-8');
         setlocale(LC_TIME, 'Turkish');
 
-        return Datatables::of(Reservation::query())->
-        filterColumn('status_id', function ($reservation, $id) {
-            return $id == 0 ? $reservation : $reservation->where('status_id', $id);
-        })->
+        return Datatables::of(Reservation::where('status_id', 5))->
         filterColumn('room_type_id', function ($reservation, $keyword) {
             $ids = [];
             $types = RoomType::where('name', 'like', '%' . $keyword . '%')->get();
@@ -85,59 +82,7 @@ class ReservationsController extends Controller
         editColumn('price', function ($reservation) {
             return number_format((SafeActivity::where('reservation_id', $reservation->id)->where('direction', 1)->where('extra_id', null)->first()->price ?? 0), 2) . ' TL';
         })->
-        rawColumns(['customer_id', 'status_id'])->
+        rawColumns(['status_id'])->
         make(true);
-    }
-
-    public function edit(Request $request)
-    {
-        return response()->json(Reservation::with([
-            'customers' => function ($customers) {
-                $customers->with([
-                    'nationality'
-                ]);
-            },
-            'status',
-            'roomType',
-            'panType',
-            'roomUseType',
-            'room'
-        ])->find($request->reservation_id), 200);
-    }
-
-    public function save(Request $request)
-    {
-        $reservationService = new ReservationService;
-        $reservationService->setReservation($request->reservation_id ? Reservation::find($request->reservation_id) : new Reservation);
-        $reservation = $reservationService->save($request);
-        $reservation = Reservation::with([
-            'status',
-            'roomType',
-            'roomType',
-            'panType',
-            'roomUseType',
-            'room'
-        ])->find($reservation->id);
-        $reservation->customers()->sync($request->customers);
-        return response()->json($reservation, 200);
-    }
-
-    public function setStatus(Request $request)
-    {
-        try {
-            if ($request->reservations) {
-                foreach ($request->reservations as $reservationId) {
-                    $reservationService = new ReservationService;
-                    $reservationService->setReservation($reservation = Reservation::with([
-                        'room'
-                    ])->find($reservationId));
-                    $reservationService->setStatus($request->status_id);
-                }
-            }
-
-            return response()->json('Tamamlandı', 200);
-        } catch (\Exception $exception) {
-            return response()->json($exception, 400);
-        }
     }
 }

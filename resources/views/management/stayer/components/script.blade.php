@@ -2,41 +2,21 @@
 <script src="{{ asset('assets/js/pages/crud/datatables/extensions/buttons.js?v=7.0.3') }}"></script>
 
 <script>
+    var editReservationCreateCustomerButton = $("#editReservationCreateCustomerButton");
+    var updateReservationButton = $("#updateReservationButton");
+    var editReservationSelectCustomerButton = $("#editReservationSelectCustomerButton");
+    var roomTypeSelector = $("#room_type_id_create");
+    var panTypeSelector = $("#pan_type_id_create");
+    var roomSelector = $("#room_id_create");
+    var roomTypeEditSelector = $("#room_type_id_edit");
+    var panTypeEditSelector = $("#pan_type_id_edit");
+    var roomEditSelector = $("#room_id_edit");
+    var reservationEditCustomersDeleteRowButton = $("#reservationEditCustomersDeleteRowButton");
+    var addExtraReservationButton = $("#addExtraReservationButton");
 
-    function dateReCreator(getDate) {
-        var date = new Date(getDate);
-        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
-    }
-
-    reservationEditCustomersDeleteRowButton = $("#reservationEditCustomersDeleteRowButton");
-    customersDeleteRowButton = $("#customersDeleteRowButton");
+    var reservationEditContext = $("#reservationEditContext");
 
     reservationEditCustomersDeleteRowButton.hide();
-    customersDeleteRowButton.hide();
-
-    const months = [
-        'Ocak',
-        'Şubat',
-        'Mart',
-        'Nisan',
-        'Mayıs',
-        'Haziran',
-        'Temmuz',
-        'Ağustos',
-        'Eylül',
-        'Ekim',
-        'Kasım',
-        'Aralık',
-    ];
-
-    function reformatDate(date) {
-        var formattedDate = new Date(date);
-        return String(formattedDate.getDate()).padStart(2, '0') + ' ' +
-            months[formattedDate.getMonth()] + ' ' +
-            formattedDate.getFullYear() + ', ' +
-            String(formattedDate.getHours()).padStart(2, '0') + ':' +
-            String(formattedDate.getMinutes()).padStart(2, '0') + ' ';
-    }
 
     var reservations = $('#reservations').DataTable({
         language: {
@@ -118,17 +98,12 @@
                 if (index === 2 || index === 3) {
                     input.setAttribute("type", "datetime-local");
                 } else if (index === 4) {
-                    input = document.createElement('select');
-                    var option = document.createElement("option");
-                    option.setAttribute("value", 0);
-                    option.innerHTML = "Tümü";
-                    input.appendChild(option);
-                    @foreach($reservationStatuses as $reservationStatus)
-                    option = document.createElement("option");
-                    option.setAttribute("value", {{ $reservationStatus->id }});
-                    option.innerHTML = "{{ $reservationStatus->name }}";
-                    input.appendChild(option);
-                    @endforeach
+                    input = null;
+                    $(input).appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            column.search($(this).val(), false, false, true).draw();
+                        });
+                    return;
                 }
                 input.className = 'form-control';
                 $(input).appendTo($(column.footer()).empty())
@@ -140,7 +115,7 @@
 
         processing: true,
         serverSide: true,
-        ajax: '{!! route('ajax.reservations.index') !!}',
+        ajax: '{!! route('ajax.stayers.reservations') !!}',
         columns: [
             {data: 'id', name: 'id'},
             {data: 'customer_name', name: 'customer_name'},
@@ -158,7 +133,7 @@
         select: 'single'
     });
 
-    var createReservationSelectCustomerTable = $('#createReservationSelectCustomerTable').DataTable({
+    var reservationEditCustomers = $('#reservationEditCustomers').DataTable({
         language: {
             info: "_TOTAL_ Kayıttan _START_ - _END_ Arasındaki Kayıtlar Gösteriliyor.",
             infoEmpty: "Gösterilecek Hiç Kayıt Yok.",
@@ -188,33 +163,7 @@
             }
         },
 
-        dom: 'rtp',
-
-        initComplete: function () {
-            var r = $('#createReservationSelectCustomerTable tfoot tr');
-            $('#createReservationSelectCustomerTable thead').append(r);
-            this.api().columns().every(function (index) {
-                var column = this;
-                var input = document.createElement('input');
-                input.className = 'form-control';
-                $(input).appendTo($(column.footer()).empty())
-                    .on('change', function () {
-                        column.search($(this).val(), false, false, true).draw();
-                    });
-            });
-        },
-
-        processing: true,
-        serverSide: true,
-        ajax: '{!! route('ajax.customers.index') !!}',
-        columns: [
-            {data: 'id', name: 'id', width: "3%"},
-            {data: 'name', name: 'name'},
-            {data: 'surname', name: 'surname'},
-            {data: 'title', name: 'title'},
-            {data: 'identity_number', name: 'identity_number'},
-            {data: 'gender', name: 'gender'}
-        ],
+        dom: 'rt',
 
         responsive: true,
         select: 'single'
@@ -282,100 +231,40 @@
         select: 'single'
     });
 
-    var reservationCustomers = $('#reservationCustomers').DataTable({
-        language: {
-            info: "_TOTAL_ Kayıttan _START_ - _END_ Arasındaki Kayıtlar Gösteriliyor.",
-            infoEmpty: "Gösterilecek Hiç Kayıt Yok.",
-            loadingRecords: "Kayıtlar Yükleniyor.",
-            zeroRecords: "Tablo Boş",
-            search: "Arama:",
-            infoFiltered: "(Toplam _MAX_ Kayıttan Filtrelenenler)",
-            lengthMenu: "Sayfa Başı _MENU_ Kayıt Göster",
-            sProcessing: "Yükleniyor...",
-            paginate: {
-                first: "İlk",
-                previous: "Önceki",
-                next: "Sonraki",
-                last: "Son"
-            },
-            select: {
-                rows: {
-                    "_": "%d kayıt seçildi",
-                    "0": "",
-                    "1": "1 kayıt seçildi"
-                }
-            },
-            buttons: {
-                print: {
-                    title: 'Yazdır'
-                }
-            }
-        },
+    $('.card').on('contextmenu', function (e) {
+        var selectedRows = reservations.rows({selected: true});
+        if (selectedRows.count() > 0) {
+            var reservation_id = selectedRows.data()[0].id.replace('#', '');
+            $("#selected_reservation_id").val(reservation_id);
 
-        dom: 'rt',
+            var top = e.pageY - 10;
+            var left = e.pageX - 10;
 
-        responsive: true,
-        select: 'single'
+            $("#context-menu").css({
+                display: "block",
+                top: top,
+                left: left
+            });
+        }
+        return false;
+    }).on("click", function () {
+        $("#context-menu").hide();
+    }).on('focusout', function () {
+        $("#context-menu").hide();
     });
 
-    var reservationEditCustomers = $('#reservationEditCustomers').DataTable({
-        language: {
-            info: "_TOTAL_ Kayıttan _START_ - _END_ Arasındaki Kayıtlar Gösteriliyor.",
-            infoEmpty: "Gösterilecek Hiç Kayıt Yok.",
-            loadingRecords: "Kayıtlar Yükleniyor.",
-            zeroRecords: "Tablo Boş",
-            search: "Arama:",
-            infoFiltered: "(Toplam _MAX_ Kayıttan Filtrelenenler)",
-            lengthMenu: "Sayfa Başı _MENU_ Kayıt Göster",
-            sProcessing: "Yükleniyor...",
-            paginate: {
-                first: "İlk",
-                previous: "Önceki",
-                next: "Sonraki",
-                last: "Son"
-            },
-            select: {
-                rows: {
-                    "_": "%d kayıt seçildi",
-                    "0": "",
-                    "1": "1 kayıt seçildi"
-                }
-            },
-            buttons: {
-                print: {
-                    title: 'Yazdır'
-                }
-            }
-        },
-
-        dom: 'rt',
-
-        responsive: true,
-        select: 'single'
+    $(document).click((e) => {
+        if ($.contains($("#reservationsCard").get(0), e.target)) {
+        } else {
+            $("#context-menu").hide();
+            reservations.rows().deselect();
+        }
     });
 
-</script>
-
-<script>
-
-    var createReservationButton = $("#createReservationButton");
-    var editReservationCreateCustomerButton = $("#editReservationCreateCustomerButton");
-    var updateReservationButton = $("#updateReservationButton");
-    var createCustomerButton = $("#createCustomerButton");
-    var createReservationSelectCustomerButton = $("#createReservationSelectCustomerButton");
-    var editReservationSelectCustomerButton = $("#editReservationSelectCustomerButton");
-    var roomTypeSelector = $("#room_type_id_create");
-    var panTypeSelector = $("#pan_type_id_create");
-    var roomSelector = $("#room_id_create");
-    var roomTypeEditSelector = $("#room_type_id_edit");
-    var panTypeEditSelector = $("#pan_type_id_edit");
-    var roomEditSelector = $("#room_id_edit");
-
-    var reservationStartStayContext = $("#reservationStartStayContext");
-    var reservationStopStayContext = $("#reservationStopStayContext");
-    var reservationEditContext = $("#reservationEditContext");
-    var reservationApproveContext = $("#reservationApproveContext");
-    var reservationDenyContext = $("#reservationDenyContext");
+    function dateReCreator(getDate) {
+        var date = new Date(getDate);
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
+    }
 
     function setStatus(status) {
         var reservationsArray = [];
@@ -395,10 +284,7 @@
             },
             success: function (response) {
                 if (response === 'Tamamlandı') {
-                    $.each(selectedRows.data(), function (index) {
-                        $("#reservation_" + selectedRows.data()[index]['id'].replace('#', '') + "_status").removeClass().addClass('btn btn-pill btn-sm btn-success').html('Onaylandı');
-                    });
-                    reservations.rows().invalidate().draw();
+                    selectedRows.remove().draw();
                 } else {
                     toastr.error('Bir Hata Oluştu!');
                     console.log(response)
@@ -409,157 +295,6 @@
             }
         });
     }
-
-    $('.card').on('contextmenu', function (e) {
-        var selectedRows = reservations.rows({selected: true});
-        if (selectedRows.count() > 0) {
-            var reservation_id = selectedRows.data()[0].id.replace('#', '');
-            $("#editing_reservation_id").val(reservation_id);
-
-            reservation = null;
-
-            $.ajax({
-                async: false,
-                type: 'get',
-                url: '{{ route('ajax.reservations.edit') }}',
-                data: {
-                    reservation_id: reservation_id
-                },
-                success: function (response) {
-                    reservation = response;
-                },
-                error: function (error) {
-                    console.log(error)
-                }
-            });
-
-            if (reservation.status_id === 1) {
-                reservationEditContext.show();
-                reservationStartStayContext.hide();
-                reservationStopStayContext.hide();
-                reservationApproveContext.show();
-                reservationDenyContext.show();
-            } else if (reservation.status_id === 2) {
-                reservationEditContext.show();
-                reservationStartStayContext.show();
-                reservationStopStayContext.hide();
-                reservationApproveContext.hide();
-                reservationDenyContext.show();
-            } else if (reservation.status_id === 3) {
-                reservationEditContext.show();
-                reservationStartStayContext.hide();
-                reservationStopStayContext.hide();
-                reservationApproveContext.show();
-                reservationDenyContext.hide();
-            } else if (reservation.status_id === 4) {
-                reservationEditContext.show();
-                reservationStartStayContext.hide();
-                reservationStopStayContext.show();
-                reservationApproveContext.hide();
-                reservationDenyContext.hide();
-            } else {
-                reservationEditContext.hide();
-                reservationStartStayContext.hide();
-                reservationStopStayContext.hide();
-                reservationApproveContext.hide();
-                reservationDenyContext.hide();
-
-                return false;
-            }
-
-            var top = e.pageY - 10;
-            var left = e.pageX - 10;
-
-            $("#context-menu").css({
-                display: "block",
-                top: top,
-                left: left
-            });
-        }
-        return false;
-    }).on("click", function () {
-        $("#context-menu").hide();
-    }).on('focusout', function () {
-        $("#context-menu").hide();
-    });
-
-    $("#context-menu a").on("click", function () {
-        $(this).parent().hide();
-    });
-
-    $(document).click((e) => {
-        if ($.contains($("#reservationsCard").get(0), e.target)) {
-        } else {
-            $("#context-menu").hide();
-            reservations.rows().deselect();
-        }
-    });
-
-    var CreateReservationRightBar = function () {
-        // Private properties
-        var _element;
-        var _offcanvasObject;
-
-        // Private functions
-        var _init = function () {
-            var header = KTUtil.find(_element, '.offcanvas-header');
-            var content = KTUtil.find(_element, '.offcanvas-content');
-
-            _offcanvasObject = new KTOffcanvas(_element, {
-                overlay: true,
-                baseClass: 'offcanvas',
-                placement: 'right',
-                closeBy: 'create_reservation_rightbar_close',
-                toggleBy: 'create_reservation_rightbar_toggle'
-            });
-
-            KTUtil.scrollInit(content, {
-                disableForMobile: true,
-                resetHeightOnDestroy: true,
-                handleWindowResize: true,
-                height: function () {
-                    var height = parseInt(KTUtil.getViewPort().height);
-
-                    if (header) {
-                        height = height - parseInt(KTUtil.actualHeight(header));
-                        height = height - parseInt(KTUtil.css(header, 'marginTop'));
-                        height = height - parseInt(KTUtil.css(header, 'marginBottom'));
-                    }
-
-                    if (content) {
-                        height = height - parseInt(KTUtil.css(content, 'marginTop'));
-                        height = height - parseInt(KTUtil.css(content, 'marginBottom'));
-                    }
-
-                    height = height - parseInt(KTUtil.css(_element, 'paddingTop'));
-                    height = height - parseInt(KTUtil.css(_element, 'paddingBottom'));
-
-                    height = height - 2;
-
-                    return height;
-                }
-            });
-        }
-
-        // Public methods
-        return {
-            init: function () {
-                _element = KTUtil.getById('create_reservation_rightbar');
-
-                if (!_element) {
-                    return;
-                }
-
-                // Initialize
-                _init();
-            },
-
-            getElement: function () {
-                return _element;
-            }
-        };
-    }();
-    CreateReservationRightBar.init();
 
     var EditReservationRightBar = function () {
         // Private properties
@@ -746,91 +481,6 @@
         getRooms();
     });
 
-    createReservationButton.click(function () {
-        var company_id = $("#company_id_create").val();
-        var customer_name = $("#customer_name_create").val();
-        var start_date = $("#start_date_create").val();
-        var end_date = $("#end_date_create").val();
-        var room_type_id = $("#room_type_id_create").val();
-        var pan_type_id = $("#pan_type_id_create").val();
-        var room_id = $("#room_id_create").val();
-        var room_use_type_id = $("#room_use_type_id_create").val();
-        var price = $("#price_create").val();
-
-        if (customer_name == null || customer_name === '') {
-            toastr.warning('Rezervasyonu Yaptıran Müşteri Adını Giriniz!');
-        } else if (start_date == null || start_date === '') {
-            toastr.warning('Geliş Tarihini Seçmediniz!');
-        } else if (end_date == null || end_date === '') {
-            toastr.warning('Gidiş Tarihini Seçmediniz!');
-        } else if (room_type_id == null || room_type_id === '') {
-            toastr.warning('Oda Tipini Seçmediniz!');
-        } else if (pan_type_id == null || pan_type_id === '') {
-            toastr.warning('Pan Tipini Seçmediniz!');
-        } else if (room_id == null || room_id === '') {
-            toastr.warning('Oda Seçimi Yapmadınız!');
-        } else if (room_use_type_id == null || room_use_type_id === '') {
-            toastr.warning('Oda Kullanım Tipini Seçmediniz!');
-        } else {
-            customerList = reservationCustomers.rows().data();
-            customerListArray = [];
-
-            $.each(customerList, function (index) {
-                customerListArray.push(customerList[index]['DT_RowId'].replace('customer_id_', ''));
-            });
-
-            var data = {
-                _token: '{{ csrf_token() }}',
-                company_id: company_id,
-                customer_name: customer_name,
-                start_date: start_date,
-                end_date: end_date,
-                room_type_id: room_type_id,
-                pan_type_id: pan_type_id,
-                room_id: room_id,
-                room_use_type_id: room_use_type_id,
-                price: price,
-                status_id: 1,
-                customers: customerListArray
-            }
-
-            $.ajax({
-                type: 'post',
-                url: '{{ route('ajax.reservations.save') }}',
-                data: data,
-                success: function (reservation) {
-                    var newReservation = $.parseHTML(`` +
-                        `<tr id="row_id_${reservation.id}">` +
-                        `<td>#${reservation.id}</td>` +
-                        `<td>${reservation.customer_name}</td>` +
-                        `<td data-sort="${reservation.start_date}">${reformatDate(reservation.start_date)}</td>` +
-                        `<td data-sort="${reservation.end_date}">${reformatDate(reservation.end_date)}</td>` +
-                        `<td><span id="reservation_${reservation.id}_status" class="btn btn-pill btn-sm btn-${reservation.status.color}" style="font-size: 11px; height: 20px; padding-top: 2px">${reservation.status.name}</span></td>` +
-                        `<td>${reservation.room_type.name}</td>` +
-                        `<td>${reservation.pan_type.name}</td>` +
-                        `<td>${reservation.room.number}</td>` +
-                        `<td>${reservation.price}</td>` +
-                        `</tr>` +
-                        ``)[0];
-
-                    reservations.row.add(newReservation);
-                    reservations.draw(false);
-                    $("#createReservationForm").trigger('reset');
-                    $("#customer_id_create").html('').selectpicker('refresh');
-                    $("#room_type_id_create").html('').selectpicker('refresh');
-                    $("#pan_type_id_create").html('').selectpicker('refresh');
-                    $("#room_id_create").html('').selectpicker('refresh');
-                    $("#create_reservation_rightbar_toggle").click();
-                    reservationCustomers.clear().draw();
-                    toastr.success('Yeni Rezervazyon Başarıyla Oluşturuldu');
-                },
-                error: function (error) {
-                    console.log(error)
-                }
-            });
-        }
-    });
-
     updateReservationButton.click(function () {
         var reservation_id = $("#editing_reservation_id").val();
         var company_id = $("#company_id_edit").val();
@@ -910,77 +560,6 @@
                     $("#room_id_create").html('').selectpicker('refresh');
                     $("#edit_reservation_rightbar_toggle").click();
                     toastr.success('Rezervazyon Başarıyla Güncellendi');
-                },
-                error: function (error) {
-                    console.log(error)
-                }
-            });
-        }
-    });
-
-    createCustomerButton.click(function () {
-        var name = $("#customer_create_name").val();
-        var surname = $("#customer_create_surname").val();
-        var gender = $("#customer_create_gender").val();
-        var title = $("#customer_create_title").val();
-        var nationality_id = $("#customer_create_nationality_id").val();
-        var marriage = $("#customer_create_marriage").val();
-        var identity_type_id = $("#customer_create_identity_type_id").val();
-        var identity_number = $("#customer_create_identity_number").val();
-        var identity_expiration_date = $("#customer_create_identity_expiration_date").val();
-        var birth_date = $("#customer_create_birth_date").val();
-        var birth_place = $("#customer_create_birth_place").val();
-        var mother_name = $("#customer_create_mother_name").val();
-        var father_name = $("#customer_create_father_name").val();
-
-        if (name === '' || name == null) {
-            toastr.warning('Ad Boş Olamaz');
-        } else if (surname === '' || surname == null) {
-            toastr.warning('Soyad Boş Olamaz');
-        } else if (gender === '' || gender == null) {
-            toastr.warning('Cinsiyet Seçmediniz!');
-        } else if (nationality_id === '' || nationality_id == null) {
-            toastr.warning('Uyruk Seçmediniz!');
-        } else if (identity_type_id === '' || identity_type_id == null) {
-            toastr.warning('Kimlik Türü Seçmediniz!');
-        } else if (identity_number === '' || identity_number == null) {
-            toastr.warning('Kimlik Numarası Olamaz');
-        } else {
-            $.ajax({
-                type: 'post',
-                url: '{{ route('ajax.customers.create') }}',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    name: name,
-                    surname: surname,
-                    gender: gender,
-                    title: title,
-                    nationality_id: nationality_id,
-                    marriage: marriage,
-                    identity_type_id: identity_type_id,
-                    identity_number: identity_number,
-                    identity_expiration_date: identity_expiration_date,
-                    birth_date: birth_date,
-                    birth_place: birth_place,
-                    mother_name: mother_name,
-                    father_name: father_name
-                },
-                success: function (customer) {
-                    var newCustomer = $.parseHTML(`` +
-                        `<tr id="customer_id_${customer.id}">` +
-                        `<td>${customer.name}</td>` +
-                        `<td>${customer.surname}</td>` +
-                        `<td>${customer.title ?? ''}</td>` +
-                        `<td>${customer.nationality.name}</td>` +
-                        `<td>${customer.gender === 1 ? 'Erkek' : 'Kadın'}</td>` +
-                        `</tr>` +
-                        ``)[0];
-
-                    reservationCustomers.row.add(newCustomer);
-                    reservationCustomers.draw(false);
-
-                    $("#createCustomerForm").trigger('reset');
-                    $("#CreateCustomerModal").modal('hide');
                 },
                 error: function (error) {
                     console.log(error)
@@ -1128,70 +707,6 @@
         reservationEditCustomers.row('#customer_id_' + customer_id).remove().draw();
     });
 
-    reservationCustomers.on('select deselect', function (e, dt, type, indexes) {
-        var selectedRows = reservationCustomers.rows({selected: true});
-        if (selectedRows.count() > 0) {
-            customersDeleteRowButton.show();
-            if (type === 'row') {
-                var data = reservationCustomers.rows(indexes).data()[0]['DT_RowId'].replace('customer_id_', '');
-                $("#create_reservation_deleting_customer_id").val(data);
-            }
-        } else {
-            customersDeleteRowButton.hide();
-            $("#create_reservation_deleting_customer_id").val(null);
-        }
-    });
-
-    customersDeleteRowButton.click(function () {
-        var customer_id = $("#create_reservation_deleting_customer_id").val();
-        reservationCustomers.row('#customer_id_' + customer_id).remove().draw();
-    });
-
-    createReservationSelectCustomerTable.on('select deselect', function (e, dt, type, indexes) {
-        var selectedRows = createReservationSelectCustomerTable.rows({selected: true});
-        if (selectedRows.count() > 0) {
-            createReservationSelectCustomerButton.show();
-            if (type === 'row') {
-                var data = createReservationSelectCustomerTable.rows(indexes).data()[0]['id'];
-                $("#create_reservation_selected_customer_id").val(data);
-            }
-        } else {
-            createReservationSelectCustomerButton.hide();
-            $("#create_reservation_selected_customer_id").val(null);
-        }
-    });
-
-    createReservationSelectCustomerButton.click(function () {
-        var customer_id = $("#create_reservation_selected_customer_id").val();
-
-        $.ajax({
-            type: 'get',
-            url: '{{ route('ajax.customers.edit') }}',
-            data: {
-                customer_id: customer_id
-            },
-            success: function (customer) {
-                var newCustomer = $.parseHTML(`` +
-                    `<tr id="customer_id_${customer.id}">` +
-                    `<td>${customer.name}</td>` +
-                    `<td>${customer.surname}</td>` +
-                    `<td>${customer.title ?? ''}</td>` +
-                    `<td>${customer.nationality.name}</td>` +
-                    `<td>${customer.gender === 1 ? 'Erkek' : 'Kadın'}</td>` +
-                    `</tr>` +
-                    ``)[0];
-
-                reservationCustomers.row.add(newCustomer);
-                reservationCustomers.draw(false);
-
-                $("#CreateReservationSelectCustomerModal").modal('hide');
-            },
-            error: function (error) {
-                console.log(error)
-            }
-        });
-    });
-
     editReservationSelectCustomerTable.on('select deselect', function (e, dt, type, indexes) {
         var selectedRows = editReservationSelectCustomerTable.rows({selected: true});
         if (selectedRows.count() > 0) {
@@ -1235,5 +750,46 @@
                 console.log(error)
             }
         });
+    });
+
+    addExtraReservationButton.click(function () {
+        var safe_id = 1;
+        var reservation_id = $("#selected_reservation_id").val();
+        var extra_id = $("#create_extra_extra_id").val();
+        var direction = 1;
+        var price = $("#create_extra_price").val();
+        var description = $("#create_extra_description").val();
+        var date = $("#create_extra_date").val();
+
+        if (reservation_id === '' || reservation_id == null) {
+            toastr.error('Rezervasyon Seçiminde Hata Oluştu. Sayfayı Yenilemeyi Deneyin!');
+        } else if (extra_id === '' || extra_id == null) {
+            toastr.warning('Ekstra Seçimi Yapmadınız!');
+        } else if (price === '' || price == null) {
+            toastr.warning('Ücret Girmediniz!');
+        } else if (date === '' || date == null) {
+            toastr.warning('Tarih Seçmediniz!');
+        } else {
+            $.ajax({
+                type: 'post',
+                url: '{{ route('ajax.extras.create') }}',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    safe_id: safe_id,
+                    reservation_id: reservation_id,
+                    extra_id: extra_id,
+                    direction: direction,
+                    price: price,
+                    description: description,
+                    date: date
+                },
+                success: function (safeActivity) {
+                    toastr.success('Ekstra Başarıyla Eklendi');
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            });
+        }
     });
 </script>

@@ -13,12 +13,21 @@
                 </div>
                 <hr>
                 <div class="row mt-6">
-                    <div class="col-xl-6">
+                    <div class="col-xl-3">
                         <div class="form-group">
-                            <label for="customer_name_create">Rezervasyonu Yaptıran Müşteri Adını Giriniz</label>
-                            <div class="input-group" id="createReservationCustomerSearchBox">
-                                <input type="text" id="customer_name_create" name="customer_name_create" class="form-control">
-                            </div>
+                            <label for="company_id_create">Firma Seçimi</label>
+                            <select id="company_id_create" class="form-control">
+                                <option selected hidden disabled></option>
+                                @foreach($companies as $company)
+                                    <option value="{{ $company->id }}">{{ $company->title }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-xl-3">
+                        <div class="form-group">
+                            <label for="customer_name_create">Rezervasyonu Yaptıran Müşteri Adı</label>
+                            <input type="text" id="customer_name_create" name="customer_name_create" class="form-control">
                         </div>
                     </div>
                     <div class="col-xl-3">
