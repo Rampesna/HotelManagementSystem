@@ -31,4 +31,15 @@ class ExtrasController extends Controller
 
         return response()->json($safeActivity, 200);
     }
+
+    public function getByReservationId(Request $request)
+    {
+        return SafeActivity::
+        with([
+            'extra'
+        ])->
+        where('reservation_id', $request->reservation_id)->
+        where('direction', 1)->
+        get();
+    }
 }

@@ -21,6 +21,7 @@
                     <table class="table dataTable" id="reservations">
                         <thead>
                         <tr>
+                            <th></th>
                             <th>#</th>
                             <th>Müşteri</th>
                             <th>Geliş Tarihi</th>
@@ -34,6 +35,7 @@
                         </thead>
                         <tfoot>
                         <tr>
+                            <th></th>
                             <th>#</th>
                             <th>Müşteri</th>
                             <th>Geliş Tarihi</th>

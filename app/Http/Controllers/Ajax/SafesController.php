@@ -62,10 +62,10 @@ class SafesController extends Controller
             return '#' . $reservation->id;
         })->
         editColumn('start_date', function ($reservation) {
-            return strftime('%d %B %Y, %H:%M', strtotime($reservation->start_date));
+            return date('d.m.Y, H:i', strtotime($reservation->start_date));
         })->
         editColumn('end_date', function ($reservation) {
-            return strftime('%d %B %Y, %H:%M', strtotime($reservation->end_date));
+            return date('d.m.Y, H:i', strtotime($reservation->end_date));
         })->
         editColumn('status_id', function ($reservation) {
             return '<span id="reservation_' . $reservation->id . '_status" class="btn btn-pill btn-sm btn-' . $reservation->status->color . '" style="font-size: 11px; height: 20px; padding-top: 2px">' . $reservation->status->name . '</span>';
@@ -80,7 +80,7 @@ class SafesController extends Controller
             return $reservation->room->number;
         })->
         editColumn('price', function ($reservation) {
-            return number_format((SafeActivity::where('reservation_id', $reservation->id)->where('direction', 1)->where('extra_id', null)->first()->price ?? 0), 2) . ' TL';
+            return number_format((SafeActivity::where('reservation_id', $reservation->id)->where('direction', 1)->sum('price') ?? 0), 2) . ' TL';
         })->
         rawColumns(['status_id'])->
         make(true);

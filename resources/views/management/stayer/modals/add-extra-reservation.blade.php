@@ -23,7 +23,7 @@
                         <div class="col-xl-4">
                             <div class="form-group">
                                 <label for="create_extra_price">Ücretini Giriniz</label>
-                                <input type="text" class="form-control" id="create_extra_price">
+                                <input type="text" class="form-control decimal" id="create_extra_price">
                             </div>
                         </div>
                         <div class="col-xl-4">

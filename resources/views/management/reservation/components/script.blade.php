@@ -627,6 +627,8 @@
     }();
     EditReservationRightBar.init();
 
+    //////////////////////////////////////////////////////////////////////////////////////
+
     $(document).on('keyup', '#createReservationRoomTypeSearchBox .bs-searchbox input', function (e) {
         reloadRoomTypes($(this).val());
     });
@@ -712,6 +714,66 @@
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////
+
+    $(document).on('keyup', '#editReservationRoomTypeSearchBox .bs-searchbox input', function (e) {
+        reloadRoomTypesEdit($(this).val());
+    });
+
+    function reloadRoomTypesEdit(keyword) {
+        if (keyword == null || keyword === '') {
+            roomTypeEditSelector.html('').selectpicker('refresh');
+        } else {
+            $.ajax({
+                type: 'get',
+                url: '{{ route('ajax.room-types.getRoomTypesByKeyword') }}',
+                data: {
+                    keyword: keyword
+                },
+                success: function (roomTypes) {
+                    roomTypeEditSelector.html('').selectpicker('refresh');
+                    roomTypeEditSelector.append(`<option selected hidden disabled></option>`);
+                    $.each(roomTypes, function (index) {
+                        roomTypeEditSelector.append(`<option value="${roomTypes[index].id}">${roomTypes[index].name}</option>`);
+                    });
+                    roomTypeEditSelector.selectpicker('refresh');
+                },
+                error: function () {
+
+                }
+            });
+        }
+    }
+
+    $(document).on('keyup', '#editReservationPanTypeSearchBox .bs-searchbox input', function (e) {
+        reloadPanTypesEdit($(this).val());
+    });
+
+    function reloadPanTypesEdit(keyword) {
+        if (keyword == null || keyword === '') {
+            panTypeEditSelector.html('').selectpicker('refresh');
+        } else {
+            $.ajax({
+                type: 'get',
+                url: '{{ route('ajax.pan-types.getPanTypesByKeyword') }}',
+                data: {
+                    keyword: keyword
+                },
+                success: function (panTypes) {
+                    panTypeEditSelector.html('').selectpicker('refresh');
+                    panTypeEditSelector.append(`<option selected hidden disabled></option>`);
+                    $.each(panTypes, function (index) {
+                        panTypeEditSelector.append(`<option value="${panTypes[index].id}">${panTypes[index].name}</option>`);
+                    });
+                    panTypeEditSelector.selectpicker('refresh');
+                },
+                error: function () {
+
+                }
+            });
+        }
+    }
+
     function getRoomsEdit(id) {
         var room_type_id = roomTypeEditSelector.val();
         var pan_type_id = panTypeEditSelector.val();
@@ -738,12 +800,22 @@
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////
+
     roomTypeSelector.on('change', function () {
         getRooms();
     });
 
     panTypeSelector.on('change', function () {
         getRooms();
+    });
+
+    roomTypeEditSelector.on('change', function () {
+        getRoomsEdit();
+    });
+
+    panTypeEditSelector.on('change', function () {
+        getRoomsEdit();
     });
 
     createReservationButton.click(function () {
@@ -816,7 +888,8 @@
                     reservations.row.add(newReservation);
                     reservations.draw(false);
                     $("#createReservationForm").trigger('reset');
-                    $("#customer_id_create").html('').selectpicker('refresh');
+                    $("#company_id_create").val(null).selectpicker('refresh');
+                    $("#customer_name_create").val('');
                     $("#room_type_id_create").html('').selectpicker('refresh');
                     $("#pan_type_id_create").html('').selectpicker('refresh');
                     $("#room_id_create").html('').selectpicker('refresh');

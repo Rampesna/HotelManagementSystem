@@ -39,6 +39,7 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
     });
 
     Route::prefix('extras')->group(function () {
+        Route::get('getByReservationId', 'ExtrasController@getByReservationId')->name('ajax.extras.getByReservationId');
         Route::post('create', 'ExtrasController@create')->name('ajax.extras.create');
     });
 });

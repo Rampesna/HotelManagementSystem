@@ -18,6 +18,88 @@
 
     reservationEditCustomersDeleteRowButton.hide();
 
+    const months = [
+        'Ocak',
+        'Şubat',
+        'Mart',
+        'Nisan',
+        'Mayıs',
+        'Haziran',
+        'Temmuz',
+        'Ağustos',
+        'Eylül',
+        'Ekim',
+        'Kasım',
+        'Aralık',
+    ];
+
+    $('.decimal').on("copy cut paste drop", function () {
+        return false;
+    }).keyup(function () {
+        var val = $(this).val();
+        if (isNaN(val)) {
+            val = val.replace(/[^0-9\.]/g, '');
+            if (val.split('.').length > 2)
+                val = val.replace(/\.+$/, "");
+        }
+        $(this).val(val);
+    });
+
+    function reformatDate(date) {
+        var formattedDate = new Date(date);
+        return String(formattedDate.getDate()).padStart(2, '0') + ' ' +
+            months[formattedDate.getMonth()] + ' ' +
+            formattedDate.getFullYear() + ', ' +
+            String(formattedDate.getHours()).padStart(2, '0') + ':' +
+            String(formattedDate.getMinutes()).padStart(2, '0') + ' ';
+    }
+
+    function getReservationExtras(reservation) {
+        var reservation_id = reservation.id.replace('#', '');
+
+        var extrasList = ``;
+
+        $.ajax({
+            async: false,
+            type: 'get',
+            url: '{{ route('ajax.extras.getByReservationId') }}',
+            data: {
+                reservation_id: reservation_id
+            },
+            success: function (extras) {
+                $.each(extras, function (index) {
+                    extrasList = extrasList +
+                        `    <tr>` +
+                        `        <td>${extras[index].id}</td>` +
+                        `        <td>${extras[index].extra ? extras[index].extra.name : 'Oda Ücreti'}</td>` +
+                        `        <td>${extras[index].description ?? ''}</td>` +
+                        `        <td>${extras[index].date ? reformatDate(extras[index].date) : ''}</td>` +
+                        `        <td>${parseFloat(extras[index].price).toFixed(2)} TL</td>` +
+                        `    </tr>`;
+                });
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+
+        return `` +
+            `<table id="${reservation.id}" class="table" style="padding-left:50px;">` +
+            `<thead>` +
+            `    <tr>` +
+            `        <th>#</th>` +
+            `        <th>Ekstra</th>` +
+            `        <th>Detaylar</th>` +
+            `        <th>Tarih</th>` +
+            `        <th>Ücret</th>` +
+            `    </tr>` +
+            `</thead>` +
+            `<tbody>` +
+            extrasList +
+            `</tbody>` +
+            `</table>`;
+    }
+
     var reservations = $('#reservations').DataTable({
         language: {
             info: "_TOTAL_ Kayıttan _START_ - _END_ Arasındaki Kayıtlar Gösteriliyor.",
@@ -52,7 +134,7 @@
 
         order: [
             [
-                0,
+                1,
                 "desc"
             ]
         ],
@@ -83,7 +165,7 @@
             {
                 text: '<i class="fas fa-undo"></i> Yenile',
                 action: function (e, dt, node, config) {
-                    $('input').val('');
+                    $('table input').val('');
                     reservations.search('').columns().search('').ajax.reload().draw();
                 }
             }
@@ -95,9 +177,9 @@
             this.api().columns().every(function (index) {
                 var column = this;
                 var input = document.createElement('input');
-                if (index === 2 || index === 3) {
+                if (index === 3 || index === 4) {
                     input.setAttribute("type", "datetime-local");
-                } else if (index === 4) {
+                } else if (index === 0 || index === 5) {
                     input = null;
                     $(input).appendTo($(column.footer()).empty())
                         .on('change', function () {
@@ -117,6 +199,12 @@
         serverSide: true,
         ajax: '{!! route('ajax.stayers.reservations') !!}',
         columns: [
+            {
+                className: 'details-control',
+                orderable: false,
+                data: null,
+                defaultContent: '<i class="fa fa-plus-circle text-success"></i>'
+            },
             {data: 'id', name: 'id'},
             {data: 'customer_name', name: 'customer_name'},
             {data: 'start_date', name: 'start_date'},
@@ -131,6 +219,19 @@
         responsive: true,
         stateSave: true,
         select: 'single'
+    });
+
+    $('#reservations tbody').on('click', 'td.details-control', function () {
+        var tr = $(this).closest('tr');
+        var row = reservations.row(tr);
+
+        if (row.child.isShown()) {
+            row.child.hide();
+            tr.removeClass('shown');
+        } else {
+            row.child(getReservationExtras(row.data())).show();
+            tr.addClass('shown');
+        }
     });
 
     var reservationEditCustomers = $('#reservationEditCustomers').DataTable({
@@ -362,13 +463,13 @@
     }();
     EditReservationRightBar.init();
 
-    $(document).on('keyup', '#createReservationRoomTypeSearchBox .bs-searchbox input', function (e) {
+    $(document).on('keyup', '#editReservationRoomTypeSearchBox .bs-searchbox input', function (e) {
         reloadRoomTypes($(this).val());
     });
 
     function reloadRoomTypes(keyword) {
         if (keyword == null || keyword === '') {
-            roomTypeSelector.html('').selectpicker('refresh');
+            roomTypeEditSelector.html('').selectpicker('refresh');
         } else {
             $.ajax({
                 type: 'get',
@@ -377,12 +478,12 @@
                     keyword: keyword
                 },
                 success: function (roomTypes) {
-                    roomTypeSelector.html('').selectpicker('refresh');
-                    roomTypeSelector.append(`<option selected hidden disabled></option>`);
+                    roomTypeEditSelector.html('').selectpicker('refresh');
+                    roomTypeEditSelector.append(`<option selected hidden disabled></option>`);
                     $.each(roomTypes, function (index) {
-                        roomTypeSelector.append(`<option value="${roomTypes[index].id}">${roomTypes[index].name}</option>`);
+                        roomTypeEditSelector.append(`<option value="${roomTypes[index].id}">${roomTypes[index].name}</option>`);
                     });
-                    roomTypeSelector.selectpicker('refresh');
+                    roomTypeEditSelector.selectpicker('refresh');
                 },
                 error: function () {
 
@@ -391,13 +492,13 @@
         }
     }
 
-    $(document).on('keyup', '#createReservationPanTypeSearchBox .bs-searchbox input', function (e) {
+    $(document).on('keyup', '#editReservationPanTypeSearchBox .bs-searchbox input', function (e) {
         reloadPanTypes($(this).val());
     });
 
     function reloadPanTypes(keyword) {
         if (keyword == null || keyword === '') {
-            panTypeSelector.html('').selectpicker('refresh');
+            panTypeEditSelector.html('').selectpicker('refresh');
         } else {
             $.ajax({
                 type: 'get',
@@ -406,12 +507,12 @@
                     keyword: keyword
                 },
                 success: function (panTypes) {
-                    panTypeSelector.html('').selectpicker('refresh');
-                    panTypeSelector.append(`<option selected hidden disabled></option>`);
+                    panTypeEditSelector.html('').selectpicker('refresh');
+                    panTypeEditSelector.append(`<option selected hidden disabled></option>`);
                     $.each(panTypes, function (index) {
-                        panTypeSelector.append(`<option value="${panTypes[index].id}">${panTypes[index].name}</option>`);
+                        panTypeEditSelector.append(`<option value="${panTypes[index].id}">${panTypes[index].name}</option>`);
                     });
-                    panTypeSelector.selectpicker('refresh');
+                    panTypeEditSelector.selectpicker('refresh');
                 },
                 error: function () {
 
@@ -420,34 +521,7 @@
         }
     }
 
-    function getRooms() {
-        var room_type_id = roomTypeSelector.val();
-        var pan_type_id = panTypeSelector.val();
-
-        if (room_type_id != null && pan_type_id != null) {
-            $.ajax({
-                type: 'get',
-                url: '{{ route('ajax.rooms.getRoomsByPanTypeAndRoomType') }}',
-                data: {
-                    room_type_id: room_type_id,
-                    pan_type_id: pan_type_id
-                },
-                success: function (rooms) {
-                    roomSelector.html('').selectpicker('refresh');
-                    roomSelector.append(`<option selected hidden disabled></option>`);
-                    $.each(rooms, function (index) {
-                        roomSelector.append(`<option value="${rooms[index].id}">${rooms[index].number}</option>`);
-                    });
-                    roomSelector.selectpicker('refresh');
-                },
-                error: function (error) {
-                    console.log(error)
-                }
-            });
-        }
-    }
-
-    function getRoomsEdit(id) {
+    function getRooms(id) {
         var room_type_id = roomTypeEditSelector.val();
         var pan_type_id = panTypeEditSelector.val();
 
@@ -461,6 +535,7 @@
                 },
                 success: function (rooms) {
                     roomEditSelector.html('').selectpicker('refresh');
+                    roomEditSelector.append(`<option selected hidden disabled></option>`);
                     $.each(rooms, function (index) {
                         roomEditSelector.append(`<option ${rooms[index].id === id ? 'selected' : null} value="${rooms[index].id}">${rooms[index].number}</option>`);
                     });
@@ -473,16 +548,16 @@
         }
     }
 
-    roomTypeSelector.on('change', function () {
+    roomTypeEditSelector.on('change', function () {
         getRooms();
     });
 
-    panTypeSelector.on('change', function () {
+    panTypeEditSelector.on('change', function () {
         getRooms();
     });
 
     updateReservationButton.click(function () {
-        var reservation_id = $("#editing_reservation_id").val();
+        var reservation_id = $("#selected_reservation_id").val();
         var company_id = $("#company_id_edit").val();
         var customer_name = $("#customer_name_edit").val();
         var start_date = $("#start_date_edit").val();
@@ -640,7 +715,7 @@
     });
 
     reservationEditContext.click(function () {
-        var reservation_id = $("#editing_reservation_id").val();
+        var reservation_id = $("#selected_reservation_id").val();
         $("#edit_reservation_rightbar_toggle").click();
 
         $.ajax({
@@ -662,7 +737,7 @@
                 panTypeEditSelector.empty();
                 panTypeEditSelector.append(`<option selected value="${reservation.pan_type.id}">${reservation.pan_type.name}</option>`).selectpicker('refresh');
 
-                getRoomsEdit(reservation.room_id);
+                getRooms(reservation.room_id);
 
                 $("#room_use_type_id_edit").val(reservation.use_type_id).selectpicker('refresh');
 
@@ -785,6 +860,10 @@
                 },
                 success: function (safeActivity) {
                     toastr.success('Ekstra Başarıyla Eklendi');
+                    $("#AddExtraReservationModal").modal('hide');
+
+                    $('table input').val('');
+                    reservations.search('').columns().search('').ajax.reload().draw();
                 },
                 error: function (error) {
                     console.log(error)
