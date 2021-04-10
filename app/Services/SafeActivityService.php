@@ -32,7 +32,8 @@ class SafeActivityService
         $price,
         $description = null,
         $date = null,
-        $extraId = null
+        $extraId = null,
+        $paymentTypeId = null
     )
     {
         $this->safeActivity->safe_id = $safeId;
@@ -42,6 +43,7 @@ class SafeActivityService
         $this->safeActivity->price = $price;
         $this->safeActivity->description = $description;
         $this->safeActivity->date = $date;
+        $this->safeActivity->payment_type_id = $paymentTypeId;
         $this->safeActivity->save();
 
         return $this->safeActivity;

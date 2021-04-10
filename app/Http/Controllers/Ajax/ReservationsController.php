@@ -140,4 +140,14 @@ class ReservationsController extends Controller
             return response()->json($exception, 400);
         }
     }
+
+    public function debtControl(Request $request)
+    {
+        $safeActivities = SafeActivity::where('reservation_id', $request->reservation_id)->get();
+        return response()->json([
+            'reservation' => Reservation::find($request->reservation_id),
+            'outgoing' => $safeActivities->where('direction', 1)->sum('price'),
+            'incoming' => $safeActivities->where('direction', 0)->sum('price')
+        ], 200);
+    }
 }

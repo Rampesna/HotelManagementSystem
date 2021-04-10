@@ -22,6 +22,7 @@ class CreateSafeActivitiesTable extends Migration
             $table->double('price')->unsigned();
             $table->text('description')->nullable();
             $table->dateTime('date')->nullable();
+            $table->bigInteger('payment_type_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

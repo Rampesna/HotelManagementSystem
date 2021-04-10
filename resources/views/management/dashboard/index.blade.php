@@ -5,6 +5,13 @@
 
 @section('content')
 
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="form-group">
+                <label for=""></label>
+            </div>
+        </div>
+    </div>
 
 
 @endsection

@@ -28,10 +28,12 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
         Route::any('edit', 'ReservationsController@edit')->name('ajax.reservations.edit');
         Route::any('save', 'ReservationsController@save')->name('ajax.reservations.save');
         Route::any('setStatus', 'ReservationsController@setStatus')->name('ajax.reservations.setStatus');
+        Route::any('debtControl', 'ReservationsController@debtControl')->name('ajax.reservations.debtControl');
     });
 
     Route::prefix('safes')->group(function () {
         Route::any('index', 'SafesController@reservations')->name('ajax.safes.reservations');
+        Route::any('getPayment', 'SafesController@getPayment')->name('ajax.safes.getPayment');
     });
 
     Route::prefix('stayers')->group(function () {

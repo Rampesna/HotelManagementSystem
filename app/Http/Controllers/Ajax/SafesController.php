@@ -9,6 +9,7 @@ use App\Models\Room;
 use App\Models\RoomType;
 use App\Models\SafeActivity;
 use App\Services\ReservationService;
+use App\Services\SafeActivityService;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
@@ -19,23 +20,7 @@ class SafesController extends Controller
         setlocale(LC_ALL, 'tr_TR.UTF-8');
         setlocale(LC_TIME, 'Turkish');
 
-        return Datatables::of(Reservation::where('status_id', 5))->
-        filterColumn('room_type_id', function ($reservation, $keyword) {
-            $ids = [];
-            $types = RoomType::where('name', 'like', '%' . $keyword . '%')->get();
-            foreach ($types as $type) {
-                $ids[] = $type->id;
-            }
-            return $reservation->whereIn('room_type_id', $ids);
-        })->
-        filterColumn('pan_type_id', function ($reservation, $keyword) {
-            $ids = [];
-            $types = PanType::where('name', 'like', '%' . $keyword . '%')->get();
-            foreach ($types as $type) {
-                $ids[] = $type->id;
-            }
-            return $reservation->whereIn('room_type_id', $ids);
-        })->
+        return Datatables::of(Reservation::whereIn('status_id', [5, 6]))->
         filterColumn('room_id', function ($reservation, $keyword) {
             $ids = [];
             $rooms = Room::where('number', 'like', '%' . $keyword . '%')->get();
@@ -50,14 +35,6 @@ class SafesController extends Controller
         filterColumn('end_date', function ($reservation, $date) {
             return $reservation->where('end_date', '<=', $date);
         })->
-        filterColumn('price', function ($reservation, $price) {
-            $ids = [];
-            $safeActivities = SafeActivity::where('price', $price)->get();
-            foreach ($safeActivities as $safeActivity) {
-                $ids[] = $safeActivity->reservation_id;
-            }
-            return $reservation->whereIn('id', $ids);
-        })->
         editColumn('id', function ($reservation) {
             return '#' . $reservation->id;
         })->
@@ -70,19 +47,33 @@ class SafesController extends Controller
         editColumn('status_id', function ($reservation) {
             return '<span id="reservation_' . $reservation->id . '_status" class="btn btn-pill btn-sm btn-' . $reservation->status->color . '" style="font-size: 11px; height: 20px; padding-top: 2px">' . $reservation->status->name . '</span>';
         })->
-        editColumn('room_type_id', function ($reservation) {
-            return $reservation->roomType->name;
-        })->
-        editColumn('pan_type_id', function ($reservation) {
-            return $reservation->panType->name;
-        })->
         editColumn('room_id', function ($reservation) {
             return $reservation->room->number;
         })->
         editColumn('price', function ($reservation) {
             return number_format((SafeActivity::where('reservation_id', $reservation->id)->where('direction', 1)->sum('price') ?? 0), 2) . ' TL';
         })->
+        editColumn('payments', function ($reservation) {
+            return number_format((SafeActivity::where('reservation_id', $reservation->id)->where('direction', 0)->sum('price') ?? 0), 2) . ' TL';
+        })->
         rawColumns(['status_id'])->
         make(true);
+    }
+
+    public function getPayment(Request $request)
+    {
+        $safeActivityService = new SafeActivityService;
+        $safeActivityService->setSafeActivity(new SafeActivity);
+        $safeActivity = $safeActivityService->save(
+            1,
+            $request->reservation_id,
+            0, $request->price,
+            null,
+            date('Y-m-d H:i:s'),
+            null,
+            $request->payment_type_id
+        );
+
+        return response()->json($safeActivity, 200);
     }
 }
