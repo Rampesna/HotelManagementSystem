@@ -15,6 +15,17 @@ class RoomsController extends Controller
         return response()->json((new RoomService)->getRoomsByPanTypeAndRoomType($request->room_type_id, $request->pan_type_id), 200);
     }
 
+    public function getRoomsByParameters(Request $request)
+    {
+        return response()->json((new RoomService)->getRoomsByParameters(
+            $request->room_type_id,
+            $request->pan_type_id,
+            $request->start_date,
+            $request->end_date,
+            intval($request->reservation_id)
+        ), 200);
+    }
+
     public function setRoomStatus(Request $request)
     {
         $room = Room::find($request->room_id);

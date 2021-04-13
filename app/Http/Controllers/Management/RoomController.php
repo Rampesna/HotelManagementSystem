@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Management;
 
 use App\Http\Controllers\Controller;
+use App\Models\Extra;
 use App\Models\Room;
 use App\Models\RoomStatus;
 
@@ -17,7 +18,8 @@ class RoomController extends Controller
                 'panType',
                 'badType'
             ])->get(),
-            'roomStatuses' => RoomStatus::all()
+            'roomStatuses' => RoomStatus::all(),
+            'extras' => Extra::all()
         ]);
     }
 }

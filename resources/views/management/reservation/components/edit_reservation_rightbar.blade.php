@@ -17,6 +17,7 @@
         <input type="hidden" id="editing_reservation_deleting_customer_id">
         <input type="hidden" id="editing_reservation_id">
         <input type="hidden" id="editing_reservation_status_id">
+        <input type="hidden" id="editing_reservation_room_id">
         <div class="offcanvas-content">
             <div class="offcanvas-wrapper mb-5 scroll-pull">
                 <div class="row">

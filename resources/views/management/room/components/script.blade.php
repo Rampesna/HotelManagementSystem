@@ -60,5 +60,51 @@
 
             }
         });
-    })
+    });
+
+    function openAddExtraModal()
+    {
+        $("#AddExtraReservationModal").modal('show');
+    }
+
+    addExtraReservationButton.click(function () {
+        var safe_id = 1;
+        var reservation_id = $("#selected_reservation_id").val();
+        var extra_id = $("#create_extra_extra_id").val();
+        var direction = 1;
+        var price = $("#create_extra_price").val();
+        var description = $("#create_extra_description").val();
+        var date = $("#create_extra_date").val();
+
+        if (reservation_id === '' || reservation_id == null) {
+            toastr.error('Rezervasyon Seçiminde Hata Oluştu. Sayfayı Yenilemeyi Deneyin!');
+        } else if (extra_id === '' || extra_id == null) {
+            toastr.warning('Ekstra Seçimi Yapmadınız!');
+        } else if (price === '' || price == null) {
+            toastr.warning('Ücret Girmediniz!');
+        } else if (date === '' || date == null) {
+            toastr.warning('Tarih Seçmediniz!');
+        } else {
+            $.ajax({
+                type: 'post',
+                url: '{{ route('ajax.extras.create') }}',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    safe_id: safe_id,
+                    reservation_id: reservation_id,
+                    extra_id: extra_id,
+                    direction: direction,
+                    price: price,
+                    description: description,
+                    date: date
+                },
+                success: function (safeActivity) {
+                    toastr.success('Ekstra Başarıyla Eklendi');
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            });
+        }
+    });
 </script>

@@ -124,7 +124,7 @@
                     option.innerHTML = "Tümü";
                     input.appendChild(option);
                     @foreach($reservationStatuses as $reservationStatus)
-                    option = document.createElement("option");
+                        option = document.createElement("option");
                     option.setAttribute("value", {{ $reservationStatus->id }});
                     option.innerHTML = "{{ $reservationStatus->name }}";
                     input.appendChild(option);
@@ -370,6 +370,10 @@
     var roomTypeEditSelector = $("#room_type_id_edit");
     var panTypeEditSelector = $("#pan_type_id_edit");
     var roomEditSelector = $("#room_id_edit");
+    var startDateCreateSelector = $("#start_date_create");
+    var endDateCreateSelector = $("#end_date_create");
+    var startDateEditSelector = $("#start_date_edit");
+    var endDateEditSelector = $("#end_date_edit");
 
     var reservationStartStayContext = $("#reservationStartStayContext");
     var reservationStopStayContext = $("#reservationStopStayContext");
@@ -690,14 +694,18 @@
     function getRooms() {
         var room_type_id = roomTypeSelector.val();
         var pan_type_id = panTypeSelector.val();
+        var start_date = startDateCreateSelector.val();
+        var end_date = endDateCreateSelector.val();
 
-        if (room_type_id != null && pan_type_id != null) {
+        if (room_type_id != null && pan_type_id != null && start_date != null && end_date != null) {
             $.ajax({
                 type: 'get',
-                url: '{{ route('ajax.rooms.getRoomsByPanTypeAndRoomType') }}',
+                url: '{{ route('ajax.rooms.getRoomsByParameters') }}',
                 data: {
                     room_type_id: room_type_id,
-                    pan_type_id: pan_type_id
+                    pan_type_id: pan_type_id,
+                    start_date: start_date,
+                    end_date: end_date
                 },
                 success: function (rooms) {
                     roomSelector.html('').selectpicker('refresh');
@@ -774,17 +782,22 @@
         }
     }
 
-    function getRoomsEdit(id) {
+    function getRoomsEdit(id, reservation_id) {
         var room_type_id = roomTypeEditSelector.val();
         var pan_type_id = panTypeEditSelector.val();
+        var start_date = startDateEditSelector.val();
+        var end_date = endDateEditSelector.val();
 
-        if (room_type_id != null && pan_type_id != null) {
+        if (room_type_id != null && pan_type_id != null && start_date != null && end_date != null) {
             $.ajax({
                 type: 'get',
-                url: '{{ route('ajax.rooms.getRoomsByPanTypeAndRoomType') }}',
+                url: '{{ route('ajax.rooms.getRoomsByParameters') }}',
                 data: {
                     room_type_id: room_type_id,
-                    pan_type_id: pan_type_id
+                    pan_type_id: pan_type_id,
+                    start_date: start_date,
+                    end_date: end_date,
+                    reservation_id: reservation_id
                 },
                 success: function (rooms) {
                     roomEditSelector.html('').selectpicker('refresh');
@@ -811,11 +824,11 @@
     });
 
     roomTypeEditSelector.on('change', function () {
-        getRoomsEdit();
+        getRoomsEdit($("#editing_reservation_id").val(),$("#editing_reservation_room_id").val());
     });
 
     panTypeEditSelector.on('change', function () {
-        getRoomsEdit();
+        getRoomsEdit($("#editing_reservation_id").val(),$("#editing_reservation_room_id").val());
     });
 
     createReservationButton.click(function () {
@@ -1135,6 +1148,7 @@
 
     reservationEditContext.click(function () {
         var reservation_id = $("#editing_reservation_id").val();
+        var reservation_room_id = $("#editing_reservation_room_id").val();
         $("#edit_reservation_rightbar_toggle").click();
 
         $.ajax({
@@ -1156,7 +1170,7 @@
                 panTypeEditSelector.empty();
                 panTypeEditSelector.append(`<option selected value="${reservation.pan_type.id}">${reservation.pan_type.name}</option>`).selectpicker('refresh');
 
-                getRoomsEdit(reservation.room_id);
+                getRoomsEdit(reservation.room_id, reservation_id);
 
                 $("#room_use_type_id_edit").val(reservation.use_type_id).selectpicker('refresh');
 

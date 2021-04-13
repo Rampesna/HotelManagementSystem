@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Reservation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -15,7 +16,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/test', function () {
-    return bcrypt("123456");
+    $startDate = '2021-05-02 15:00:00';
+    $endDate = '2021-05-07 15:00:00';
+
+    $reservations = Reservation::
+    where(function ($dates) use ($startDate, $endDate) {
+        $dates->where(function ($forStartDate) use ($startDate, $endDate) {
+            $forStartDate->where('start_date', '<=', $startDate)->where('end_date', '>=', $startDate);
+        })->
+        orWhere(function ($forEndDate) use ($startDate, $endDate) {
+            $forEndDate->where('start_date', '<=', $endDate)->where('end_date', '>=', $endDate);
+        });
+    })->
+    whereIn('status_id', [1, 2, 4])->
+    pluck('id');
+
+    return $reservations;
 });
 
 Auth::routes();
