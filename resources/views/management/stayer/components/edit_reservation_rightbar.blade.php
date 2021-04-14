@@ -15,8 +15,9 @@
     </div>
     <form id="editReservationForm">
         <input type="hidden" id="editing_reservation_deleting_customer_id">
-        <input type="hidden" id="editing_reservation_id">
-        <input type="hidden" id="editing_reservation_status_id">
+        <input type="hidden" id="selected_reservation_id">
+        <input type="hidden" id="selected_reservation_status_id">
+        <input type="hidden" id="selected_reservation_room_id">
         <div class="offcanvas-content">
             <div class="offcanvas-wrapper mb-5 scroll-pull">
                 <div class="row">
@@ -63,7 +64,9 @@
                             <label for="room_type_id_edit">Oda Tipi</label>
                             <div class="input-group" id="editReservationRoomTypeSearchBox">
                                 <select required class="selectpicker form-control" id="room_type_id_edit" data-live-search="true">
-
+                                    @foreach($roomTypes as $roomType)
+                                        <option value="{{ $roomType->id }}">{{ $roomType->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -73,7 +76,9 @@
                             <label for="pan_type_id_edit">Pan Tipi</label>
                             <div class="input-group" id="editReservationPanTypeSearchBox">
                                 <select required class="selectpicker form-control" id="pan_type_id_edit" data-live-search="true">
-
+                                    @foreach($panTypes as $panType)
+                                        <option value="{{ $panType->id }}">{{ $panType->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>

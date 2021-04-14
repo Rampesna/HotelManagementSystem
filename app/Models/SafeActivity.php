@@ -17,4 +17,9 @@ class SafeActivity extends Model
     {
         return $this->belongsTo(Extra::class);
     }
+
+    public function reservation()
+    {
+        return $this->belongsTo(Reservation::class);
+    }
 }

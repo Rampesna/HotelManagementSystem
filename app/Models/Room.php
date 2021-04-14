@@ -37,4 +37,16 @@ class Room extends Model
     {
         return $this->hasMany(Reservation::class);
     }
+
+    public function activeReservation()
+    {
+        return Reservation::with([
+                'status'
+            ])->where('room_id', $this->id)->where('status_id', 4)->first() ?? null;
+    }
+
+    public function getActiveReservationAttribute()
+    {
+        return $this->activeReservation();
+    }
 }

@@ -10,6 +10,11 @@ use Illuminate\Http\Request;
 
 class RoomsController extends Controller
 {
+    public function show(Request $request)
+    {
+        return response()->json(Room::find($request->room_id)->append('activeReservation'), 200);
+    }
+
     public function getRoomsByPanTypeAndRoomType(Request $request)
     {
         return response()->json((new RoomService)->getRoomsByPanTypeAndRoomType($request->room_type_id, $request->pan_type_id), 200);

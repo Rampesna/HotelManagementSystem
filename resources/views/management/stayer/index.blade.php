@@ -73,7 +73,7 @@
                 </div>
             </a>
         </div>
-        <div>
+        <div style="display: none">
             <a onclick="setStatus(5)" class="dropdown-item cursor-pointer">
                 <div class="row">
                     <div class="col-xl-12">

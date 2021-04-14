@@ -48,4 +48,15 @@ class Reservation extends Model
     {
         return $this->belongsTo(Room::class);
     }
+
+    public function safeActivities()
+    {
+        return $this->hasMany(SafeActivity::class);
+    }
+
+    public function debtControl()
+    {
+        $safeActivities = SafeActivity::where('reservation_id', $this->id)->get();
+        return $safeActivities->where('direction', 0)->sum('price') - $safeActivities->where('direction', 1)->sum('price');
+    }
 }

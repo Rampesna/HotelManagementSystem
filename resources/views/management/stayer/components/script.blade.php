@@ -13,6 +13,8 @@
     var roomEditSelector = $("#room_id_edit");
     var reservationEditCustomersDeleteRowButton = $("#reservationEditCustomersDeleteRowButton");
     var addExtraReservationButton = $("#addExtraReservationButton");
+    var startDateEditSelector = $("#start_date_edit");
+    var endDateEditSelector = $("#end_date_edit");
 
     var reservationEditContext = $("#reservationEditContext");
 
@@ -463,75 +465,22 @@
     }();
     EditReservationRightBar.init();
 
-    $(document).on('keyup', '#editReservationRoomTypeSearchBox .bs-searchbox input', function (e) {
-        reloadRoomTypes($(this).val());
-    });
-
-    function reloadRoomTypes(keyword) {
-        if (keyword == null || keyword === '') {
-            roomTypeEditSelector.html('').selectpicker('refresh');
-        } else {
-            $.ajax({
-                type: 'get',
-                url: '{{ route('ajax.room-types.getRoomTypesByKeyword') }}',
-                data: {
-                    keyword: keyword
-                },
-                success: function (roomTypes) {
-                    roomTypeEditSelector.html('').selectpicker('refresh');
-                    roomTypeEditSelector.append(`<option selected hidden disabled></option>`);
-                    $.each(roomTypes, function (index) {
-                        roomTypeEditSelector.append(`<option value="${roomTypes[index].id}">${roomTypes[index].name}</option>`);
-                    });
-                    roomTypeEditSelector.selectpicker('refresh');
-                },
-                error: function () {
-
-                }
-            });
-        }
-    }
-
-    $(document).on('keyup', '#editReservationPanTypeSearchBox .bs-searchbox input', function (e) {
-        reloadPanTypes($(this).val());
-    });
-
-    function reloadPanTypes(keyword) {
-        if (keyword == null || keyword === '') {
-            panTypeEditSelector.html('').selectpicker('refresh');
-        } else {
-            $.ajax({
-                type: 'get',
-                url: '{{ route('ajax.pan-types.getPanTypesByKeyword') }}',
-                data: {
-                    keyword: keyword
-                },
-                success: function (panTypes) {
-                    panTypeEditSelector.html('').selectpicker('refresh');
-                    panTypeEditSelector.append(`<option selected hidden disabled></option>`);
-                    $.each(panTypes, function (index) {
-                        panTypeEditSelector.append(`<option value="${panTypes[index].id}">${panTypes[index].name}</option>`);
-                    });
-                    panTypeEditSelector.selectpicker('refresh');
-                },
-                error: function () {
-
-                }
-            });
-        }
-    }
-
-    function getRooms(id) {
+    function getRooms(id, reservation_id) {
         var room_type_id = roomTypeEditSelector.val();
         var pan_type_id = panTypeEditSelector.val();
+        var start_date = startDateEditSelector.val();
+        var end_date = endDateEditSelector.val();
 
         if (room_type_id != null && pan_type_id != null) {
             $.ajax({
                 type: 'get',
-                url: '{{ route('ajax.rooms.getRoomsByPanTypeAndRoomType') }}',
+                url: '{{ route('ajax.rooms.getRoomsByParameters') }}',
                 data: {
                     room_type_id: room_type_id,
-                    pan_type_id: pan_type_id
+                    pan_type_id: pan_type_id,
+                    start_date: start_date,
+                    end_date: end_date,
+                    reservation_id: reservation_id
                 },
                 success: function (rooms) {
                     roomEditSelector.html('').selectpicker('refresh');
@@ -549,11 +498,19 @@
     }
 
     roomTypeEditSelector.on('change', function () {
-        getRooms();
+        getRooms($("#selected_reservation_room_id").val(), $("#selected_reservation_id").val());
     });
 
     panTypeEditSelector.on('change', function () {
-        getRooms();
+        getRooms($("#selected_reservation_room_id").val(), $("#selected_reservation_id").val());
+    });
+
+    startDateEditSelector.on('change', function () {
+        getRooms($("#selected_reservation_room_id").val(), $("#selected_reservation_id").val());
+    });
+
+    endDateEditSelector.on('change', function () {
+        getRooms($("#selected_reservation_room_id").val(), $("#selected_reservation_id").val());
     });
 
     updateReservationButton.click(function () {
@@ -566,7 +523,7 @@
         var pan_type_id = $("#pan_type_id_edit").val();
         var room_id = $("#room_id_edit").val();
         var room_use_type_id = $("#room_use_type_id_edit").val();
-        var status_id = $("#editing_reservation_status_id").val();
+        var status_id = $("#selected_reservation_status_id").val();
 
         if (reservation_id === '' || reservation_id == null) {
             toastr.error('Reservasyon Seçiminde Hata Oluştu. Sayfayı Yenilemeyi Deneyin');
@@ -728,16 +685,14 @@
                 $("#customer_name_edit").val(reservation.customer_name);
                 $("#start_date_edit").val(dateReCreator(reservation.start_date));
                 $("#end_date_edit").val(dateReCreator(reservation.end_date));
-                $("#editing_reservation_status_id").val(reservation.status_id);
+                $("#selected_reservation_status_id").val(reservation.status_id);
+                $("#selected_reservation_room_id").val(reservation.room_id);
                 $("#company_id_edit").val(reservation.company_id).selectpicker('refresh');
 
-                roomTypeEditSelector.empty();
-                roomTypeEditSelector.append(`<option selected value="${reservation.room_type.id}">${reservation.room_type.name}</option>`).selectpicker('refresh');
+                roomTypeEditSelector.val(reservation.room_type.id).selectpicker('refresh');
+                panTypeEditSelector.val(reservation.pan_type.id).selectpicker('refresh');
 
-                panTypeEditSelector.empty();
-                panTypeEditSelector.append(`<option selected value="${reservation.pan_type.id}">${reservation.pan_type.name}</option>`).selectpicker('refresh');
-
-                getRooms(reservation.room_id);
+                getRooms(reservation.room_id, reservation.id);
 
                 $("#room_use_type_id_edit").val(reservation.use_type_id).selectpicker('refresh');
 

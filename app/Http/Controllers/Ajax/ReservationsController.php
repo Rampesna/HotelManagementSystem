@@ -101,7 +101,8 @@ class ReservationsController extends Controller
             'roomType',
             'panType',
             'roomUseType',
-            'room'
+            'room',
+            'safeActivities'
         ])->find($request->reservation_id), 200);
     }
 
@@ -149,5 +150,12 @@ class ReservationsController extends Controller
             'outgoing' => $safeActivities->where('direction', 1)->sum('price'),
             'incoming' => $safeActivities->where('direction', 0)->sum('price')
         ], 200);
+    }
+
+    public function safeActivities(Request $request)
+    {
+        return response()->json(SafeActivity::with([
+            'extra'
+        ])->where('reservation_id', $request->reservation_id)->get(), 200);
     }
 }

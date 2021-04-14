@@ -1,23 +1,10 @@
 <div id="edit_reservation_rightbar" style="width: 1200px" class="offcanvas offcanvas-right p-10">
-    <div class="offcanvas-header d-flex align-items-center justify-content-between pb-7">
-        <div class="row">
-            <div class="col-xl-4">
-                <div class="form-group">
-                    <label for=""></label>
-                </div>
-            </div>
-            <div class="col-xl-4">
-                <div class="form-group">
-                    <label for=""></label>
-                </div>
-            </div>
-        </div>
-    </div>
+
     <form id="editReservationForm">
         <input type="hidden" id="editing_reservation_deleting_customer_id">
-        <input type="hidden" id="editing_reservation_id">
-        <input type="hidden" id="editing_reservation_status_id">
-        <input type="hidden" id="editing_reservation_room_id">
+        <input type="hidden" id="selected_reservation_id">
+        <input type="hidden" id="selected_reservation_status_id">
+        <input type="hidden" id="selected_reservation_room_id">
         <div class="offcanvas-content">
             <div class="offcanvas-wrapper mb-5 scroll-pull">
                 <div class="row">

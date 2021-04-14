@@ -19,6 +19,7 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
     });
 
     Route::prefix('rooms')->group(function () {
+        Route::get('show', 'RoomsController@show')->name('ajax.rooms.show');
         Route::get('getRoomsByPanTypeAndRoomType', 'RoomsController@getRoomsByPanTypeAndRoomType')->name('ajax.rooms.getRoomsByPanTypeAndRoomType');
         Route::get('getRoomsByParameters', 'RoomsController@getRoomsByParameters')->name('ajax.rooms.getRoomsByParameters');
         Route::post('setRoomStatus', 'RoomsController@setRoomStatus')->name('ajax.rooms.setRoomStatus');
@@ -30,6 +31,7 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
         Route::any('save', 'ReservationsController@save')->name('ajax.reservations.save');
         Route::any('setStatus', 'ReservationsController@setStatus')->name('ajax.reservations.setStatus');
         Route::any('debtControl', 'ReservationsController@debtControl')->name('ajax.reservations.debtControl');
+        Route::any('safeActivities', 'ReservationsController@safeActivities')->name('ajax.reservations.safeActivities');
     });
 
     Route::prefix('safes')->group(function () {

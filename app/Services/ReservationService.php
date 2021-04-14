@@ -31,6 +31,12 @@ class ReservationService
 
     public function save(Request $request)
     {
+        if ($this->reservation->room_id) {
+            if ($this->reservation->room_id != $request->room_id) {
+                $this->setRoomStatus($this->reservation->room_id, 1);
+            }
+        }
+
         $this->reservation->company_id = $request->company_id;
         $this->reservation->customer_name = $request->customer_name;
         $this->reservation->start_date = $request->start_date;
@@ -45,12 +51,12 @@ class ReservationService
 
         if ($request->status_id == 4) {
             $this->setDefaultPrice();
-            $this->setRoomStatus(2);
+            $this->setRoomStatus($this->reservation->room_id, 2);
         }
 
         if ($request->status_id == 5) {
             $this->setDefaultPrice();
-            $this->setRoomStatus(1);
+            $this->setRoomStatus($this->reservation->room_id, 1);
         }
 
         return $this->reservation;
@@ -63,12 +69,12 @@ class ReservationService
 
         if ($statusId == 4) {
             $this->setDefaultPrice();
-            $this->setRoomStatus(2);
+            $this->setRoomStatus($this->reservation->room_id, 2);
         }
 
         if ($statusId == 5) {
             $this->setDefaultPrice();
-            $this->setRoomStatus(1);
+            $this->setRoomStatus($this->reservation->room_id, 1);
         }
 
         return $this->reservation;
@@ -95,10 +101,10 @@ class ReservationService
         }
     }
 
-    public function setRoomStatus($status)
+    public function setRoomStatus($roomId, $status)
     {
         $roomService = new RoomService;
-        $roomService->setRoom(Room::find($this->reservation->room_id));
+        $roomService->setRoom(Room::find($roomId));
         $roomService->setStatus($status);
     }
 }
