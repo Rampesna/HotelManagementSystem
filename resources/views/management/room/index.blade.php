@@ -11,11 +11,12 @@
 
     @include('management.room.modals.edit-reservation-create-customer')
     @include('management.room.modals.edit-reservation-select-customer')
-
     @include('management.room.modals.create-customer')
     @include('management.room.modals.select-customer')
     @include('management.room.modals.add-extra-reservation')
     @include('management.room.modals.get-payment')
+    @include('management.room.modals.set-room-price-collective')
+    @include('management.room.modals.set-room-status-collective')
 
     <input type="hidden" id="edit_reservation_rightbar_toggle">
     <input type="hidden" id="reservation_safe_activities_rightbar_toggle">
@@ -104,7 +105,7 @@
                                                 <div id="endReservationDropdown_{{ $room->activeReservation()->id }}" @if($room->activeReservation()->debtControl() <= 0) style="display: none" @endif>
                                                     <hr>
                                                     <li class="navi-item" >
-                                                        <a class="navi-link cursor-pointer">
+                                                        <a onclick="endReservation({{ $room->activeReservation()->id }})" class="navi-link cursor-pointer">
                                                             <span class="navi-icon">
                                                                 <i class="fas fa-stop-circle text-dark-75"></i>
                                                             </span>
@@ -126,34 +127,23 @@
     </div>
 
     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="context-menu" style="width: 250px">
-        <a class="dropdown-item cursor-pointer">
+
+        <a data-toggle="modal" data-target="#SetRoomPriceCollectiveModal" class="dropdown-item cursor-pointer">
             <div class="row">
                 <div class="col-xl-12">
-                    <span>İşlem 1</span>
+                    <i class="fas fa-coins"></i><span class="ml-5">Oda Fiyatlarını Değiştir</span>
                 </div>
             </div>
         </a>
-        <a class="dropdown-item cursor-pointer">
+
+        <a data-toggle="modal" data-target="#SetRoomStatusCollectiveModal" class="dropdown-item cursor-pointer">
             <div class="row">
                 <div class="col-xl-12">
-                    <span>İşlem 2</span>
+                    <i class="fas fa-undo-alt"></i><span class="ml-5">Oda Durumlarını Değiştir</span>
                 </div>
             </div>
         </a>
-        <a class="dropdown-item cursor-pointer">
-            <div class="row">
-                <div class="col-xl-12">
-                    <span>İşlem 3</span>
-                </div>
-            </div>
-        </a>
-        <a class="dropdown-item cursor-pointer">
-            <div class="row">
-                <div class="col-xl-12">
-                    <span>İşlem 4</span>
-                </div>
-            </div>
-        </a>
+
     </div>
 
 @endsection

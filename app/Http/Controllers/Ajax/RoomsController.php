@@ -41,4 +41,22 @@ class RoomsController extends Controller
             'status'
         ])->find($request->room_id), 200);
     }
+
+    public function setRoomPriceCollective(Request $request)
+    {
+        $roomService = new RoomService;
+        foreach ($request->rooms as $roomId) {
+            $roomService->setRoom(Room::find($roomId));
+            $roomService->setPrice($request->price);
+        }
+    }
+
+    public function setRoomStatusCollective(Request $request)
+    {
+        $roomService = new RoomService;
+        foreach ($request->rooms as $roomId) {
+            $roomService->setRoom(Room::find($roomId));
+            $roomService->setStatus($request->status);
+        }
+    }
 }

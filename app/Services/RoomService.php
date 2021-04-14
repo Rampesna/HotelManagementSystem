@@ -56,4 +56,10 @@ class RoomService
         $this->room->room_status_id = $statusId;
         $this->room->save();
     }
+
+    public function setPrice($price)
+    {
+        $this->room->price = $price;
+        $this->room->save();
+    }
 }

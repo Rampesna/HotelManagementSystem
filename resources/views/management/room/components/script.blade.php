@@ -276,6 +276,8 @@
     var startDateCreateSelector = $("#start_date_create");
     var endDateCreateSelector = $("#end_date_create");
     var getPaymentButton = $("#getPaymentButton");
+    var setRoomPriceCollectiveButton = $("#setRoomPriceCollectiveButton");
+    var setRoomStatusCollectiveButton = $("#setRoomStatusCollectiveButton");
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1147,6 +1149,24 @@
         $("#GetPaymentModal").modal('show');
     }
 
+    function endReservation(reservation_id) {
+        $.ajax({
+            type: 'post',
+            url: '{{ route('ajax.reservations.setStatus') }}',
+            data: {
+                _token: '{{ csrf_token() }}',
+                reservations: [reservation_id],
+                status_id: 5
+            },
+            success: function () {
+                location.reload();
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('.decimal').on("copy cut paste drop", function () {
@@ -1291,4 +1311,60 @@
     });
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    setRoomPriceCollectiveButton.click(function () {
+        var price = $("#set_room_price").val();
+
+        var list = [];
+        $(".roomChecker:checked").each(function () {
+            list.push($(this).data('id'));
+        });
+
+        $.ajax({
+            type: 'post',
+            url: '{{ route('ajax.rooms.setRoomPriceCollective') }}',
+            data: {
+                _token: '{{ csrf_token() }}',
+                rooms: list,
+                price: price
+            },
+            success: function (response) {
+                toastr.success('Fiyatlar Başarıyla Güncellendi');
+                $("#setRoomPriceForm").trigger('reset');
+                $("#SetRoomPriceModal").modal('hide');
+                $(".roomChecker:checked").each(function () {
+                    $(this).prop('checked', false)
+                });
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    });
+
+    setRoomStatusCollectiveButton.click(function () {
+        var status = $("#set_room_status").val();
+
+        var list = [];
+        $(".roomChecker:checked").each(function () {
+            list.push($(this).data('id'));
+        });
+
+        $.ajax({
+            type: 'post',
+            url: '{{ route('ajax.rooms.setRoomStatusCollective') }}',
+            data: {
+                _token: '{{ csrf_token() }}',
+                rooms: list,
+                status: status
+            },
+            success: function (response) {
+                toastr.success('Oda Durumları Başarıyla Güncellendi');
+                location.reload();
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    });
 </script>

@@ -23,6 +23,8 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
         Route::get('getRoomsByPanTypeAndRoomType', 'RoomsController@getRoomsByPanTypeAndRoomType')->name('ajax.rooms.getRoomsByPanTypeAndRoomType');
         Route::get('getRoomsByParameters', 'RoomsController@getRoomsByParameters')->name('ajax.rooms.getRoomsByParameters');
         Route::post('setRoomStatus', 'RoomsController@setRoomStatus')->name('ajax.rooms.setRoomStatus');
+        Route::post('setRoomPriceCollective', 'RoomsController@setRoomPriceCollective')->name('ajax.rooms.setRoomPriceCollective');
+        Route::post('setRoomStatusCollective', 'RoomsController@setRoomStatusCollective')->name('ajax.rooms.setRoomStatusCollective');
     });
 
     Route::prefix('reservations')->group(function () {
