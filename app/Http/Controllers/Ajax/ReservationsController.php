@@ -102,7 +102,8 @@ class ReservationsController extends Controller
             'panType',
             'roomUseType',
             'room',
-            'safeActivities'
+            'safeActivities',
+            'company'
         ])->find($request->reservation_id), 200);
     }
 

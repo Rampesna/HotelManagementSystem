@@ -805,8 +805,8 @@
                     $("#createReservationForm").trigger('reset');
                     $("#company_id_create").val(null).selectpicker('refresh');
                     $("#customer_name_create").val('');
-                    $("#room_type_id_create").html('').selectpicker('refresh');
-                    $("#pan_type_id_create").html('').selectpicker('refresh');
+                    $("#room_type_id_create").selectpicker('refresh');
+                    $("#pan_type_id_create").selectpicker('refresh');
                     $("#room_id_create").html('').selectpicker('refresh');
                     $("#create_reservation_rightbar_toggle").click();
                     reservationCustomers.clear().draw();
