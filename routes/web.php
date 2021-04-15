@@ -54,6 +54,7 @@ Route::middleware(['auth'])->namespace('App\\Http\\Controllers')->group(function
                 return redirect()->route('management.reservation.index');
             });
             Route::get('index', 'ReservationController@index')->name('management.reservation.index')->middleware('Authority:1');
+            Route::get('downloadInvoice', 'ReservationController@downloadInvoice')->name('management.reservation.downloadInvoice')->middleware('Authority:1');
         });
 
         Route::prefix('safe')->group(function () {

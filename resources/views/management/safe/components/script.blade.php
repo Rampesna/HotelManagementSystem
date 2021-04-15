@@ -113,7 +113,42 @@
 
         responsive: true,
         stateSave: true,
-        select: false
+        select: 'single'
     });
 
+    $('.card').on('contextmenu', function (e) {
+        var selectedRows = reservations.rows({selected: true});
+        if (selectedRows.count() > 0) {
+            var reservation_id = selectedRows.data()[0].id.replace('#', '');
+            $("#selected_reservation_id").val(reservation_id);
+
+            var top = e.pageY - 10;
+            var left = e.pageX - 10;
+
+            $("#context-menu").css({
+                display: "block",
+                top: top,
+                left: left
+            });
+        }
+        return false;
+    }).on("click", function () {
+        $("#context-menu").hide();
+    }).on('focusout', function () {
+        $("#context-menu").hide();
+    });
+
+    $(document).click((e) => {
+        if ($.contains($("#reservationsCard").get(0), e.target)) {
+        } else {
+            $("#context-menu").hide();
+            reservations.rows().deselect();
+        }
+    });
+
+    function downloadInvoice()
+    {
+        var reservation_id = $("#selected_reservation_id").val();
+        window.location="{{ route('management.reservation.downloadInvoice') }}?reservation_id=" + reservation_id
+    }
 </script>

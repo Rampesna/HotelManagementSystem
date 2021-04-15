@@ -44,25 +44,18 @@
     </div>
 
     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="context-menu" style="width: 300px">
-        <div id="getPaid">
-            <a class="dropdown-item cursor-pointer" data-toggle="modal" data-target="#GetPaymentModal">
+        <div id="downloadInvoice">
+            <a onclick="downloadInvoice()" class="dropdown-item cursor-pointer">
                 <div class="row">
                     <div class="col-xl-12">
-                        <i class="fa fa-plus-circle text-success"></i><span class="ml-4">Ödeme Al</span>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div id="endReservation">
-            <a onclick="setStatus(6)" class="dropdown-item cursor-pointer">
-                <div class="row">
-                    <div class="col-xl-12">
-                        <i class="fa fa-stop-circle text-dark-75"></i><span class="ml-4">Rezervasyonu Sonlandır</span>
+                        <i class="fas fa-file-download text-success"></i><span class="ml-4">Faturayı İndir</span>
                     </div>
                 </div>
             </a>
         </div>
     </div>
+
+
 
 @endsection
 

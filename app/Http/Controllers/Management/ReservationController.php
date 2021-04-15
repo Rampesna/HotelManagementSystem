@@ -11,6 +11,9 @@ use App\Models\Reservation;
 use App\Models\ReservationStatus;
 use App\Models\RoomType;
 use App\Models\RoomUseType;
+use App\Models\SafeActivity;
+use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class ReservationController extends Controller
 {
@@ -26,5 +29,22 @@ class ReservationController extends Controller
             'roomTypes' => RoomType::all(),
             'panTypes' => PanType::all()
         ]);
+    }
+
+    public function downloadInvoice(Request $request)
+    {
+        return view('download-templates.invoice', [
+            'reservation' => Reservation::find($request->reservation_id),
+            'safeActivities' => SafeActivity::with([
+                'extra'
+            ])->where('reservation_id', $request->reservation_id)->get()
+        ]);
+//        setlocale(LC_ALL, 'tr_TR.UTF-8');
+//        return PDF::loadView('download-templates.invoice', [
+//            'reservation' => Reservation::find($request->reservation_id),
+//            'safeActivities' => SafeActivity::with([
+//                'extra'
+//            ])->where('reservation_id', $request->reservation_id)->where('direction', 1)->get()
+//        ], [], 'UTF-8')->download('test.pdf');
     }
 }
