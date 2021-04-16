@@ -33,9 +33,9 @@ class RoomsController extends Controller
 
     public function setRoomStatus(Request $request)
     {
-        $room = Room::find($request->room_id);
-        $room->room_status_id = $request->status_id;
-        $room->save();
+        $roomService = new RoomService;
+        $roomService->setRoom(Room::find($request->room_id));
+        $roomService->setStatus($request->status_id);
 
         return response()->json(Room::with([
             'status'

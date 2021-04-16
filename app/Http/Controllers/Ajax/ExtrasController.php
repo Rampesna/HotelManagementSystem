@@ -20,6 +20,7 @@ class ExtrasController extends Controller
         $safeActivityService = new SafeActivityService;
         $safeActivityService->setSafeActivity(new SafeActivity);
         $safeActivity = $safeActivityService->save(
+            auth()->user()->id(),
             $request->safe_id,
             $request->reservation_id,
             $request->direction,

@@ -26,6 +26,7 @@ class SafeActivityService
     }
 
     public function save(
+        $userId,
         $safeId,
         $reservationId,
         $direction,
@@ -36,6 +37,7 @@ class SafeActivityService
         $paymentTypeId = null
     )
     {
+        $this->safeActivity->user_id = $userId;
         $this->safeActivity->safe_id = $safeId;
         $this->safeActivity->reservation_id = $reservationId;
         $this->safeActivity->extra_id = $extraId;

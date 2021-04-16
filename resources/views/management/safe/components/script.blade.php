@@ -149,6 +149,7 @@
     function downloadInvoice()
     {
         var reservation_id = $("#selected_reservation_id").val();
-        window.location="{{ route('management.reservation.downloadInvoice') }}?reservation_id=" + reservation_id
+        window.open('{{ route('management.reservation.downloadInvoice') }}?reservation_id=' + reservation_id, '_blank');
+        {{--window.location="{{ route('management.reservation.downloadInvoice') }}?reservation_id=" + reservation_id--}}
     }
 </script>

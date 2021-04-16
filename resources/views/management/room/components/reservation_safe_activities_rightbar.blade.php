@@ -10,6 +10,7 @@
                             <th>İşlem</th>
                             <th>Tarih</th>
                             <th>Ücret</th>
+                            <th>Ödeme Türü</th>
                             <th>Ekstra</th>
                             <th>Detaylar</th>
                         </tr>

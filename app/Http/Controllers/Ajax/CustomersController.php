@@ -37,10 +37,10 @@ class CustomersController extends Controller
         ])->find($request->customer_id), 200);
     }
 
-    public function create(Request $request)
+    public function save(Request $request)
     {
         $customerService = new CustomerService;
-        $customerService->setCustomer(new Customer);
+        $customerService->setCustomer($request->id ? Customer::find($request->id) : new Customer);
         $customer = $customerService->save($request);
 
         return response()->json(Customer::with([

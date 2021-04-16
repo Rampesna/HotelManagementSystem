@@ -76,6 +76,14 @@ Route::middleware(['auth'])->namespace('App\\Http\\Controllers')->group(function
                 return redirect()->route('management.room.index');
             });
             Route::get('index', 'RoomController@index')->name('management.room.index')->middleware('Authority:1');
+            Route::post('getPayment', 'RoomController@getPayment')->name('management.room.getPayment')->middleware('Authority:1');
+        });
+
+        Route::prefix('customers')->group(function () {
+            Route::get('/', function () {
+                return redirect()->route('management.customers.index');
+            });
+            Route::get('index', 'CustomerController@index')->name('management.customers.index')->middleware('Authority:1');
         });
     });
 });

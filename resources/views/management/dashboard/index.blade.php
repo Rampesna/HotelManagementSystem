@@ -23,10 +23,11 @@
                             </div>
                         </div>
                         <div class="card-footer">
-                            <div class="row text-center">
+                            <div class="row text-center my-n5">
                                 @foreach($roomUseTypes as $roomUseType)
-                                    <div class="col-xl-4">
-                                        <span class="cursor-pointer" data-container="body" data-toggle="tooltip" data-placement="top" title="{{ $roomUseType->name }}">{{ $roomUseType->short }}</span>
+                                    <div class="col-xl-4 cursor-pointer" data-container="body" data-toggle="tooltip" data-placement="top" title="{{ $roomUseType->name }}">
+                                        <span>{{ $roomUseType->short }}</span>
+                                        <br>{{ $stayers->where('use_type_id', $roomUseType->id)->count() }}
                                     </div>
                                 @endforeach
                             </div>
@@ -47,10 +48,11 @@
                             </div>
                         </div>
                         <div class="card-footer">
-                            <div class="row text-center">
+                            <div class="row text-center my-n5">
                                 @foreach($roomUseTypes as $roomUseType)
-                                    <div class="col-xl-4">
-                                        <span class="cursor-pointer" data-container="body" data-toggle="tooltip" data-placement="top" title="{{ $roomUseType->name }}">{{ $roomUseType->short }}</span>
+                                    <div class="col-xl-4 cursor-pointer" data-container="body" data-toggle="tooltip" data-placement="top" title="{{ $roomUseType->name }}">
+                                        <span>{{ $roomUseType->short }}</span>
+                                        <br>{{ $waitingIncoming->where('use_type_id', $roomUseType->id)->count() }}
                                     </div>
                                 @endforeach
                             </div>
@@ -72,10 +74,11 @@
                             </div>
                         </div>
                         <div class="card-footer">
-                            <div class="row text-center">
+                            <div class="row text-center my-n5">
                                 @foreach($roomUseTypes as $roomUseType)
-                                    <div class="col-xl-4">
-                                        <span class="cursor-pointer" data-container="body" data-toggle="tooltip" data-placement="top" title="{{ $roomUseType->name }}">{{ $roomUseType->short }}</span>
+                                    <div class="col-xl-4 cursor-pointer" data-container="body" data-toggle="tooltip" data-placement="top" title="{{ $roomUseType->name }}">
+                                        <span>{{ $roomUseType->short }}</span>
+                                        <br>{{ $waitingOutgoing->where('use_type_id', $roomUseType->id)->count() }}
                                     </div>
                                 @endforeach
                             </div>
@@ -91,15 +94,16 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-xl-12 text-center my-n8">
-                                    <span class="cursor-pointer" style="font-size: 72px">{{ count($stayers) }}</span>
+                                    <span class="cursor-pointer" style="font-size: 72px">--</span>
                                 </div>
                             </div>
                         </div>
                         <div class="card-footer">
-                            <div class="row text-center">
+                            <div class="row text-center my-n5">
                                 @foreach($roomUseTypes as $roomUseType)
-                                    <div class="col-xl-4">
-                                        <span class="cursor-pointer" data-container="body" data-toggle="tooltip" data-placement="top" title="{{ $roomUseType->name }}">{{ $roomUseType->short }}</span>
+                                    <div class="col-xl-4 cursor-pointer" data-container="body" data-toggle="tooltip" data-placement="top" title="{{ $roomUseType->name }}">
+                                        <span>{{ $roomUseType->short }}</span>
+                                        <br>0
                                     </div>
                                 @endforeach
                             </div>

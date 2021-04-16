@@ -27,7 +27,7 @@ class CreateCustomersTable extends Migration
             $table->string('identity_number');
             $table->string('passport_number')->nullable();
             $table->date('birth_date')->nullable();
-            $table->date('birth_place')->nullable();
+            $table->string('birth_place')->nullable();
             $table->string('mother_name')->nullable();
             $table->string('father_name')->nullable();
             $table->timestamps();

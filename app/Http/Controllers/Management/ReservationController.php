@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Management;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\Customer;
+use App\Models\IdentityType;
 use App\Models\Nationality;
 use App\Models\PanType;
 use App\Models\Reservation;
@@ -27,7 +28,8 @@ class ReservationController extends Controller
             'reservationStatuses' => ReservationStatus::all(),
             'companies' => Company::all(),
             'roomTypes' => RoomType::all(),
-            'panTypes' => PanType::all()
+            'panTypes' => PanType::all(),
+            'identityTypes' => IdentityType::all()
         ]);
     }
 

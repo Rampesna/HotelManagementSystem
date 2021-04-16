@@ -126,6 +126,33 @@
 
         dom: 'prt',
 
+        columnDefs: [
+            {
+                targets: 0,
+                width: "3%"
+            },
+            {
+                targets: 1,
+                width: "10%"
+            },
+            {
+                targets: 2,
+                width: "20%"
+            },
+            {
+                targets: 3,
+                width: "12%"
+            },
+            {
+                targets: 4,
+                width: "10%"
+            },
+            {
+                targets: 5,
+                width: "10%"
+            }
+        ],
+
         responsive: true,
         select: 'single'
     });
@@ -581,7 +608,7 @@
         } else {
             $.ajax({
                 type: 'post',
-                url: '{{ route('ajax.customers.create') }}',
+                url: '{{ route('ajax.customers.save') }}',
                 data: {
                     _token: '{{ csrf_token() }}',
                     name: name,
@@ -746,41 +773,74 @@
 
     getPaymentButton.click(function () {
         var reservation_id = $("#selected_reservation_id").val();
-        var payment_type_id = $("#payment_type_id").val();
-        var price = $("#price").val();
+        var checkouts = [];
 
-        $.ajax({
-            type: 'post',
-            url: '{{ route('ajax.safes.getPayment') }}',
-            data: {
-                _token: '{{ csrf_token() }}',
-                reservation_id: reservation_id,
-                payment_type_id: payment_type_id,
-                price: price
-            },
-            success: function () {
-                toastr.success('Ödeme Başarıyla Alındı');
-                $("#GetPaymentModal").modal('hide');
-                $("#GetPaymentForm").trigger('reset');
+        var paymentTypes = $('select.paymentTypeSelector');
+        var prices = $('input.priceSelector');
 
-                $.ajax({
-                    type: 'get',
-                    url: '{{ route('ajax.reservations.debtControl') }}',
-                    data: {
-                        reservation_id: reservation_id
-                    },
-                    success: function (response) {
-                        $("#reservationCheckout_" + reservation_id).html(parseFloat(response.incoming - response.outgoing).toFixed(2));
-                    },
-                    error: function (error) {
-                        console.log(error)
-                    }
-                });
-            },
-            error: function (error) {
-                console.log(error)
+        paymentTypesControl = 1;
+        pricesControl = 1;
+
+        $.each(paymentTypes, function (index) {
+            if ($(this).val() == null || $(this).val() === '') {
+                paymentTypesControl = 0;
+                return;
+            }
+            checkouts[index] = {
+                payment_type_id: $(this).val()
             }
         });
+
+        if (paymentTypesControl === 1) {
+            $.each(prices, function (index) {
+                if ($(this).val() == null || $(this).val() === '') {
+                    pricesControl = 0;
+                    return;
+                }
+                checkouts[index] = {
+                    payment_type_id: checkouts[index].payment_type_id,
+                    price: $(this).val()
+                };
+            });
+        }
+
+        if (paymentTypesControl === 0) {
+            toastr.warning('Boş Ödeme Türü Alanı Var');
+        } else if (pricesControl === 0) {
+            toastr.warning('Boş Fiyat Alanı Var');
+        } else {
+            $.ajax({
+                type: 'post',
+                url: '{{ route('ajax.safes.getPayment') }}',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    reservation_id: reservation_id,
+                    checkouts: checkouts
+                },
+                success: function (response) {
+                    toastr.success('Ödeme Başarıyla Alındı');
+                    $("#GetPaymentModal").modal('hide');
+                    $("#GetPaymentForm").trigger('reset');
+
+                    $.ajax({
+                        type: 'get',
+                        url: '{{ route('ajax.reservations.debtControl') }}',
+                        data: {
+                            reservation_id: reservation_id
+                        },
+                        success: function (response) {
+                            $("#reservationCheckout_" + reservation_id).html(parseFloat(response.incoming - response.outgoing).toFixed(2));
+                        },
+                        error: function (error) {
+                            console.log(error)
+                        }
+                    });
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            });
+        }
     });
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -829,7 +889,7 @@
         } else {
             $.ajax({
                 type: 'post',
-                url: '{{ route('ajax.customers.create') }}',
+                url: '{{ route('ajax.customers.save') }}',
                 data: {
                     _token: '{{ csrf_token() }}',
                     name: name,
@@ -1130,8 +1190,9 @@
                     reservationSafeActivities.row.add([
                         safeActivities[index].id,
                         `<span class="btn btn-pill btn-sm btn-${safeActivities[index].direction === 1 ? 'danger' : 'success'}" style="font-size: 11px; height: 20px; padding-top: 2px">${safeActivities[index].direction === 1 ? 'Gider' : 'Gelir'}</span>`,
-                        `${safeActivities[index].date ? reformatDate(safeActivities[index].date) : ''}`,
+                        `${safeActivities[index].date ? reformatDate(safeActivities[index].date) : reformatDate(safeActivities[index].created_at)}`,
                         `${parseFloat(safeActivities[index].price).toFixed(2)} TL`,
+                        `${safeActivities[index].payment_type_id ? safeActivities[index].payment_type.name : (safeActivities[index].direction === 1 ? 'Kasadan' : '')}`,
                         `${safeActivities[index].extra ? safeActivities[index].extra.name : 'Oda Ücreti'}`,
                         `${safeActivities[index].description ?? ''}`
                     ]).draw();
@@ -1197,8 +1258,6 @@
                 top: top,
                 left: left
             });
-
-            console.log(list)
         }
         return false;
     }).on("click", function () {
@@ -1261,7 +1320,6 @@
                 room_id: room_id
             },
             success: function (room) {
-                console.log(room)
                 $("#room_type_id_create").val(room.room_type_id).selectpicker('refresh');
                 $("#pan_type_id_create").val(room.pan_type_id).selectpicker('refresh');
                 $("#start_date_create").val('{{ date('Y-m-d') . 'T08:00' }}');
@@ -1364,6 +1422,31 @@
             },
             error: function (error) {
                 console.log(error)
+            }
+        });
+    });
+
+    $('#checkoutRepeater').repeater({
+        initEmpty: false,
+
+        defaultValues: {
+            'text-input': '--'
+        },
+
+        show: function () {
+            $(this).slideDown();
+        },
+
+        hide: function (deleteElement) {
+            $(this).slideUp(deleteElement);
+        }
+    });
+
+    $(document).ready(function () {
+        var list = $('.checkoutRepeaterList');
+        $.each(list, function (index) {
+            if (index !== 0) {
+                $(this).remove();
             }
         });
     });

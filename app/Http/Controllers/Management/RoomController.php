@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Management;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\Extra;
+use App\Models\IdentityType;
 use App\Models\Nationality;
 use App\Models\PanType;
 use App\Models\PaymentType;
@@ -12,6 +13,7 @@ use App\Models\Room;
 use App\Models\RoomStatus;
 use App\Models\RoomType;
 use App\Models\RoomUseType;
+use Illuminate\Http\Request;
 
 class RoomController extends Controller
 {
@@ -31,7 +33,8 @@ class RoomController extends Controller
             'panTypes' => PanType::all(),
             'roomUseTypes' => RoomUseType::all(),
             'nationalities' => Nationality::all(),
-            'paymentTypes' => PaymentType::all()
+            'paymentTypes' => PaymentType::all(),
+            'identityTypes' => IdentityType::all()
         ]);
     }
 }

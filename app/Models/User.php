@@ -38,6 +38,11 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
+    public function id()
+    {
+        return $this->id;
+    }
+
     public function authority($permission): bool
     {
         return $this->role->permissions()->where('permission_id', $permission)->exists() ? true : false;

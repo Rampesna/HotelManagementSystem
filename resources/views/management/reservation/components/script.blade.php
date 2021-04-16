@@ -936,7 +936,7 @@
         } else {
             $.ajax({
                 type: 'post',
-                url: '{{ route('ajax.customers.create') }}',
+                url: '{{ route('ajax.customers.save') }}',
                 data: {
                     _token: '{{ csrf_token() }}',
                     name: name,
@@ -1007,7 +1007,7 @@
         } else {
             $.ajax({
                 type: 'post',
-                url: '{{ route('ajax.customers.create') }}',
+                url: '{{ route('ajax.customers.save') }}',
                 data: {
                     _token: '{{ csrf_token() }}',
                     name: name,

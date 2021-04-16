@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Management;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\Extra;
+use App\Models\IdentityType;
 use App\Models\Nationality;
 use App\Models\PanType;
 use App\Models\ReservationStatus;
@@ -23,7 +24,8 @@ class StayerController extends Controller
             'nationalities' => Nationality::all(),
             'extras' => Extra::all(),
             'roomTypes' => RoomType::all(),
-            'panTypes' => PanType::all()
+            'panTypes' => PanType::all(),
+            'identityTypes' => IdentityType::all()
         ]);
     }
 }

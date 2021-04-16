@@ -64,7 +64,9 @@
                             <div class="form-group">
                                 <label for="edit_reservation_customer_create_identity_type_id">Kimlik Türü *</label>
                                 <select id="edit_reservation_customer_create_identity_type_id" class="form-control">
-                                    <option value="1">TC Kimlik Kartı</option>
+                                    @foreach($identityTypes as $identityType)
+                                        <option value="{{ $identityType->id }}">{{ $identityType->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>

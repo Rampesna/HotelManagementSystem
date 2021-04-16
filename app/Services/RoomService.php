@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Reservation;
 use App\Models\Room;
+use App\Models\RoomStatusActivity;
 
 class RoomService
 {
@@ -55,6 +56,10 @@ class RoomService
     {
         $this->room->room_status_id = $statusId;
         $this->room->save();
+
+        $roomStatusActivityService = new RoomStatusActivityService;
+        $roomStatusActivityService->setRoomStatusActivity(new RoomStatusActivity);
+        $roomStatusActivityService->save(auth()->user()->id(), $this->room->id, $statusId);
     }
 
     public function setPrice($price)

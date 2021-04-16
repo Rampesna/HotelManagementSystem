@@ -93,7 +93,7 @@ class ReservationService
             $safeActivityService = new SafeActivityService;
             $safeActivityService->setSafeActivity(new SafeActivity);
             $safeActivityService->save(
-                1, $this->reservation->id, 1, $price
+                auth()->user()->id(), 1, $this->reservation->id, 1, $price
             );
         } else {
             $safeActivity->price = $price;
