@@ -11,15 +11,26 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
     });
 
     Route::prefix('room-types')->group(function () {
+        Route::get('index', 'RoomTypesController@index')->name('ajax.room-types.index');
+        Route::post('save', 'RoomTypesController@save')->name('ajax.room-types.save');
+        Route::get('show', 'RoomTypesController@show')->name('ajax.room-types.show');
+        Route::post('delete', 'RoomTypesController@delete')->name('ajax.room-types.delete');
         Route::get('getRoomTypesByKeyword', 'RoomTypesController@getRoomTypesByKeyword')->name('ajax.room-types.getRoomTypesByKeyword');
     });
 
     Route::prefix('pan-types')->group(function () {
+        Route::get('index', 'PanTypesController@index')->name('ajax.pan-types.index');
+        Route::post('save', 'PanTypesController@save')->name('ajax.pan-types.save');
+        Route::get('show', 'PanTypesController@show')->name('ajax.pan-types.show');
+        Route::post('delete', 'PanTypesController@delete')->name('ajax.pan-types.delete');
         Route::get('getPanTypesByKeyword', 'PanTypesController@getPanTypesByKeyword')->name('ajax.pan-types.getPanTypesByKeyword');
     });
 
     Route::prefix('rooms')->group(function () {
+        Route::get('index', 'RoomsController@index')->name('ajax.rooms.index');
+        Route::post('save', 'RoomsController@save')->name('ajax.rooms.save');
         Route::get('show', 'RoomsController@show')->name('ajax.rooms.show');
+        Route::post('delete', 'RoomsController@delete')->name('ajax.rooms.delete');
         Route::get('getRoomsByPanTypeAndRoomType', 'RoomsController@getRoomsByPanTypeAndRoomType')->name('ajax.rooms.getRoomsByPanTypeAndRoomType');
         Route::get('getRoomsByParameters', 'RoomsController@getRoomsByParameters')->name('ajax.rooms.getRoomsByParameters');
         Route::post('setRoomStatus', 'RoomsController@setRoomStatus')->name('ajax.rooms.setRoomStatus');

@@ -85,5 +85,33 @@ Route::middleware(['auth'])->namespace('App\\Http\\Controllers')->group(function
             });
             Route::get('index', 'CustomerController@index')->name('management.customers.index')->middleware('Authority:1');
         });
+
+        Route::prefix('definitions')->namespace('Definition')->group(function () {
+            Route::get('/', function () {
+                return redirect()->route('management.definitions.index');
+            });
+            Route::get('index', 'DefinitionController@index')->name('management.definitions.index')->middleware('Authority:1');
+
+            Route::prefix('room')->group(function () {
+                Route::get('/', function () {
+                    return redirect()->route('management.definitions.room.index');
+                });
+                Route::get('index', 'RoomController@index')->name('management.definitions.room.index')->middleware('Authority:1');
+            });
+
+            Route::prefix('room-type')->group(function () {
+                Route::get('/', function () {
+                    return redirect()->route('management.definitions.room-type.index');
+                });
+                Route::get('index', 'RoomTypeController@index')->name('management.definitions.room-type.index')->middleware('Authority:1');
+            });
+
+            Route::prefix('pan-type')->group(function () {
+                Route::get('/', function () {
+                    return redirect()->route('management.definitions.pan-type.index');
+                });
+                Route::get('index', 'PanTypeController@index')->name('management.definitions.pan-type.index')->middleware('Authority:1');
+            });
+        });
     });
 });

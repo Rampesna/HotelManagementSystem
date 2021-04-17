@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\RoomType;
+use Illuminate\Http\Request;
 
 class RoomTypeService
 {
@@ -22,6 +23,14 @@ class RoomTypeService
     public function setRoomType(RoomType $roomType): void
     {
         $this->roomType = $roomType;
+    }
+
+    public function save(Request $request)
+    {
+        $this->roomType->name = $request->name;
+        $this->roomType->save();
+
+        return $this->roomType;
     }
 
     public function getRoomTypesByKeyword($keyword)

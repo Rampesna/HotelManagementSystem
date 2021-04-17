@@ -3,13 +3,56 @@
 namespace App\Http\Controllers\Ajax;
 
 use App\Http\Controllers\Controller;
+use App\Models\Customer;
+use App\Models\PanType;
 use App\Models\Room;
+use App\Models\RoomType;
 use App\Services\PanTypeService;
 use App\Services\RoomService;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 
 class RoomsController extends Controller
 {
+    public function index()
+    {
+        setlocale(LC_ALL, 'tr_TR.UTF-8');
+        setlocale(LC_TIME, 'Turkish');
+
+        return Datatables::of(Room::query())->
+        filterColumn('room_type_id', function ($room, $id) {
+            return $id == 0 ? $room : $room->where('room_type_id', $id);
+        })->
+        filterColumn('pan_type_id', function ($room, $id) {
+            return $id == 0 ? $room : $room->where('pan_type_id', $id);
+        })->
+        editColumn('price', function ($room) {
+            return number_format($room->price, 2) . 'TL';
+        })->
+        editColumn('room_type_id', function ($room) {
+            return RoomType::find($room->room_type_id)->name;
+        })->
+        editColumn('pan_type_id', function ($room) {
+            return PanType::find($room->pan_type_id)->name;
+        })->
+        rawColumns(['price'])->
+        make(true);
+    }
+
+    public function save(Request $request)
+    {
+        $roomService = new RoomService;
+        $roomService->setRoom($request->id ? Room::find($request->id) : new Room);
+        $room = $roomService->save($request);
+
+        return response()->json($room, 200);
+    }
+
+    public function delete(Request $request)
+    {
+        Room::find($request->id)->delete();
+    }
+
     public function show(Request $request)
     {
         return response()->json(Room::find($request->room_id)->append('activeReservation'), 200);

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\RoomStatusActivity;
+use Illuminate\Http\Request;
 
 class RoomService
 {
@@ -24,6 +25,20 @@ class RoomService
     public function setRoom(Room $room): void
     {
         $this->room = $room;
+    }
+
+    public function save(Request $request)
+    {
+        $this->room->room_status_id = $request->room_status_id;
+        $this->room->room_type_id = $request->room_type_id;
+        $this->room->pan_type_id = $request->pan_type_id;
+        $this->room->bad_type_id = $request->bad_type_id;
+        $this->room->number = $request->number;
+        $this->room->person_count = $request->person_count;
+        $this->room->price = $request->price;
+        $this->room->save();
+
+        return $this->room;
     }
 
     public function getRoomsByPanTypeAndRoomType($roomType, $panType)

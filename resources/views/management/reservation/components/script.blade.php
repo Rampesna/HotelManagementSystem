@@ -875,22 +875,7 @@
                 url: '{{ route('ajax.reservations.save') }}',
                 data: data,
                 success: function (reservation) {
-                    reservations.row('#row_id_' + reservation_id).remove().draw();
-                    var newReservation = $.parseHTML(`` +
-                        `<tr id="row_id_${reservation.id}">` +
-                        `<td>#${reservation.id}</td>` +
-                        `<td>${reservation.customer_name}</td>` +
-                        `<td data-sort="${reservation.start_date}">${reformatDate(reservation.start_date)}</td>` +
-                        `<td data-sort="${reservation.end_date}">${reformatDate(reservation.end_date)}</td>` +
-                        `<td><span id="reservation_${reservation.id}_status" class="btn btn-pill btn-sm btn-${reservation.status.color}" style="font-size: 11px; height: 20px; padding-top: 2px">${reservation.status.name}</span></td>` +
-                        `<td>${reservation.room_type.name}</td>` +
-                        `<td>${reservation.pan_type.name}</td>` +
-                        `<td>${reservation.room.number}</td>` +
-                        `<td>${reservation.price}</td>` +
-                        `</tr>` +
-                        ``)[0];
-                    reservations.row.add(newReservation);
-                    reservations.draw(false);
+                    reservations.search('').columns().search('').ajax.reload().draw();
                     $("#createReservationForm").trigger('reset');
                     $("#customer_id_create").html('').selectpicker('refresh');
                     $("#room_type_id_create").html('').selectpicker('refresh');

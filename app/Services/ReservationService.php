@@ -45,7 +45,6 @@ class ReservationService
         $this->reservation->pan_type_id = $request->pan_type_id;
         $this->reservation->room_id = $request->room_id;
         $this->reservation->use_type_id = $request->room_use_type_id;
-        $this->reservation->price = $request->price;
         $this->reservation->status_id = $request->status_id;
         $this->reservation->save();
 

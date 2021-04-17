@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\PanType;
+use Illuminate\Http\Request;
 
 class PanTypeService
 {
@@ -24,7 +25,13 @@ class PanTypeService
         $this->panType = $panType;
     }
 
+    public function save(Request $request)
+    {
+        $this->panType->name = $request->name;
+        $this->panType->save();
 
+        return $this->panType;
+    }
 
     public function getPanTypesByKeyword($keyword)
     {
