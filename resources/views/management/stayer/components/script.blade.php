@@ -64,7 +64,7 @@
         $.ajax({
             async: false,
             type: 'get',
-            url: '{{ route('ajax.extras.getByReservationId') }}',
+            url: '{{ route('ajax.safe-activities.getByReservationId') }}',
             data: {
                 reservation_id: reservation_id
             },
@@ -787,7 +787,7 @@
         } else {
             $.ajax({
                 type: 'post',
-                url: '{{ route('ajax.extras.create') }}',
+                url: '{{ route('ajax.safe-activities.create') }}',
                 data: {
                     _token: '{{ csrf_token() }}',
                     safe_id: safe_id,

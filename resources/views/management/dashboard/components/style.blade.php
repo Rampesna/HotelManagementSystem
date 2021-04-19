@@ -23,4 +23,14 @@
     .fc-event-container{
         pointer-events:auto; /*events*/
     }
+
+    .dynamic-column {
+        -ms-flex: 0 0 {{ 100 / count($roomUseTypes) }}%;
+        flex: 0 0 {{ 100 / count($roomUseTypes) }}%;
+        max-width: {{ 100 / count($roomUseTypes) }}%;
+        position: relative;
+        padding-right: 4px;
+        padding-left: 4px;
+        margin-top: 0;
+    }
 </style>

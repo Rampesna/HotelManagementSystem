@@ -10,6 +10,13 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
         Route::get('getCustomersByKeyword', 'CustomersController@getCustomersByKeyword')->name('ajax.customers.getCustomersByKeyword');
     });
 
+    Route::prefix('companies')->group(function () {
+        Route::get('index', 'CompaniesController@index')->name('ajax.companies.index');
+        Route::post('save', 'CompaniesController@save')->name('ajax.companies.save');
+        Route::get('show', 'CompaniesController@show')->name('ajax.companies.show');
+        Route::post('delete', 'CompaniesController@delete')->name('ajax.companies.delete');
+    });
+
     Route::prefix('room-types')->group(function () {
         Route::get('index', 'RoomTypesController@index')->name('ajax.room-types.index');
         Route::post('save', 'RoomTypesController@save')->name('ajax.room-types.save');
@@ -24,6 +31,20 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
         Route::get('show', 'PanTypesController@show')->name('ajax.pan-types.show');
         Route::post('delete', 'PanTypesController@delete')->name('ajax.pan-types.delete');
         Route::get('getPanTypesByKeyword', 'PanTypesController@getPanTypesByKeyword')->name('ajax.pan-types.getPanTypesByKeyword');
+    });
+
+    Route::prefix('extras')->group(function () {
+        Route::get('index', 'ExtrasController@index')->name('ajax.extras.index');
+        Route::post('save', 'ExtrasController@save')->name('ajax.extras.save');
+        Route::get('show', 'ExtrasController@show')->name('ajax.extras.show');
+        Route::post('delete', 'ExtrasController@delete')->name('ajax.extras.delete');
+    });
+
+    Route::prefix('room-use-types')->group(function () {
+        Route::get('index', 'RoomUseTypesController@index')->name('ajax.room-use-types.index');
+        Route::post('save', 'RoomUseTypesController@save')->name('ajax.room-use-types.save');
+        Route::get('show', 'RoomUseTypesController@show')->name('ajax.room-use-types.show');
+        Route::post('delete', 'RoomUseTypesController@delete')->name('ajax.room-use-types.delete');
     });
 
     Route::prefix('rooms')->group(function () {
@@ -56,8 +77,8 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
         Route::any('index', 'StayersController@reservations')->name('ajax.stayers.reservations');
     });
 
-    Route::prefix('extras')->group(function () {
-        Route::get('getByReservationId', 'ExtrasController@getByReservationId')->name('ajax.extras.getByReservationId');
-        Route::post('create', 'ExtrasController@create')->name('ajax.extras.create');
+    Route::prefix('safe-activities')->group(function () {
+        Route::post('create', 'SafeActivitiesController@create')->name('ajax.safe-activities.create');
+        Route::get('getByReservationId', 'SafeActivitiesController@getByReservationId')->name('ajax.safe-activities.getByReservationId');
     });
 });

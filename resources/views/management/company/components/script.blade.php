@@ -3,15 +3,15 @@
 
 <script>
 
-    var createPanTypeContext = $("#createPanTypeContext");
-    var editPanTypeContext = $("#editPanTypeContext");
-    var deletePanTypeContext = $("#deletePanTypeContext");
+    var createCompanyContext = $("#createCompanyContext");
+    var editCompanyContext = $("#editCompanyContext");
+    var deleteCompanyContext = $("#deleteCompanyContext");
 
-    var createPanTypeButton = $("#createPanTypeButton");
-    var updatePanTypeButton = $("#updatePanTypeButton");
-    var deletePanTypeButton = $("#deletePanTypeButton");
+    var createCompanyButton = $("#createCompanyButton");
+    var updateCompanyButton = $("#updateCompanyButton");
+    var deleteCompanyButton = $("#deleteCompanyButton");
 
-    var panTypes = $('#panTypes').DataTable({
+    var companies = $('#companies').DataTable({
         language: {
             info: "_TOTAL_ Kayıttan _START_ - _END_ Arasındaki Kayıtlar Gösteriliyor.",
             infoEmpty: "Gösterilecek Hiç Kayıt Yok.",
@@ -44,8 +44,8 @@
         dom: 'rtipl',
 
         initComplete: function () {
-            var r = $('#panTypes tfoot tr');
-            $('#panTypes thead').append(r);
+            var r = $('#companies tfoot tr');
+            $('#companies thead').append(r);
             this.api().columns().every(function (index) {
                 var column = this;
                 var input = document.createElement('input');
@@ -59,27 +59,54 @@
 
         processing: true,
         serverSide: true,
-        ajax: '{!! route('ajax.pan-types.index') !!}',
+        ajax: '{!! route('ajax.companies.index') !!}',
         columns: [
             {data: 'id', name: 'id', width: "3%"},
-            {data: 'name', name: 'name'}
+            {data: 'title', name: 'title'},
+            {data: 'tax_number', name: 'tax_number'},
+            {data: 'custom_discount_percent', name: 'custom_discount_percent'}
         ],
 
         responsive: true,
         select: 'single'
     });
 
-    $('body').on('contextmenu', function (e) {
-        var selectedRows = panTypes.rows({selected: true});
-        if (selectedRows.count() > 0) {
-            var pan_type_id = selectedRows.data()[0].id;
-            $("#editing_pan_type_id").val(pan_type_id);
+    $('.percent').on("copy cut paste drop", function () {
+        return false;
+    }).keyup(function () {
+        var val = $(this).val();
+        if (isNaN(val)) {
+            val = val.replace(/[^0-9\.]/g, '');
+            if (val.split('.').length > 2)
+                val = val.replace(/\.+$/, "");
+        }
 
-            editPanTypeContext.show();
-            deletePanTypeContext.show();
+        if (val > 100) {
+            val = 100;
+        } else if (val < 0) {
+            val = 0;
+        }
+
+        $(this).val(val);
+    });
+
+    $(".onlyNumber").keypress(function (e) {
+        if (e.which !== 8 && e.which !== 0 && (e.which < 48 || e.which > 57)) {
+            return false;
+        }
+    });
+
+    $('body').on('contextmenu', function (e) {
+        var selectedRows = companies.rows({selected: true});
+        if (selectedRows.count() > 0) {
+            var company_id = selectedRows.data()[0].id;
+            $("#editing_company_id").val(company_id);
+
+            editCompanyContext.show();
+            deleteCompanyContext.show();
         } else {
-            editPanTypeContext.hide();
-            deletePanTypeContext.hide();
+            editCompanyContext.hide();
+            deleteCompanyContext.hide();
         }
 
         var top = e.pageY - 10;
@@ -99,14 +126,14 @@
     });
 
     $(document).click((e) => {
-        if ($.contains($("#panTypesCard").get(0), e.target)) {
+        if ($.contains($("#companiesCard").get(0), e.target)) {
         } else {
             $("#context-menu").hide();
-            panTypes.rows().deselect();
+            companies.rows().deselect();
         }
     });
 
-    var EditPanTypeRightBar = function () {
+    var EditCompanyRightBar = function () {
         // Private properties
         var _element;
         var _offcanvasObject;
@@ -120,8 +147,8 @@
                 overlay: true,
                 baseClass: 'offcanvas',
                 placement: 'right',
-                closeBy: 'edit_pan_type_rightbar_close',
-                toggleBy: 'edit_pan_type_rightbar_toggle'
+                closeBy: 'edit_company_rightbar_close',
+                toggleBy: 'edit_company_rightbar_toggle'
             });
 
             KTUtil.scrollInit(content, {
@@ -155,7 +182,7 @@
         // Public methods
         return {
             init: function () {
-                _element = KTUtil.getById('edit_pan_type_rightbar');
+                _element = KTUtil.getById('edit_company_rightbar');
 
                 if (!_element) {
                     return;
@@ -170,9 +197,9 @@
             }
         };
     }();
-    EditPanTypeRightBar.init();
+    EditCompanyRightBar.init();
 
-    var CreatePanTypeRightBar = function () {
+    var CreateCompanyRightBar = function () {
         // Private properties
         var _element;
         var _offcanvasObject;
@@ -186,8 +213,8 @@
                 overlay: true,
                 baseClass: 'offcanvas',
                 placement: 'right',
-                closeBy: 'create_pan_type_rightbar_close',
-                toggleBy: 'create_pan_type_rightbar_toggle'
+                closeBy: 'create_company_rightbar_close',
+                toggleBy: 'create_company_rightbar_toggle'
             });
 
             KTUtil.scrollInit(content, {
@@ -221,7 +248,7 @@
         // Public methods
         return {
             init: function () {
-                _element = KTUtil.getById('create_pan_type_rightbar');
+                _element = KTUtil.getById('create_company_rightbar');
 
                 if (!_element) {
                     return;
@@ -236,51 +263,58 @@
             }
         };
     }();
-    CreatePanTypeRightBar.init();
+    CreateCompanyRightBar.init();
 
-    function createPanType() {
-        $("#create_pan_type_rightbar_toggle").click();
+    function createCompany() {
+        $("#create_company_rightbar_toggle").click();
     }
 
-    function editPanType() {
-        var pan_type_id = $("#editing_pan_type_id").val();
+    function editCompany() {
+        var company_id = $("#editing_company_id").val();
 
         $.ajax({
             type: 'get',
-            url: '{{ route('ajax.pan-types.show') }}',
+            url: '{{ route('ajax.companies.show') }}',
             data: {
-                pan_type_id: pan_type_id
+                company_id: company_id
             },
-            success: function (panType) {
-                $("#editing_pan_type_id").val(panType.id);
-                $("#editing_pan_type_name").val(panType.name);
+            success: function (extra) {
+                $("#editing_company_id").val(extra.id);
+                $("#editing_company_title").val(extra.title);
+                $("#editing_company_tax_number").val(extra.tax_number);
+                $("#editing_company_custom_discount_percent").val(extra.custom_discount_percent);
             },
             error: function (error) {
                 console.log(error)
             }
         });
 
-        $("#edit_pan_type_rightbar_toggle").click();
+        $("#edit_company_rightbar_toggle").click();
     }
 
-    function deletePanType() {
-        $("#DeletePanTypeModal").modal('show');
+    function deleteCompany() {
+        $("#DeleteCompanyModal").modal('show');
     }
 
-    createPanTypeButton.click(function () {
-        var name = $("#creating_pan_type_name").val();
+    createCompanyButton.click(function () {
+        var title = $("#creating_company_title").val();
+        var tax_number = $("#creating_company_tax_number").val();
+        var custom_discount_percent = $("#creating_company_custom_discount_percent").val();
 
         $.ajax({
             type: 'post',
-            url: '{{ route('ajax.pan-types.save') }}',
+            url: '{{ route('ajax.companies.save') }}',
             data: {
                 _token: '{{ csrf_token() }}',
-                name: name
+                title: title,
+                tax_number: tax_number,
+                custom_discount_percent: custom_discount_percent
             },
             success: function () {
-                toastr.success('Yeni Pan Türü Oluşturuldu');
-                $("#create_pan_type_rightbar_toggle").click();
-                panTypes.search('').columns().search('').ajax.reload().draw();
+                toastr.success('Yeni Firma Oluşturuldu');
+                $("#create_company_rightbar_toggle").click();
+                $("#createCompanyForm").trigger('reset');
+                companies.search('').columns().search('').ajax.reload().draw();
             },
             error: function () {
 
@@ -288,22 +322,26 @@
         });
     });
 
-    updatePanTypeButton.click(function () {
-        var id = $("#editing_pan_type_id").val();
-        var name = $("#editing_pan_type_name").val();
+    updateCompanyButton.click(function () {
+        var id = $("#editing_company_id").val();
+        var title = $("#editing_company_title").val();
+        var tax_number = $("#editing_company_tax_number").val();
+        var custom_discount_percent = $("#editing_company_custom_discount_percent").val();
 
         $.ajax({
             type: 'post',
-            url: '{{ route('ajax.pan-types.save') }}',
+            url: '{{ route('ajax.companies.save') }}',
             data: {
                 _token: '{{ csrf_token() }}',
                 id: id,
-                name: name
+                title: title,
+                tax_number: tax_number,
+                custom_discount_percent: custom_discount_percent
             },
             success: function () {
                 toastr.success('Başarıyla Güncellendi');
-                $("#edit_pan_type_rightbar_toggle").click();
-                panTypes.search('').columns().search('').ajax.reload().draw();
+                $("#edit_company_rightbar_toggle").click();
+                companies.search('').columns().search('').ajax.reload().draw();
             },
             error: function (error) {
                 console.log(error)
@@ -311,20 +349,20 @@
         });
     });
 
-    deletePanTypeButton.click(function () {
-        var id = $("#editing_pan_type_id").val();
+    deleteCompanyButton.click(function () {
+        var id = $("#editing_company_id").val();
 
         $.ajax({
             type: 'post',
-            url: '{{ route('ajax.pan-types.delete') }}',
+            url: '{{ route('ajax.companies.delete') }}',
             data: {
                 _token: '{{ csrf_token() }}',
                 id: id
             },
             success: function () {
-                toastr.success('Pan Türü Silindi');
-                $("#DeletePanTypeModal").modal('hide');
-                panTypes.search('').columns().search('').ajax.reload().draw();
+                toastr.success('Firma Silindi');
+                $("#DeleteCompanyModal").modal('hide');
+                companies.search('').columns().search('').ajax.reload().draw();
             },
             error: function (error) {
                 console.log(error)

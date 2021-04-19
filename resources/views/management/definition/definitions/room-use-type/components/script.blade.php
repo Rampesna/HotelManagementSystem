@@ -3,15 +3,15 @@
 
 <script>
 
-    var createPanTypeContext = $("#createPanTypeContext");
-    var editPanTypeContext = $("#editPanTypeContext");
-    var deletePanTypeContext = $("#deletePanTypeContext");
+    var createRoomUseTypeContext = $("#createRoomUseTypeContext");
+    var editRoomUseTypeContext = $("#editRoomUseTypeContext");
+    var deleteRoomUseTypeContext = $("#deleteRoomUseTypeContext");
 
-    var createPanTypeButton = $("#createPanTypeButton");
-    var updatePanTypeButton = $("#updatePanTypeButton");
-    var deletePanTypeButton = $("#deletePanTypeButton");
+    var createRoomUseTypeButton = $("#createRoomUseTypeButton");
+    var updateRoomUseTypeButton = $("#updateRoomUseTypeButton");
+    var deleteRoomUseTypeButton = $("#deleteRoomUseTypeButton");
 
-    var panTypes = $('#panTypes').DataTable({
+    var roomUseTypes = $('#roomUseTypes').DataTable({
         language: {
             info: "_TOTAL_ Kayıttan _START_ - _END_ Arasındaki Kayıtlar Gösteriliyor.",
             infoEmpty: "Gösterilecek Hiç Kayıt Yok.",
@@ -44,8 +44,8 @@
         dom: 'rtipl',
 
         initComplete: function () {
-            var r = $('#panTypes tfoot tr');
-            $('#panTypes thead').append(r);
+            var r = $('#roomUseTypes tfoot tr');
+            $('#roomUseTypes thead').append(r);
             this.api().columns().every(function (index) {
                 var column = this;
                 var input = document.createElement('input');
@@ -59,7 +59,7 @@
 
         processing: true,
         serverSide: true,
-        ajax: '{!! route('ajax.pan-types.index') !!}',
+        ajax: '{!! route('ajax.room-use-types.index') !!}',
         columns: [
             {data: 'id', name: 'id', width: "3%"},
             {data: 'name', name: 'name'}
@@ -70,16 +70,16 @@
     });
 
     $('body').on('contextmenu', function (e) {
-        var selectedRows = panTypes.rows({selected: true});
+        var selectedRows = roomUseTypes.rows({selected: true});
         if (selectedRows.count() > 0) {
-            var pan_type_id = selectedRows.data()[0].id;
-            $("#editing_pan_type_id").val(pan_type_id);
+            var room_use_type_id = selectedRows.data()[0].id;
+            $("#editing_room_use_type_id").val(room_use_type_id);
 
-            editPanTypeContext.show();
-            deletePanTypeContext.show();
+            editRoomUseTypeContext.show();
+            deleteRoomUseTypeContext.show();
         } else {
-            editPanTypeContext.hide();
-            deletePanTypeContext.hide();
+            editRoomUseTypeContext.hide();
+            deleteRoomUseTypeContext.hide();
         }
 
         var top = e.pageY - 10;
@@ -99,14 +99,14 @@
     });
 
     $(document).click((e) => {
-        if ($.contains($("#panTypesCard").get(0), e.target)) {
+        if ($.contains($("#roomUseTypesCard").get(0), e.target)) {
         } else {
             $("#context-menu").hide();
-            panTypes.rows().deselect();
+            roomUseTypes.rows().deselect();
         }
     });
 
-    var EditPanTypeRightBar = function () {
+    var EditRoomUseTypeRightBar = function () {
         // Private properties
         var _element;
         var _offcanvasObject;
@@ -120,8 +120,8 @@
                 overlay: true,
                 baseClass: 'offcanvas',
                 placement: 'right',
-                closeBy: 'edit_pan_type_rightbar_close',
-                toggleBy: 'edit_pan_type_rightbar_toggle'
+                closeBy: 'edit_room_use_type_rightbar_close',
+                toggleBy: 'edit_room_use_type_rightbar_toggle'
             });
 
             KTUtil.scrollInit(content, {
@@ -155,7 +155,7 @@
         // Public methods
         return {
             init: function () {
-                _element = KTUtil.getById('edit_pan_type_rightbar');
+                _element = KTUtil.getById('edit_room_use_type_rightbar');
 
                 if (!_element) {
                     return;
@@ -170,9 +170,9 @@
             }
         };
     }();
-    EditPanTypeRightBar.init();
+    EditRoomUseTypeRightBar.init();
 
-    var CreatePanTypeRightBar = function () {
+    var CreateRoomUseTypeRightBar = function () {
         // Private properties
         var _element;
         var _offcanvasObject;
@@ -186,8 +186,8 @@
                 overlay: true,
                 baseClass: 'offcanvas',
                 placement: 'right',
-                closeBy: 'create_pan_type_rightbar_close',
-                toggleBy: 'create_pan_type_rightbar_toggle'
+                closeBy: 'create_room_use_type_rightbar_close',
+                toggleBy: 'create_room_use_type_rightbar_toggle'
             });
 
             KTUtil.scrollInit(content, {
@@ -221,7 +221,7 @@
         // Public methods
         return {
             init: function () {
-                _element = KTUtil.getById('create_pan_type_rightbar');
+                _element = KTUtil.getById('create_room_use_type_rightbar');
 
                 if (!_element) {
                     return;
@@ -236,74 +236,79 @@
             }
         };
     }();
-    CreatePanTypeRightBar.init();
+    CreateRoomUseTypeRightBar.init();
 
-    function createPanType() {
-        $("#create_pan_type_rightbar_toggle").click();
+    function createRoomUseType() {
+        $("#create_room_use_type_rightbar_toggle").click();
     }
 
-    function editPanType() {
-        var pan_type_id = $("#editing_pan_type_id").val();
+    function editRoomUseType() {
+        var room_use_type_id = $("#editing_room_use_type_id").val();
 
         $.ajax({
             type: 'get',
-            url: '{{ route('ajax.pan-types.show') }}',
+            url: '{{ route('ajax.room-use-types.show') }}',
             data: {
-                pan_type_id: pan_type_id
+                room_use_type_id: room_use_type_id
             },
-            success: function (panType) {
-                $("#editing_pan_type_id").val(panType.id);
-                $("#editing_pan_type_name").val(panType.name);
+            success: function (roomUseType) {
+                $("#editing_room_use_type_id").val(roomUseType.id);
+                $("#editing_room_use_type_name").val(roomUseType.name);
+                $("#editing_room_use_type_short").val(roomUseType.short);
             },
             error: function (error) {
                 console.log(error)
             }
         });
 
-        $("#edit_pan_type_rightbar_toggle").click();
+        $("#edit_room_use_type_rightbar_toggle").click();
     }
 
-    function deletePanType() {
-        $("#DeletePanTypeModal").modal('show');
+    function deleteRoomUseType() {
+        $("#DeleteRoomUseTypeModal").modal('show');
     }
 
-    createPanTypeButton.click(function () {
-        var name = $("#creating_pan_type_name").val();
+    createRoomUseTypeButton.click(function () {
+        var name = $("#creating_room_use_type_name").val();
+        var short = $("#creating_room_use_type_short").val();
 
         $.ajax({
             type: 'post',
-            url: '{{ route('ajax.pan-types.save') }}',
+            url: '{{ route('ajax.room-use-types.save') }}',
             data: {
                 _token: '{{ csrf_token() }}',
-                name: name
+                name: name,
+                short: short
             },
             success: function () {
-                toastr.success('Yeni Pan Türü Oluşturuldu');
-                $("#create_pan_type_rightbar_toggle").click();
-                panTypes.search('').columns().search('').ajax.reload().draw();
+                toastr.success('Yeni Oda Kullanım Türü Oluşturuldu');
+                $("#create_room_use_type_rightbar_toggle").click();
+                roomUseTypes.search('').columns().search('').ajax.reload().draw();
             },
-            error: function () {
-
+            error: function (error) {
+                console.log(error)
             }
         });
     });
 
-    updatePanTypeButton.click(function () {
-        var id = $("#editing_pan_type_id").val();
-        var name = $("#editing_pan_type_name").val();
+    updateRoomUseTypeButton.click(function () {
+        var id = $("#editing_room_use_type_id").val();
+        var name = $("#editing_room_use_type_name").val();
+        var short = $("#editing_room_use_type_short").val();
 
         $.ajax({
             type: 'post',
-            url: '{{ route('ajax.pan-types.save') }}',
+            url: '{{ route('ajax.room-use-types.save') }}',
             data: {
                 _token: '{{ csrf_token() }}',
                 id: id,
-                name: name
+                name: name,
+                short: short
             },
             success: function () {
                 toastr.success('Başarıyla Güncellendi');
-                $("#edit_pan_type_rightbar_toggle").click();
-                panTypes.search('').columns().search('').ajax.reload().draw();
+                $("#edit_room_use_type_rightbar_toggle").click();
+                roomUseTypes.search('').columns().search('').ajax.reload().draw();
             },
             error: function (error) {
                 console.log(error)
@@ -311,20 +316,20 @@
         });
     });
 
-    deletePanTypeButton.click(function () {
-        var id = $("#editing_pan_type_id").val();
+    deleteRoomUseTypeButton.click(function () {
+        var id = $("#editing_room_use_type_id").val();
 
         $.ajax({
             type: 'post',
-            url: '{{ route('ajax.pan-types.delete') }}',
+            url: '{{ route('ajax.room-use-types.delete') }}',
             data: {
                 _token: '{{ csrf_token() }}',
                 id: id
             },
             success: function () {
-                toastr.success('Pan Türü Silindi');
-                $("#DeletePanTypeModal").modal('hide');
-                panTypes.search('').columns().search('').ajax.reload().draw();
+                toastr.success('Oda Kullanım Türü Silindi');
+                $("#DeleteRoomUseTypeModal").modal('hide');
+                roomUseTypes.search('').columns().search('').ajax.reload().draw();
             },
             error: function (error) {
                 console.log(error)

@@ -25,7 +25,7 @@
                         <div class="card-footer">
                             <div class="row text-center my-n5">
                                 @foreach($roomUseTypes as $roomUseType)
-                                    <div class="col-xl-4 cursor-pointer" data-container="body" data-toggle="tooltip" data-placement="top" title="{{ $roomUseType->name }}">
+                                    <div class="dynamic-column cursor-pointer" data-container="body" data-toggle="tooltip" data-placement="top" title="{{ $roomUseType->name }}">
                                         <span>{{ $roomUseType->short }}</span>
                                         <br>{{ $stayers->where('use_type_id', $roomUseType->id)->count() }}
                                     </div>
@@ -50,7 +50,7 @@
                         <div class="card-footer">
                             <div class="row text-center my-n5">
                                 @foreach($roomUseTypes as $roomUseType)
-                                    <div class="col-xl-4 cursor-pointer" data-container="body" data-toggle="tooltip" data-placement="top" title="{{ $roomUseType->name }}">
+                                    <div class="dynamic-column cursor-pointer" data-container="body" data-toggle="tooltip" data-placement="top" title="{{ $roomUseType->name }}">
                                         <span>{{ $roomUseType->short }}</span>
                                         <br>{{ $waitingIncoming->where('use_type_id', $roomUseType->id)->count() }}
                                     </div>
@@ -76,7 +76,7 @@
                         <div class="card-footer">
                             <div class="row text-center my-n5">
                                 @foreach($roomUseTypes as $roomUseType)
-                                    <div class="col-xl-4 cursor-pointer" data-container="body" data-toggle="tooltip" data-placement="top" title="{{ $roomUseType->name }}">
+                                    <div class="dynamic-column cursor-pointer" data-container="body" data-toggle="tooltip" data-placement="top" title="{{ $roomUseType->name }}">
                                         <span>{{ $roomUseType->short }}</span>
                                         <br>{{ $waitingOutgoing->where('use_type_id', $roomUseType->id)->count() }}
                                     </div>
@@ -101,7 +101,7 @@
                         <div class="card-footer">
                             <div class="row text-center my-n5">
                                 @foreach($roomUseTypes as $roomUseType)
-                                    <div class="col-xl-4 cursor-pointer" data-container="body" data-toggle="tooltip" data-placement="top" title="{{ $roomUseType->name }}">
+                                    <div class="dynamic-column cursor-pointer" data-container="body" data-toggle="tooltip" data-placement="top" title="{{ $roomUseType->name }}">
                                         <span>{{ $roomUseType->short }}</span>
                                         <br>0
                                     </div>

@@ -1,7 +1,7 @@
 <div class="aside aside-left aside-fixed d-flex flex-column flex-row-auto" id="kt_aside">
     <div class="brand flex-column-auto" id="kt_brand">
         <a href="{{ route('management.dashboard.index') }}" class="brand-logo">
-            <img alt="Logo" src="{{ asset('assets/media/logos/logo.png') }}" style="width: 80%; height: auto;" />
+            <img alt="Logo" src="{{ asset('assets/media/logos/otel_takip_sistemi_long.png') }}" style="width: 80%; height: auto;" />
         </a>
         <button class="brand-toggle btn btn-sm px-0" id="kt_aside_toggle">
             <span class="svg-icon svg-icon svg-icon-xl">
@@ -145,7 +145,7 @@
                     </a>
                 </li>
                 <li class="menu-item {{ request()->segment(2) === 'companies' && request()->segment(3) === 'index' ? 'menu-item-active' : null }}" aria-haspopup="true">
-                    <a href="#" class="menu-link">
+                    <a href="{{ route('management.companies.index') }}" class="menu-link">
                         <span class="svg-icon menu-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" >
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">

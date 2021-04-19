@@ -85,6 +85,12 @@ Route::middleware(['auth'])->namespace('App\\Http\\Controllers')->group(function
             });
             Route::get('index', 'CustomerController@index')->name('management.customers.index')->middleware('Authority:1');
         });
+        Route::prefix('companies')->group(function () {
+            Route::get('/', function () {
+                return redirect()->route('management.companies.index');
+            });
+            Route::get('index', 'CompanyController@index')->name('management.companies.index')->middleware('Authority:1');
+        });
 
         Route::prefix('definitions')->namespace('Definition')->group(function () {
             Route::get('/', function () {
@@ -111,6 +117,20 @@ Route::middleware(['auth'])->namespace('App\\Http\\Controllers')->group(function
                     return redirect()->route('management.definitions.pan-type.index');
                 });
                 Route::get('index', 'PanTypeController@index')->name('management.definitions.pan-type.index')->middleware('Authority:1');
+            });
+
+            Route::prefix('room-use-type')->group(function () {
+                Route::get('/', function () {
+                    return redirect()->route('management.definitions.room-use-type.index');
+                });
+                Route::get('index', 'RoomUseTypeController@index')->name('management.definitions.room-use-type.index')->middleware('Authority:1');
+            });
+
+            Route::prefix('extra')->group(function () {
+                Route::get('/', function () {
+                    return redirect()->route('management.definitions.extra.index');
+                });
+                Route::get('index', 'ExtraController@index')->name('management.definitions.extra.index')->middleware('Authority:1');
             });
         });
     });

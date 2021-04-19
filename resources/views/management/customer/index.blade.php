@@ -5,6 +5,7 @@
 
 @section('content')
 
+    @include('management.customer.components.create_customer_rightbar')
     @include('management.customer.components.edit_customer_rightbar')
 
     <div class="row">
@@ -39,15 +40,25 @@
     </div>
 
     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="context-menu" style="width: 300px">
-
-        <a onclick="editCustomer()" class="dropdown-item cursor-pointer">
-            <div class="row">
-                <div class="col-xl-12">
-                    <i class="fas fa-pen-alt text-primary"></i><span class="ml-4">Düzenle</span>
+        <div id="createCustomerContext">
+            <a onclick="createCustomer()" class="dropdown-item cursor-pointer">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <i class="fas fa-plus-circle text-success"></i><span class="ml-4">Yeni Müşteri Ekle</span>
+                    </div>
                 </div>
-            </div>
-        </a>
-
+            </a>
+        </div>
+        <div id="editCustomerContext">
+            <hr>
+            <a onclick="editCustomer()" class="dropdown-item cursor-pointer">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <i class="fas fa-pen-alt text-primary"></i><span class="ml-4">Seçili Müşteriyi Düzenle</span>
+                    </div>
+                </div>
+            </a>
+        </div>
     </div>
 
 @endsection

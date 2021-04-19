@@ -17,11 +17,11 @@ class PanTypesController extends Controller
 
     public function save(Request $request)
     {
-        $roomTypeService = new PanTypeService;
-        $roomTypeService->setPanType($request->id ? PanType::find($request->id) : new PanType);
-        $roomType = $roomTypeService->save($request);
+        $panTypeService = new PanTypeService;
+        $panTypeService->setPanType($request->id ? PanType::find($request->id) : new PanType);
+        $panType = $panTypeService->save($request);
 
-        return response()->json($roomType, 200);
+        return response()->json($panType, 200);
     }
 
     public function delete(Request $request)

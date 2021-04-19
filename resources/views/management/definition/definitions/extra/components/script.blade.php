@@ -3,15 +3,15 @@
 
 <script>
 
-    var createPanTypeContext = $("#createPanTypeContext");
-    var editPanTypeContext = $("#editPanTypeContext");
-    var deletePanTypeContext = $("#deletePanTypeContext");
+    var createExtraContext = $("#createExtraContext");
+    var editExtraContext = $("#editExtraContext");
+    var deleteExtraContext = $("#deleteExtraContext");
 
-    var createPanTypeButton = $("#createPanTypeButton");
-    var updatePanTypeButton = $("#updatePanTypeButton");
-    var deletePanTypeButton = $("#deletePanTypeButton");
+    var createExtraButton = $("#createExtraButton");
+    var updateExtraButton = $("#updateExtraButton");
+    var deleteExtraButton = $("#deleteExtraButton");
 
-    var panTypes = $('#panTypes').DataTable({
+    var extras = $('#extras').DataTable({
         language: {
             info: "_TOTAL_ Kayıttan _START_ - _END_ Arasındaki Kayıtlar Gösteriliyor.",
             infoEmpty: "Gösterilecek Hiç Kayıt Yok.",
@@ -44,8 +44,8 @@
         dom: 'rtipl',
 
         initComplete: function () {
-            var r = $('#panTypes tfoot tr');
-            $('#panTypes thead').append(r);
+            var r = $('#extras tfoot tr');
+            $('#extras thead').append(r);
             this.api().columns().every(function (index) {
                 var column = this;
                 var input = document.createElement('input');
@@ -59,7 +59,7 @@
 
         processing: true,
         serverSide: true,
-        ajax: '{!! route('ajax.pan-types.index') !!}',
+        ajax: '{!! route('ajax.extras.index') !!}',
         columns: [
             {data: 'id', name: 'id', width: "3%"},
             {data: 'name', name: 'name'}
@@ -70,16 +70,16 @@
     });
 
     $('body').on('contextmenu', function (e) {
-        var selectedRows = panTypes.rows({selected: true});
+        var selectedRows = extras.rows({selected: true});
         if (selectedRows.count() > 0) {
-            var pan_type_id = selectedRows.data()[0].id;
-            $("#editing_pan_type_id").val(pan_type_id);
+            var extra_id = selectedRows.data()[0].id;
+            $("#editing_extra_id").val(extra_id);
 
-            editPanTypeContext.show();
-            deletePanTypeContext.show();
+            editExtraContext.show();
+            deleteExtraContext.show();
         } else {
-            editPanTypeContext.hide();
-            deletePanTypeContext.hide();
+            editExtraContext.hide();
+            deleteExtraContext.hide();
         }
 
         var top = e.pageY - 10;
@@ -99,14 +99,14 @@
     });
 
     $(document).click((e) => {
-        if ($.contains($("#panTypesCard").get(0), e.target)) {
+        if ($.contains($("#extrasCard").get(0), e.target)) {
         } else {
             $("#context-menu").hide();
-            panTypes.rows().deselect();
+            extras.rows().deselect();
         }
     });
 
-    var EditPanTypeRightBar = function () {
+    var EditExtraRightBar = function () {
         // Private properties
         var _element;
         var _offcanvasObject;
@@ -120,8 +120,8 @@
                 overlay: true,
                 baseClass: 'offcanvas',
                 placement: 'right',
-                closeBy: 'edit_pan_type_rightbar_close',
-                toggleBy: 'edit_pan_type_rightbar_toggle'
+                closeBy: 'edit_extra_rightbar_close',
+                toggleBy: 'edit_extra_rightbar_toggle'
             });
 
             KTUtil.scrollInit(content, {
@@ -155,7 +155,7 @@
         // Public methods
         return {
             init: function () {
-                _element = KTUtil.getById('edit_pan_type_rightbar');
+                _element = KTUtil.getById('edit_extra_rightbar');
 
                 if (!_element) {
                     return;
@@ -170,9 +170,9 @@
             }
         };
     }();
-    EditPanTypeRightBar.init();
+    EditExtraRightBar.init();
 
-    var CreatePanTypeRightBar = function () {
+    var CreateExtraRightBar = function () {
         // Private properties
         var _element;
         var _offcanvasObject;
@@ -186,8 +186,8 @@
                 overlay: true,
                 baseClass: 'offcanvas',
                 placement: 'right',
-                closeBy: 'create_pan_type_rightbar_close',
-                toggleBy: 'create_pan_type_rightbar_toggle'
+                closeBy: 'create_extra_rightbar_close',
+                toggleBy: 'create_extra_rightbar_toggle'
             });
 
             KTUtil.scrollInit(content, {
@@ -221,7 +221,7 @@
         // Public methods
         return {
             init: function () {
-                _element = KTUtil.getById('create_pan_type_rightbar');
+                _element = KTUtil.getById('create_extra_rightbar');
 
                 if (!_element) {
                     return;
@@ -236,51 +236,51 @@
             }
         };
     }();
-    CreatePanTypeRightBar.init();
+    CreateExtraRightBar.init();
 
-    function createPanType() {
-        $("#create_pan_type_rightbar_toggle").click();
+    function createExtra() {
+        $("#create_extra_rightbar_toggle").click();
     }
 
-    function editPanType() {
-        var pan_type_id = $("#editing_pan_type_id").val();
+    function editExtra() {
+        var extra_id = $("#editing_extra_id").val();
 
         $.ajax({
             type: 'get',
-            url: '{{ route('ajax.pan-types.show') }}',
+            url: '{{ route('ajax.extras.show') }}',
             data: {
-                pan_type_id: pan_type_id
+                extra_id: extra_id
             },
-            success: function (panType) {
-                $("#editing_pan_type_id").val(panType.id);
-                $("#editing_pan_type_name").val(panType.name);
+            success: function (extra) {
+                $("#editing_extra_id").val(extra.id);
+                $("#editing_extra_name").val(extra.name);
             },
             error: function (error) {
                 console.log(error)
             }
         });
 
-        $("#edit_pan_type_rightbar_toggle").click();
+        $("#edit_extra_rightbar_toggle").click();
     }
 
-    function deletePanType() {
-        $("#DeletePanTypeModal").modal('show');
+    function deleteExtra() {
+        $("#DeleteExtraModal").modal('show');
     }
 
-    createPanTypeButton.click(function () {
-        var name = $("#creating_pan_type_name").val();
+    createExtraButton.click(function () {
+        var name = $("#creating_extra_name").val();
 
         $.ajax({
             type: 'post',
-            url: '{{ route('ajax.pan-types.save') }}',
+            url: '{{ route('ajax.extras.save') }}',
             data: {
                 _token: '{{ csrf_token() }}',
                 name: name
             },
             success: function () {
-                toastr.success('Yeni Pan Türü Oluşturuldu');
-                $("#create_pan_type_rightbar_toggle").click();
-                panTypes.search('').columns().search('').ajax.reload().draw();
+                toastr.success('Yeni Extra Oluşturuldu');
+                $("#create_extra_rightbar_toggle").click();
+                extras.search('').columns().search('').ajax.reload().draw();
             },
             error: function () {
 
@@ -288,13 +288,13 @@
         });
     });
 
-    updatePanTypeButton.click(function () {
-        var id = $("#editing_pan_type_id").val();
-        var name = $("#editing_pan_type_name").val();
+    updateExtraButton.click(function () {
+        var id = $("#editing_extra_id").val();
+        var name = $("#editing_extra_name").val();
 
         $.ajax({
             type: 'post',
-            url: '{{ route('ajax.pan-types.save') }}',
+            url: '{{ route('ajax.extras.save') }}',
             data: {
                 _token: '{{ csrf_token() }}',
                 id: id,
@@ -302,8 +302,8 @@
             },
             success: function () {
                 toastr.success('Başarıyla Güncellendi');
-                $("#edit_pan_type_rightbar_toggle").click();
-                panTypes.search('').columns().search('').ajax.reload().draw();
+                $("#edit_extra_rightbar_toggle").click();
+                extras.search('').columns().search('').ajax.reload().draw();
             },
             error: function (error) {
                 console.log(error)
@@ -311,20 +311,20 @@
         });
     });
 
-    deletePanTypeButton.click(function () {
-        var id = $("#editing_pan_type_id").val();
+    deleteExtraButton.click(function () {
+        var id = $("#editing_extra_id").val();
 
         $.ajax({
             type: 'post',
-            url: '{{ route('ajax.pan-types.delete') }}',
+            url: '{{ route('ajax.extras.delete') }}',
             data: {
                 _token: '{{ csrf_token() }}',
                 id: id
             },
             success: function () {
-                toastr.success('Pan Türü Silindi');
-                $("#DeletePanTypeModal").modal('hide');
-                panTypes.search('').columns().search('').ajax.reload().draw();
+                toastr.success('Extra Silindi');
+                $("#DeleteExtraModal").modal('hide');
+                extras.search('').columns().search('').ajax.reload().draw();
             },
             error: function (error) {
                 console.log(error)

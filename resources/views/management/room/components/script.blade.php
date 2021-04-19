@@ -734,7 +734,7 @@
         } else {
             $.ajax({
                 type: 'post',
-                url: '{{ route('ajax.extras.create') }}',
+                url: '{{ route('ajax.safe-activities.create') }}',
                 data: {
                     _token: '{{ csrf_token() }}',
                     safe_id: safe_id,
