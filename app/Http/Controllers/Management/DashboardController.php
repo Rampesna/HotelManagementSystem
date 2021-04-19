@@ -12,11 +12,6 @@ class DashboardController extends Controller
     public function index()
     {
         return view('management.dashboard.index', [
-            'reservations' => Reservation::with([
-                'status',
-                'room',
-                'customers'
-            ])->get(),
             'roomUseTypes' => RoomUseType::all(),
             'stayers' => Reservation::where('status_id', 4)->get(),
             'waitingIncoming' => Reservation::whereBetween('start_date', [

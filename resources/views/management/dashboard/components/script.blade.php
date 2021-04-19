@@ -38,6 +38,15 @@
             String(formattedDate.getMinutes()).padStart(2, '0') + ' ';
     }
 
+    function reformatDateForCalendar(date) {
+        var formattedDate = new Date(date);
+        return formattedDate.getFullYear() + '-' +
+            String(formattedDate.getMonth() + 1).padStart(2, '0') + '-' +
+            String(formattedDate.getDate()).padStart(2, '0') + 'T' +
+            String(formattedDate.getHours()).padStart(2, '0') + ':' +
+            String(formattedDate.getMinutes()).padStart(2, '0') + ':00';
+    }
+
     var reservationsCalendar = $('#reservationsCalendar').fullCalendar({
         defaultView: 'month',
         lang: {
@@ -110,21 +119,51 @@
             $("#show_reservation_rightbar_toggle").click();
         },
 
-        events: [
-                @foreach($reservations as $reservation)
-            {
-                _id: '{{ $reservation->id }}',
-                id: '{{ $reservation->id }}',
-                type: 'reservation',
-                title: '{{ $reservation->customer_name }} - {{ $reservation->room->number }}',
-                start: '{{ strftime("%Y-%m-%dT%H:%M:%S",strtotime($reservation->start_date)) }}',
-                end: '{{ strftime("%Y-%m-%dT%H:%M:%S",strtotime($reservation->end_date)) }}',
-                url: 'javascript:void(0);',
-                className: 'fc-event-light fc-event-solid-{{ $reservation->status->color }}',
-                reservation_id: '{{ $reservation->id }}'
-            },
-                @endforeach
-        ]
+        events: function(start, end, timezone, callback) {
+            $.ajax({
+                url: '{{ route('ajax.reservations.calendar') }}',
+                dataType: 'json',
+                data: {
+                    start_date: start.format(),
+                    end_date: end.format()
+                },
+                success: function(reservations) {
+                    var events = [];
+
+                    $.each(reservations, function (index) {
+                        events.push({
+                            _id: reservations[index].id,
+                            id: reservations[index].id,
+                            type: 'reservation',
+                            title: `${reservations[index].customer_name} - ${reservations[index].room.number}`,
+                            start: reformatDateForCalendar(reservations[index].start_date),
+                            end: reformatDateForCalendar(reservations[index].end_date),
+                            url: 'javascript:void(0)',
+                            className: `fc-event-light fc-event-solid-${reservations[index].status.color}`,
+                            reservation_id: reservations[index].id,
+
+                        });
+                    });
+                    callback(events);
+                }
+            });
+        }
+
+        {{--events: [--}}
+        {{--        @foreach($reservations as $reservation)--}}
+        {{--    {--}}
+        {{--        _id: '{{ $reservation->id }}',--}}
+        {{--        id: '{{ $reservation->id }}',--}}
+        {{--        type: 'reservation',--}}
+        {{--        title: '{{ $reservation->customer_name }} - {{ $reservation->room->number }}',--}}
+        {{--        start: '{{ strftime("%Y-%m-%dT%H:%M:%S",strtotime($reservation->start_date)) }}',--}}
+        {{--        end: '{{ strftime("%Y-%m-%dT%H:%M:%S",strtotime($reservation->end_date)) }}',--}}
+        {{--        url: 'javascript:void(0);',--}}
+        {{--        className: 'fc-event-light fc-event-solid-{{ $reservation->status->color }}',--}}
+        {{--        reservation_id: '{{ $reservation->id }}'--}}
+        {{--    },--}}
+        {{--        @endforeach--}}
+        {{--]--}}
     });
 
     var showReservationCustomers = $('#showReservationCustomers').DataTable({

@@ -62,7 +62,7 @@
                     <div class="card-body text-center py-5">
                         <h1 id="room_number_selector_{{ $room->id }}" class="cursor-pointer text-{{ $room->status->color }}" onclick="showReservation({{ $room->activeReservation()->id ?? null }})" style="font-size: 32px">{{ $room->number }}</h1>
                         @if($room->activeReservation())
-                            <span id="reservationCheckout_{{ $room->activeReservation()->id }}" onclick="getReservationExtras({{ $room->activeReservation()->id }})" class="font-weight-bold cursor-pointer">{{ number_format($room->activeReservation()->debtControl(), 2) . ' TL' }}</span>
+                            <span id="reservationCheckout_{{ $room->activeReservation()->id }}" onclick="getReservationExtras({{ $room->activeReservation()->id }})" class="btn btn-pill btn-sm btn-dark-75" style="font-size: 11px; height: 20px; padding-top: 2px">{{ number_format($room->activeReservation()->debtControl(), 2) . ' TL' }}</span>
                         @else
                             <span>{{ $room->type->name }}</span>
                         @endif

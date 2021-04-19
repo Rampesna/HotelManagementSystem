@@ -89,6 +89,28 @@ class ReservationsController extends Controller
         make(true);
     }
 
+    public function calendar(Request $request)
+    {
+
+        return response()->json(Reservation::with([
+            'status',
+            'room',
+            'customers'
+        ])->
+        where(function ($dates) use ($request) {
+            $dates->where(function ($forStartDate) use ($request) {
+                $forStartDate->where('start_date', '<=', $request->start_date)->where('end_date', '>=', $request->start_date);
+            })->
+            orWhere(function ($forEndDate) use ($request) {
+                $forEndDate->where('start_date', '<=', $request->end_date)->where('end_date', '>=', $request->end_date);
+            })->
+            orWhere(function ($between) use ($request) {
+                $between->where('start_date', '>=', $request->start_date)->where('end_date', '<=', $request->end_date);
+            });
+        })->
+        get(), 200);
+    }
+
     public function edit(Request $request)
     {
         return response()->json(Reservation::with([

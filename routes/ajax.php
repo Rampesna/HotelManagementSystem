@@ -61,6 +61,7 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
 
     Route::prefix('reservations')->group(function () {
         Route::any('index', 'ReservationsController@index')->name('ajax.reservations.index');
+        Route::any('calendar', 'ReservationsController@calendar')->name('ajax.reservations.calendar');
         Route::any('edit', 'ReservationsController@edit')->name('ajax.reservations.edit');
         Route::any('save', 'ReservationsController@save')->name('ajax.reservations.save');
         Route::any('setStatus', 'ReservationsController@setStatus')->name('ajax.reservations.setStatus');
