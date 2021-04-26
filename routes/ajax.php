@@ -70,8 +70,14 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
     });
 
     Route::prefix('safes')->group(function () {
-        Route::any('index', 'SafesController@reservations')->name('ajax.safes.reservations');
-        Route::any('getPayment', 'SafesController@getPayment')->name('ajax.safes.getPayment');
+
+    });
+
+    Route::prefix('receipts')->group(function () {
+        Route::any('index', 'ReceiptsController@index')->name('ajax.receipts.index');
+        Route::any('save', 'ReceiptsController@save')->name('ajax.receipts.save');
+        Route::any('receiptsByDate', 'ReceiptsController@receiptsByDate')->name('ajax.receipts.receiptsByDate');
+        Route::any('safeTotal', 'ReceiptsController@safeTotal')->name('ajax.receipts.safeTotal');
     });
 
     Route::prefix('stayers')->group(function () {
@@ -80,6 +86,7 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
 
     Route::prefix('safe-activities')->group(function () {
         Route::post('create', 'SafeActivitiesController@create')->name('ajax.safe-activities.create');
+        Route::any('getPayment', 'SafesController@getPayment')->name('ajax.safe-activities.getPayment');
         Route::get('getByReservationId', 'SafeActivitiesController@getByReservationId')->name('ajax.safe-activities.getByReservationId');
     });
 });

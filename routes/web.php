@@ -64,6 +64,13 @@ Route::middleware(['auth'])->namespace('App\\Http\\Controllers')->group(function
             Route::get('index', 'SafeController@index')->name('management.safe.index')->middleware('Authority:1');
         });
 
+        Route::prefix('receipt')->group(function () {
+            Route::get('/', function () {
+                return redirect()->route('management.receipt.index');
+            });
+            Route::get('index', 'ReceiptController@index')->name('management.receipt.index')->middleware('Authority:1');
+        });
+
         Route::prefix('stayer')->group(function () {
             Route::get('/', function () {
                 return redirect()->route('management.stayer.index');

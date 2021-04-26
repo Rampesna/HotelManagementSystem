@@ -380,6 +380,7 @@
     var reservationEditContext = $("#reservationEditContext");
     var reservationApproveContext = $("#reservationApproveContext");
     var reservationDenyContext = $("#reservationDenyContext");
+    var downloadInvoiceContext = $("#downloadInvoiceContext");
 
     function setStatus(status) {
         var reservationsArray = [];
@@ -414,6 +415,13 @@
         });
     }
 
+    function downloadInvoice()
+    {
+        var reservation_id = $("#editing_reservation_id").val();
+        window.open('{{ route('management.reservation.downloadInvoice') }}?reservation_id=' + reservation_id, '_blank');
+        {{--window.location="{{ route('management.reservation.downloadInvoice') }}?reservation_id=" + reservation_id--}}
+    }
+
     $('.card').on('contextmenu', function (e) {
         var selectedRows = reservations.rows({selected: true});
         if (selectedRows.count() > 0) {
@@ -443,32 +451,42 @@
                 reservationStopStayContext.hide();
                 reservationApproveContext.show();
                 reservationDenyContext.show();
+                downloadInvoiceContext.hide();
             } else if (reservation.status_id === 2) {
                 reservationEditContext.show();
                 reservationStartStayContext.show();
                 reservationStopStayContext.hide();
                 reservationApproveContext.hide();
                 reservationDenyContext.show();
+                downloadInvoiceContext.hide();
             } else if (reservation.status_id === 3) {
                 reservationEditContext.show();
                 reservationStartStayContext.hide();
                 reservationStopStayContext.hide();
                 reservationApproveContext.show();
                 reservationDenyContext.hide();
+                downloadInvoiceContext.hide();
             } else if (reservation.status_id === 4) {
                 reservationEditContext.show();
                 reservationStartStayContext.hide();
                 reservationStopStayContext.hide();
                 reservationApproveContext.hide();
                 reservationDenyContext.hide();
+                downloadInvoiceContext.hide();
+            } else if (reservation.status_id === 5) {
+                reservationEditContext.hide();
+                reservationStartStayContext.hide();
+                reservationStopStayContext.hide();
+                reservationApproveContext.hide();
+                reservationDenyContext.hide();
+                downloadInvoiceContext.show();
             } else {
                 reservationEditContext.hide();
                 reservationStartStayContext.hide();
                 reservationStopStayContext.hide();
                 reservationApproveContext.hide();
                 reservationDenyContext.hide();
-
-                return false;
+                downloadInvoiceContext.hide();
             }
 
             var top = e.pageY - 10;

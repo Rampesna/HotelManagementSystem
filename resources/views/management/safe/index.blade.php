@@ -5,57 +5,94 @@
 
 @section('content')
 
-    @include('management.safe.modals.get-payment')
+    @include('management.safe.modals.create-receipt')
 
-    <input type="hidden" id="selected_reservation_id">
     <div class="row">
-        <div class="col-xl-12">
-            <div class="card" id="reservationsCard">
-                <div class="card-body">
-                    <table class="table dataTable" id="reservations">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Müşteri</th>
-                            <th>Geliş Tarihi</th>
-                            <th>Gidiş Tarihi</th>
-                            <th>Durum</th>
-                            <th>Oda Numarası</th>
-                            <th>Ücret</th>
-                            <th>Alınan Ödeme</th>
-                        </tr>
-                        </thead>
-                        <tfoot>
-                        <tr>
-                            <th>#</th>
-                            <th>Müşteri</th>
-                            <th>Geliş Tarihi</th>
-                            <th>Gidiş Tarihi</th>
-                            <th>Durum</th>
-                            <th>Oda Numarası</th>
-                            <th>Ücret</th>
-                            <th>Alınan Ödeme</th>
-                        </tr>
-                        </tfoot>
-                    </table>
+        <div class="col-xl-3 mb-3">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-xl-9">
+                            <h4>Kasa</h4>
+                        </div>
+                        <div class="col-xl-3 text-right">
+                            <div class="dropdown dropdown-inline ml-n3">
+                                <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-plus-circle fa-lg text-success cursor-pointer"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+                                    <ul class="navi navi-hover">
+                                        <li class="navi-item">
+                                            <a data-toggle="modal" data-target="#CreateReceiptModal" class="navi-link cursor-pointer">
+                                                <span class="navi-icon">
+                                                    <i class="fa fa-check-circle"></i>
+                                                </span>
+                                                <span class="navi-text">Yeni Fiş Oluştur</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body text-center py-10">
+                    <a href="{{ route('management.receipt.index') }}">
+                        <h1 id="safeTotalSpan" class="cursor-pointer" style="font-size: 32px">--</h1>
+                    </a>
+                </div>
+                <div class="card-footer">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-9">
+            <div class="row">
+                <div class="col-xl-4 mb-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-xl-12">
+                                    <h4>Gün Sonu</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="dailyCard"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 mb-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-xl-12">
+                                    <h4>Haftalık Durum</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="weeklyCard"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 mb-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-xl-12">
+                                    <h4>Aylık Durum</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="monthlyCard"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="context-menu" style="width: 300px">
-        <div id="downloadInvoice">
-            <a onclick="downloadInvoice()" class="dropdown-item cursor-pointer">
-                <div class="row">
-                    <div class="col-xl-12">
-                        <i class="fas fa-file-download text-success"></i><span class="ml-4">Faturayı İndir</span>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </div>
-
-
 
 @endsection
 

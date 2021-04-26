@@ -2,155 +2,378 @@
 <script src="{{ asset('assets/js/pages/crud/datatables/extensions/buttons.js?v=7.0.3') }}"></script>
 
 <script>
-    var reservations = $('#reservations').DataTable({
-        language: {
-            info: "_TOTAL_ Kayıttan _START_ - _END_ Arasındaki Kayıtlar Gösteriliyor.",
-            infoEmpty: "Gösterilecek Hiç Kayıt Yok.",
-            loadingRecords: "Kayıtlar Yükleniyor.",
-            zeroRecords: "Tablo Boş",
-            search: "Arama:",
-            infoFiltered: "(Toplam _MAX_ Kayıttan Filtrelenenler)",
-            lengthMenu: "Sayfa Başı _MENU_ Kayıt Göster",
-            sProcessing: "Yükleniyor...",
-            paginate: {
-                first: "İlk",
-                previous: "Önceki",
-                next: "Sonraki",
-                last: "Son"
+
+    "use strict";
+
+    // Shared Colors Definition
+    const primary = '#6993FF';
+    const success = '#1BC5BD';
+    const info = '#8950FC';
+    const warning = '#FFA800';
+    const danger = '#F64E60';
+
+    // Class definition
+    function generateBubbleData(baseval, count, yrange) {
+        var i = 0;
+        var series = [];
+        while (i < count) {
+            var x = Math.floor(Math.random() * (750 - 1 + 1)) + 1;
+            ;
+            var y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
+            var z = Math.floor(Math.random() * (75 - 15 + 1)) + 15;
+
+            series.push([x, y, z]);
+            baseval += 86400000;
+            i++;
+        }
+        return series;
+    }
+
+    function generateData(count, yrange) {
+        var i = 0;
+        var series = [];
+        while (i < count) {
+            var x = 'w' + (i + 1).toString();
+            var y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
+
+            series.push({
+                x: x,
+                y: y
+            });
+            i++;
+        }
+        return series;
+    }
+
+    var safeTotalSpan = $("#safeTotalSpan");
+    var createReceiptButton = $("#createReceiptButton");
+
+    /////////////////////////////////////////////////////////////////////////////////
+
+    var dailyChartOptions = {
+        series: [
+            {
+                name: 'Gelir',
+                data: [0]
             },
-            select: {
-                rows: {
-                    "_": "%d kayıt seçildi",
-                    "0": "",
-                    "1": "1 kayıt seçildi"
-                }
+            {
+                name: 'Gider',
+                data: [0]
+            }
+        ],
+        chart: {
+            type: 'bar',
+            height: 250
+        },
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                columnWidth: '55%',
+                endingShape: 'rounded'
             },
-            buttons: {
-                print: {
-                    title: 'Yazdır'
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            show: true,
+            width: 2,
+            colors: ['transparent']
+        },
+        xaxis: {
+            categories: ['Gün Sonu'],
+        },
+        yaxis: {
+            title: {
+                text: 'TL'
+            }
+        },
+        fill: {
+            opacity: 1
+        },
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return val + " TL"
                 }
             }
         },
+        colors: [success, danger]
+    };
 
-        dom: 'Brtipl',
+    var dailyChart = new ApexCharts(document.querySelector("#dailyCard"), dailyChartOptions);
+    dailyChart.render();
 
-        order: [
-            [
-                0,
-                "desc"
-            ]
-        ],
-
-        buttons: [
-            {
-                extend: 'collection',
-                text: '<i class="fa fa-download"></i> Dışa Aktar',
-                buttons: [
+    function dailyChartUpdater() {
+        $.ajax({
+            type: 'get',
+            url: '{{ route('ajax.receipts.receiptsByDate') }}',
+            data: {
+                start_date: '{{ date('Y-m-d') }}',
+                end_date: '{{ date('Y-m-d') }}'
+            },
+            success: function (receipts) {
+                dailyChart.updateSeries([
                     {
-                        extend: 'pdf',
-                        text: '<i class="fa fa-file-pdf"></i> PDF İndir'
+                        name: 'Gelir',
+                        data: [receipts.incoming]
                     },
                     {
-                        extend: 'excel',
-                        text: '<i class="fa fa-file-excel"></i> Excel İndir'
+                        name: 'Gider',
+                        data: [receipts.outgoing]
                     }
-                ]
+                ]);
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////
+
+    var weeklyChartOptions = {
+        series: [
+            {
+                name: 'Gelir',
+                data: [0]
             },
             {
-                extend: 'print',
-                text: '<i class="fa fa-print"></i> Yazdır'
-            },
-            {
-                extend: 'colvis',
-                text: '<i class="fa fa-columns"></i> Sütunlar'
-            },
-            {
-                text: '<i class="fas fa-undo"></i> Yenile',
-                action: function (e, dt, node, config) {
-                    $('input').val('');
-                    reservations.search('').columns().search('').ajax.reload().draw();
-                }
+                name: 'Gider',
+                data: [0]
             }
         ],
-
-        initComplete: function () {
-            var r = $('#reservations tfoot tr');
-            $('#reservations thead').append(r);
-            this.api().columns().every(function (index) {
-                var column = this;
-                var input = document.createElement('input');
-                if (index === 2 || index === 3) {
-                    input.setAttribute("type", "datetime-local");
-                } else if (index === 4 || index === 6 || index === 7) {
-                    input = null;
-                    $(input).appendTo($(column.footer()).empty())
-                        .on('change', function () {
-                            column.search($(this).val(), false, false, true).draw();
-                        });
-                    return;
-                }
-                input.className = 'form-control';
-                $(input).appendTo($(column.footer()).empty())
-                    .on('change', function () {
-                        column.search($(this).val(), false, false, true).draw();
-                    });
-            });
+        chart: {
+            type: 'bar',
+            height: 250
         },
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                columnWidth: '55%',
+                endingShape: 'rounded'
+            },
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            show: true,
+            width: 2,
+            colors: ['transparent']
+        },
+        xaxis: {
+            categories: ['Haftalık Durum'],
+        },
+        yaxis: {
+            title: {
+                text: 'TL'
+            }
+        },
+        fill: {
+            opacity: 1
+        },
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return val + " TL"
+                }
+            }
+        },
+        colors: [success, danger]
+    };
 
-        processing: true,
-        serverSide: true,
-        ajax: '{!! route('ajax.safes.reservations') !!}',
-        columns: [
-            {data: 'id', name: 'id'},
-            {data: 'customer_name', name: 'customer_name'},
-            {data: 'start_date', name: 'start_date'},
-            {data: 'end_date', name: 'end_date'},
-            {data: 'status_id', name: 'status_id'},
-            {data: 'room_id', name: 'room_id'},
-            {data: 'price', name: 'price', orderable: false},
-            {data: 'payments', name: 'payments', orderable: false}
+    var weeklyChart = new ApexCharts(document.querySelector("#weeklyCard"), weeklyChartOptions);
+    weeklyChart.render();
+
+    function weeklyChartUpdater() {
+        $.ajax({
+            type: 'get',
+            url: '{{ route('ajax.receipts.receiptsByDate') }}',
+            data: {
+                start_date: '{{ date("Y-m-d", strtotime('monday this week')) }}',
+                end_date: '{{ date("Y-m-d", strtotime('sunday this week')) }}'
+            },
+            success: function (receipts) {
+                weeklyChart.updateSeries([
+                    {
+                        name: 'Gelir',
+                        data: [receipts.incoming]
+                    },
+                    {
+                        name: 'Gider',
+                        data: [receipts.outgoing]
+                    }
+                ]);
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////
+
+    var monthlyChartOptions = {
+        series: [
+            {
+                name: 'Gelir',
+                data: [0]
+            },
+            {
+                name: 'Gider',
+                data: [0]
+            }
         ],
+        chart: {
+            type: 'bar',
+            height: 250
+        },
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                columnWidth: '55%',
+                endingShape: 'rounded'
+            },
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            show: true,
+            width: 2,
+            colors: ['transparent']
+        },
+        xaxis: {
+            categories: ['Aylık Durum'],
+        },
+        yaxis: {
+            title: {
+                text: 'TL'
+            }
+        },
+        fill: {
+            opacity: 1
+        },
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return val + " TL"
+                }
+            }
+        },
+        colors: [success, danger]
+    };
 
-        responsive: true,
-        stateSave: true,
-        select: 'single'
+    var monthlyChart = new ApexCharts(document.querySelector("#monthlyCard"), monthlyChartOptions);
+    monthlyChart.render();
+
+    function monthlyChartUpdater() {
+        $.ajax({
+            type: 'get',
+            url: '{{ route('ajax.receipts.receiptsByDate') }}',
+            data: {
+                start_date: '{{ date('Y-m-01') }}',
+                end_date: '{{ date('Y-m-t') }}'
+            },
+            success: function (receipts) {
+                monthlyChart.updateSeries([
+                    {
+                        name: 'Gelir',
+                        data: [receipts.incoming]
+                    },
+                    {
+                        name: 'Gider',
+                        data: [receipts.outgoing]
+                    }
+                ]);
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////
+
+    dailyChartUpdater();
+    weeklyChartUpdater();
+    monthlyChartUpdater();
+
+    function safeTotal() {
+        $.ajax({
+            type: 'get',
+            url: '{{ route('ajax.receipts.safeTotal') }}',
+            data: {},
+            success: function (safeTotal) {
+                safeTotalSpan.html(safeTotal);
+            },
+            error: function () {
+
+            }
+        });
+    }
+
+    safeTotal();
+
+    $('.decimal').on("copy cut paste drop", function () {
+        return false;
+    }).keyup(function () {
+        var val = $(this).val();
+        if (isNaN(val)) {
+            val = val.replace(/[^0-9\.]/g, '');
+            if (val.split('.').length > 2)
+                val = val.replace(/\.+$/, "");
+        }
+        $(this).val(val);
     });
 
-    $('.card').on('contextmenu', function (e) {
-        var selectedRows = reservations.rows({selected: true});
-        if (selectedRows.count() > 0) {
-            var reservation_id = selectedRows.data()[0].id.replace('#', '');
-            $("#selected_reservation_id").val(reservation_id);
+    createReceiptButton.click(function () {
+        var user_id = '{{ auth()->user()->id() }}';
+        var safe_id = 1;
+        var direction = $("#create_receipt_direction").val();
+        var date = $("#create_receipt_date").val();
+        var price = $("#create_receipt_price").val();
+        var description = $("#create_receipt_description").val();
 
-            var top = e.pageY - 10;
-            var left = e.pageX - 10;
-
-            $("#context-menu").css({
-                display: "block",
-                top: top,
-                left: left
+        if (user_id === '') {
+            toastr.error('Kullanıcıda Sistemsel Bir Hata Oluştu. Sayfayı Yenilemeyi Deneyin.');
+        } else if (safe_id === '') {
+            toastr.error('Kasada Sistemsel Bir Hata Oluştu. Sayfayı Yenilemeyi Deneyin.');
+        } else if (direction == null || direction === '') {
+            toastr.warning('Gelir/Gider Türü Seçmediniz!');
+        } else if (date == null || date === '') {
+            toastr.warning('Tarih Seçmediniz!');
+        } else if (price == null || price === '') {
+            toastr.warning('Tutar Girmediniz!');
+        } else {
+            $.ajax({
+                type: 'post',
+                url: '{{ route('ajax.receipts.save') }}',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    user_id: user_id,
+                    safe_id: safe_id,
+                    direction: direction,
+                    date: date,
+                    price: price,
+                    description: description
+                },
+                success: function () {
+                    toastr.success('Fiş Başarıyla Oluşturuldu');
+                    $("#CreateReceiptModal").modal('hide');
+                    $("#CreateReceiptForm").trigger('reset');
+                    $("#create_receipt_direction").selectpicker('refresh');
+                    safeTotal();
+                    dailyChartUpdater();
+                    weeklyChartUpdater();
+                    monthlyChartUpdater();
+                },
+                error: function (error) {
+                    console.log(error)
+                }
             });
         }
-        return false;
-    }).on("click", function () {
-        $("#context-menu").hide();
-    }).on('focusout', function () {
-        $("#context-menu").hide();
     });
-
-    $(document).click((e) => {
-        if ($.contains($("#reservationsCard").get(0), e.target)) {
-        } else {
-            $("#context-menu").hide();
-            reservations.rows().deselect();
-        }
-    });
-
-    function downloadInvoice()
-    {
-        var reservation_id = $("#selected_reservation_id").val();
-        window.open('{{ route('management.reservation.downloadInvoice') }}?reservation_id=' + reservation_id, '_blank');
-        {{--window.location="{{ route('management.reservation.downloadInvoice') }}?reservation_id=" + reservation_id--}}
-    }
 
 </script>

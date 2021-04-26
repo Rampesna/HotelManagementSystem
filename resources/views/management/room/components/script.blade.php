@@ -811,7 +811,7 @@
         } else {
             $.ajax({
                 type: 'post',
-                url: '{{ route('ajax.safes.getPayment') }}',
+                url: '{{ route('ajax.safe-activities.getPayment') }}',
                 data: {
                     _token: '{{ csrf_token() }}',
                     reservation_id: reservation_id,
@@ -1271,6 +1271,10 @@
     });
 
     $('.roomPlusIcon').click(function () {
+
+        console.log('Tıklandı')
+        console.log('----------------------')
+
         var room_id = $(this).data('id');
         $("#roomDropdownList_" + room_id).hide();
 
@@ -1281,7 +1285,15 @@
                 room_id: room_id
             },
             success: function (room) {
-                if (room.room_status_id === 1 || room.room_status_id === 2) {
+
+                console.log('Oda Bilgisi Ajaxdan Geldi')
+                console.log('----------------------')
+
+                if (parseInt(room.room_status_id) === 1 || parseInt(room.room_status_id) === 2) {
+
+                    console.log('Oda Durumu 1 yada 2')
+                    console.log('----------------------')
+
                     $("#roomDropdownList_" + room.id).show();
                     if (room.room_status_id === 2 && room.activeReservation != null) {
                         $.ajax({
@@ -1302,6 +1314,9 @@
                             }
                         });
                     }
+                } else {
+                    console.log('Oda Durumu 1 yada 2 DEĞİL')
+                    console.log('----------------------')
                 }
             },
             error: function (error) {

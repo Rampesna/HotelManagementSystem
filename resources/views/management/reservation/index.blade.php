@@ -68,9 +68,9 @@
                     </div>
                 </div>
             </a>
-            <hr>
         </div>
         <div id="reservationStartStayContext">
+            <hr>
             <a onclick="setStatus(4)" class="dropdown-item cursor-pointer">
                 <div class="row">
                     <div class="col-xl-12">
@@ -90,6 +90,7 @@
             <hr>
         </div>
         <div id="reservationApproveContext">
+            <hr>
             <a onclick="setStatus(2)" class="dropdown-item cursor-pointer">
                 <div class="row">
                     <div class="col-xl-12">
@@ -103,6 +104,15 @@
                 <div class="row">
                     <div class="col-xl-12">
                         <i class="fas fa-times text-danger"></i><span class="ml-4">Rezervasyonu İptal Et</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div id="downloadInvoiceContext">
+            <a onclick="downloadInvoice()" class="dropdown-item cursor-pointer">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <i class="fas fa-file-download text-success"></i><span class="ml-4">Faturayı İndir</span>
                     </div>
                 </div>
             </a>

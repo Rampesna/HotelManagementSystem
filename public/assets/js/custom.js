@@ -100,3 +100,23 @@ toastr.options = {
 $(window).on('load', function () {
     $("#loader").fadeOut(250);
 });
+
+function detectMobile() {
+    if (navigator.userAgent.match(/Android/i)
+        || navigator.userAgent.match(/webOS/i)
+        || navigator.userAgent.match(/iPhone/i)
+        || navigator.userAgent.match(/BlackBerry/i)
+        || navigator.userAgent.match(/Windows Phone/i)
+    ) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+if (detectMobile()) {
+    $("#navbarControl").css({'margin-top':'20px'});
+    $('.mobile').removeClass('col-6').addClass('col-12');
+} else {
+    $("#navbarControl").css({'margin-top':'-50px'});
+}
