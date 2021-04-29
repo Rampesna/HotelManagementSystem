@@ -69,6 +69,14 @@
         select: 'single'
     });
 
+    $('#panTypes tbody').on('mousedown', 'tr', function (e) {
+        if (e.button === 0) {
+            return false;
+        } else {
+            panTypes.row(this).select();
+        }
+    });
+
     $('body').on('contextmenu', function (e) {
         var selectedRows = panTypes.rows({selected: true});
         if (selectedRows.count() > 0) {

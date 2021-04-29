@@ -54,6 +54,11 @@ class Reservation extends Model
         return $this->hasMany(SafeActivity::class);
     }
 
+    public function statusActivities()
+    {
+        return $this->hasMany(ReservationStatusActivity::class);
+    }
+
     public function debtControl()
     {
         $safeActivities = SafeActivity::where('reservation_id', $this->id)->get();

@@ -69,6 +69,14 @@
         select: 'single'
     });
 
+    $('#roomUseTypes tbody').on('mousedown', 'tr', function (e) {
+        if (e.button === 0) {
+            return false;
+        } else {
+            roomUseTypes.row(this).select();
+        }
+    });
+
     $('body').on('contextmenu', function (e) {
         var selectedRows = roomUseTypes.rows({selected: true});
         if (selectedRows.count() > 0) {

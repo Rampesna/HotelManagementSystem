@@ -3,17 +3,6 @@
 
 <script>
 
-    function dateReCreator(getDate) {
-        var date = new Date(getDate);
-        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
-    }
-
-    reservationEditCustomersDeleteRowButton = $("#reservationEditCustomersDeleteRowButton");
-    customersDeleteRowButton = $("#customersDeleteRowButton");
-
-    reservationEditCustomersDeleteRowButton.hide();
-    customersDeleteRowButton.hide();
-
     const months = [
         'Ocak',
         'Şubat',
@@ -29,6 +18,38 @@
         'Aralık',
     ];
 
+    var createReservationButton = $("#createReservationButton");
+    var editReservationCreateCustomerButton = $("#editReservationCreateCustomerButton");
+    var updateReservationButton = $("#updateReservationButton");
+    var createCustomerButton = $("#createCustomerButton");
+    var createReservationSelectCustomerButton = $("#createReservationSelectCustomerButton");
+    var editReservationSelectCustomerButton = $("#editReservationSelectCustomerButton");
+    var roomTypeSelector = $("#room_type_id_create");
+    var panTypeSelector = $("#pan_type_id_create");
+    var roomSelector = $("#room_id_create");
+    var roomTypeEditSelector = $("#room_type_id_edit");
+    var panTypeEditSelector = $("#pan_type_id_edit");
+    var roomEditSelector = $("#room_id_edit");
+    var startDateCreateSelector = $("#start_date_create");
+    var endDateCreateSelector = $("#end_date_create");
+    var startDateEditSelector = $("#start_date_edit");
+    var endDateEditSelector = $("#end_date_edit");
+
+    var reservationStartStayContext = $("#reservationStartStayContext");
+    var reservationStopStayContext = $("#reservationStopStayContext");
+    var reservationEditContext = $("#reservationEditContext");
+    var reservationApproveContext = $("#reservationApproveContext");
+    var reservationDenyContext = $("#reservationDenyContext");
+    var downloadInvoiceContext = $("#downloadInvoiceContext");
+
+    var reservationEditCustomersDeleteRowButton = $("#reservationEditCustomersDeleteRowButton");
+    var customersDeleteRowButton = $("#customersDeleteRowButton");
+
+    function dateReCreator(getDate) {
+        var date = new Date(getDate);
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
+    }
+
     function reformatDate(date) {
         var formattedDate = new Date(date);
         return String(formattedDate.getDate()).padStart(2, '0') + ' ' +
@@ -37,6 +58,110 @@
             String(formattedDate.getHours()).padStart(2, '0') + ':' +
             String(formattedDate.getMinutes()).padStart(2, '0') + ' ';
     }
+
+    function setStatus(status) {
+        var reservationsArray = [];
+        var selectedRows = reservations.rows({selected: true});
+
+        $.each(selectedRows.data(), function (index) {
+            reservationsArray.push(selectedRows.data()[index]['id'].replace('#', ''));
+        });
+
+        $.ajax({
+            type: 'post',
+            url: '{{ route('ajax.reservations.setStatus') }}',
+            data: {
+                _token: '{{ csrf_token() }}',
+                reservations: reservationsArray,
+                status_id: status
+            },
+            success: function (response) {
+                if (response === 'Tamamlandı') {
+                    $.each(selectedRows.data(), function (index) {
+                        $("#reservation_" + selectedRows.data()[index]['id'].replace('#', '') + "_status").removeClass().addClass('btn btn-pill btn-sm btn-success').html('Onaylandı');
+                    });
+                    reservations.rows().invalidate().draw();
+                } else {
+                    toastr.error('Bir Hata Oluştu!');
+                    console.log(response)
+                }
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    }
+
+    function downloadInvoice() {
+        var reservation_id = $("#editing_reservation_id").val();
+        window.open('{{ route('management.reservation.downloadInvoice') }}?reservation_id=' + reservation_id, '_blank');
+        {{--window.location="{{ route('management.reservation.downloadInvoice') }}?reservation_id=" + reservation_id--}}
+    }
+
+    function getRooms() {
+        var room_type_id = roomTypeSelector.val();
+        var pan_type_id = panTypeSelector.val();
+        var start_date = startDateCreateSelector.val();
+        var end_date = endDateCreateSelector.val();
+
+        if (room_type_id != null && pan_type_id != null && start_date != null && end_date != null) {
+            $.ajax({
+                type: 'get',
+                url: '{{ route('ajax.rooms.getRoomsByParameters') }}',
+                data: {
+                    room_type_id: room_type_id,
+                    pan_type_id: pan_type_id,
+                    start_date: start_date,
+                    end_date: end_date
+                },
+                success: function (rooms) {
+                    roomSelector.html('').selectpicker('refresh');
+                    roomSelector.append(`<option selected hidden disabled></option>`);
+                    $.each(rooms, function (index) {
+                        roomSelector.append(`<option value="${rooms[index].id}">${rooms[index].number}</option>`);
+                    });
+                    roomSelector.selectpicker('refresh');
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            });
+        }
+    }
+
+    function getRoomsEdit(id, reservation_id) {
+        var room_type_id = roomTypeEditSelector.val();
+        var pan_type_id = panTypeEditSelector.val();
+        var start_date = startDateEditSelector.val();
+        var end_date = endDateEditSelector.val();
+
+        if (room_type_id != null && pan_type_id != null && start_date != null && end_date != null) {
+            $.ajax({
+                type: 'get',
+                url: '{{ route('ajax.rooms.getRoomsByParameters') }}',
+                data: {
+                    room_type_id: room_type_id,
+                    pan_type_id: pan_type_id,
+                    start_date: start_date,
+                    end_date: end_date,
+                    reservation_id: reservation_id
+                },
+                success: function (rooms) {
+                    roomEditSelector.html('').selectpicker('refresh');
+                    $.each(rooms, function (index) {
+                        roomEditSelector.append(`<option ${rooms[index].id === id ? 'selected' : null} value="${rooms[index].id}">${rooms[index].number}</option>`);
+                    });
+                    roomEditSelector.selectpicker('refresh');
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            });
+        }
+    }
+
+    reservationEditCustomersDeleteRowButton.hide();
+    customersDeleteRowButton.hide();
 
     var reservations = $('#reservations').DataTable({
         language: {
@@ -354,73 +479,13 @@
         select: 'single'
     });
 
-</script>
-
-<script>
-
-    var createReservationButton = $("#createReservationButton");
-    var editReservationCreateCustomerButton = $("#editReservationCreateCustomerButton");
-    var updateReservationButton = $("#updateReservationButton");
-    var createCustomerButton = $("#createCustomerButton");
-    var createReservationSelectCustomerButton = $("#createReservationSelectCustomerButton");
-    var editReservationSelectCustomerButton = $("#editReservationSelectCustomerButton");
-    var roomTypeSelector = $("#room_type_id_create");
-    var panTypeSelector = $("#pan_type_id_create");
-    var roomSelector = $("#room_id_create");
-    var roomTypeEditSelector = $("#room_type_id_edit");
-    var panTypeEditSelector = $("#pan_type_id_edit");
-    var roomEditSelector = $("#room_id_edit");
-    var startDateCreateSelector = $("#start_date_create");
-    var endDateCreateSelector = $("#end_date_create");
-    var startDateEditSelector = $("#start_date_edit");
-    var endDateEditSelector = $("#end_date_edit");
-
-    var reservationStartStayContext = $("#reservationStartStayContext");
-    var reservationStopStayContext = $("#reservationStopStayContext");
-    var reservationEditContext = $("#reservationEditContext");
-    var reservationApproveContext = $("#reservationApproveContext");
-    var reservationDenyContext = $("#reservationDenyContext");
-    var downloadInvoiceContext = $("#downloadInvoiceContext");
-
-    function setStatus(status) {
-        var reservationsArray = [];
-        var selectedRows = reservations.rows({selected: true});
-
-        $.each(selectedRows.data(), function (index) {
-            reservationsArray.push(selectedRows.data()[index]['id'].replace('#', ''));
-        });
-
-        $.ajax({
-            type: 'post',
-            url: '{{ route('ajax.reservations.setStatus') }}',
-            data: {
-                _token: '{{ csrf_token() }}',
-                reservations: reservationsArray,
-                status_id: status
-            },
-            success: function (response) {
-                if (response === 'Tamamlandı') {
-                    $.each(selectedRows.data(), function (index) {
-                        $("#reservation_" + selectedRows.data()[index]['id'].replace('#', '') + "_status").removeClass().addClass('btn btn-pill btn-sm btn-success').html('Onaylandı');
-                    });
-                    reservations.rows().invalidate().draw();
-                } else {
-                    toastr.error('Bir Hata Oluştu!');
-                    console.log(response)
-                }
-            },
-            error: function (error) {
-                console.log(error)
-            }
-        });
-    }
-
-    function downloadInvoice()
-    {
-        var reservation_id = $("#editing_reservation_id").val();
-        window.open('{{ route('management.reservation.downloadInvoice') }}?reservation_id=' + reservation_id, '_blank');
-        {{--window.location="{{ route('management.reservation.downloadInvoice') }}?reservation_id=" + reservation_id--}}
-    }
+    $('#reservations tbody').on('mousedown', 'tr', function (e) {
+        if (e.button === 0) {
+            return false;
+        } else {
+            reservations.row(this).select();
+        }
+    });
 
     $('.card').on('contextmenu', function (e) {
         var selectedRows = reservations.rows({selected: true});
@@ -648,72 +713,6 @@
         };
     }();
     EditReservationRightBar.init();
-
-    //////////////////////////////////////////////////////////////////////////////////////
-
-    function getRooms() {
-        var room_type_id = roomTypeSelector.val();
-        var pan_type_id = panTypeSelector.val();
-        var start_date = startDateCreateSelector.val();
-        var end_date = endDateCreateSelector.val();
-
-        if (room_type_id != null && pan_type_id != null && start_date != null && end_date != null) {
-            $.ajax({
-                type: 'get',
-                url: '{{ route('ajax.rooms.getRoomsByParameters') }}',
-                data: {
-                    room_type_id: room_type_id,
-                    pan_type_id: pan_type_id,
-                    start_date: start_date,
-                    end_date: end_date
-                },
-                success: function (rooms) {
-                    roomSelector.html('').selectpicker('refresh');
-                    roomSelector.append(`<option selected hidden disabled></option>`);
-                    $.each(rooms, function (index) {
-                        roomSelector.append(`<option value="${rooms[index].id}">${rooms[index].number}</option>`);
-                    });
-                    roomSelector.selectpicker('refresh');
-                },
-                error: function (error) {
-                    console.log(error)
-                }
-            });
-        }
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////
-
-    function getRoomsEdit(id, reservation_id) {
-        var room_type_id = roomTypeEditSelector.val();
-        var pan_type_id = panTypeEditSelector.val();
-        var start_date = startDateEditSelector.val();
-        var end_date = endDateEditSelector.val();
-
-        if (room_type_id != null && pan_type_id != null && start_date != null && end_date != null) {
-            $.ajax({
-                type: 'get',
-                url: '{{ route('ajax.rooms.getRoomsByParameters') }}',
-                data: {
-                    room_type_id: room_type_id,
-                    pan_type_id: pan_type_id,
-                    start_date: start_date,
-                    end_date: end_date,
-                    reservation_id: reservation_id
-                },
-                success: function (rooms) {
-                    roomEditSelector.html('').selectpicker('refresh');
-                    $.each(rooms, function (index) {
-                        roomEditSelector.append(`<option ${rooms[index].id === id ? 'selected' : null} value="${rooms[index].id}">${rooms[index].number}</option>`);
-                    });
-                    roomEditSelector.selectpicker('refresh');
-                },
-                error: function (error) {
-                    console.log(error)
-                }
-            });
-        }
-    }
 
     //////////////////////////////////////////////////////////////////////////////////////
 
@@ -1225,4 +1224,5 @@
             }
         });
     });
+
 </script>

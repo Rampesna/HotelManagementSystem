@@ -1194,6 +1194,7 @@
                         `${parseFloat(safeActivities[index].price).toFixed(2)} TL`,
                         `${safeActivities[index].payment_type_id ? safeActivities[index].payment_type.name : (safeActivities[index].direction === 1 ? 'Kasadan' : '')}`,
                         `${safeActivities[index].extra ? safeActivities[index].extra.name : 'Oda Ücreti'}`,
+                        `${safeActivities[index].user ? safeActivities[index].user.name : ''}`,
                         `${safeActivities[index].description ?? ''}`
                     ]).draw();
                 });

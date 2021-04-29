@@ -201,21 +201,15 @@
         serverSide: true,
         ajax: '{!! route('ajax.stayers.reservations') !!}',
         columns: [
-            {
-                className: 'details-control',
-                orderable: false,
-                data: null,
-                defaultContent: '<i class="fa fa-plus-circle text-success"></i>'
-            },
-            {data: 'id', name: 'id'},
-            {data: 'customer_name', name: 'customer_name'},
-            {data: 'start_date', name: 'start_date'},
-            {data: 'end_date', name: 'end_date'},
-            {data: 'status_id', name: 'status_id'},
-            {data: 'room_type_id', name: 'room_type_id'},
-            {data: 'pan_type_id', name: 'pan_type_id'},
-            {data: 'room_id', name: 'room_id'},
-            {data: 'price', name: 'price'}
+            {data: 'id', name: 'id', className: 'details-control cursor-pointer'},
+            {data: 'customer_name', name: 'customer_name', className: 'details-control cursor-pointer'},
+            {data: 'start_date', name: 'start_date', className: 'details-control cursor-pointer'},
+            {data: 'end_date', name: 'end_date', className: 'details-control cursor-pointer'},
+            {data: 'status_id', name: 'status_id', className: 'details-control cursor-pointer'},
+            {data: 'room_type_id', name: 'room_type_id', className: 'details-control cursor-pointer'},
+            {data: 'pan_type_id', name: 'pan_type_id', className: 'details-control cursor-pointer'},
+            {data: 'room_id', name: 'room_id', className: 'details-control cursor-pointer'},
+            {data: 'price', name: 'price', className: 'details-control cursor-pointer'}
         ],
 
         responsive: true,
@@ -233,6 +227,12 @@
         } else {
             row.child(getReservationExtras(row.data())).show();
             tr.addClass('shown');
+        }
+    }).on('mousedown', 'tr', function (e) {
+        if (e.button === 0) {
+            return false;
+        } else {
+            reservations.row(this).select();
         }
     });
 

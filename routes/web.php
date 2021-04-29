@@ -16,22 +16,23 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/test', function () {
-    $startDate = '2021-05-02 15:00:00';
-    $endDate = '2021-05-07 15:00:00';
-
-    $reservations = Reservation::
-    where(function ($dates) use ($startDate, $endDate) {
-        $dates->where(function ($forStartDate) use ($startDate, $endDate) {
-            $forStartDate->where('start_date', '<=', $startDate)->where('end_date', '>=', $startDate);
-        })->
-        orWhere(function ($forEndDate) use ($startDate, $endDate) {
-            $forEndDate->where('start_date', '<=', $endDate)->where('end_date', '>=', $endDate);
-        });
-    })->
-    whereIn('status_id', [1, 2, 4])->
-    pluck('id');
-
-    return $reservations;
+    return \App\Models\Country::find(223)->provinces;
+//    $startDate = '2021-05-02 15:00:00';
+//    $endDate = '2021-05-07 15:00:00';
+//
+//    $reservations = Reservation::
+//    where(function ($dates) use ($startDate, $endDate) {
+//        $dates->where(function ($forStartDate) use ($startDate, $endDate) {
+//            $forStartDate->where('start_date', '<=', $startDate)->where('end_date', '>=', $startDate);
+//        })->
+//        orWhere(function ($forEndDate) use ($startDate, $endDate) {
+//            $forEndDate->where('start_date', '<=', $endDate)->where('end_date', '>=', $endDate);
+//        });
+//    })->
+//    whereIn('status_id', [1, 2, 4])->
+//    pluck('id');
+//
+//    return $reservations;
 });
 
 Auth::routes();

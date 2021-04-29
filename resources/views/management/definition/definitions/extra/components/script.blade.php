@@ -69,6 +69,14 @@
         select: 'single'
     });
 
+    $('#extras tbody').on('mousedown', 'tr', function (e) {
+        if (e.button === 0) {
+            return false;
+        } else {
+            extras.row(this).select();
+        }
+    });
+
     $('body').on('contextmenu', function (e) {
         var selectedRows = extras.rows({selected: true});
         if (selectedRows.count() > 0) {

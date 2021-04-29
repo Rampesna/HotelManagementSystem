@@ -66,7 +66,7 @@
                         <span class="menu-text">Konaklayanlar</span>
                     </a>
                 </li>
-                <li class="menu-item {{ request()->segment(2) === 'safe' && request()->segment(3) === 'index' ? 'menu-item-active' : null }}" aria-haspopup="true">
+                <li class="menu-item {{ (request()->segment(2) === 'safe' || request()->segment(2) === 'receipt') && request()->segment(3) === 'index' ? 'menu-item-active' : null }}" aria-haspopup="true">
                     <a href="{{ route('management.safe.index') }}" class="menu-link">
                         <span class="svg-icon menu-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" >

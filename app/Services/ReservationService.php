@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Company;
 use App\Models\Reservation;
+use App\Models\ReservationStatusActivity;
 use App\Models\Room;
 use App\Models\SafeActivity;
 use Illuminate\Http\Request;
@@ -48,6 +49,8 @@ class ReservationService
         $this->reservation->status_id = $request->status_id;
         $this->reservation->save();
 
+        $this->setReservationStatusActivity($request->status_id);
+
         if ($request->status_id == 4) {
             $this->setDefaultPrice();
             $this->setRoomStatus($this->reservation->room_id, 2);
@@ -61,10 +64,19 @@ class ReservationService
         return $this->reservation;
     }
 
+    public function setReservationStatusActivity($statusId)
+    {
+        $reservationStatusActivityService = new ReservationStatusActivityService;
+        $reservationStatusActivityService->setReservationStatusActivity(new ReservationStatusActivity);
+        $reservationStatusActivityService->save(auth()->user()->id(), $this->reservation->id, $statusId);
+    }
+
     public function setStatus($statusId)
     {
         $this->reservation->status_id = $statusId;
         $this->reservation->save();
+
+        $this->setReservationStatusActivity($statusId);
 
         if ($statusId == 4) {
             $this->setDefaultPrice();

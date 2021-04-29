@@ -12,40 +12,38 @@
                     Detaylı Arama
                 </div>
                 <div class="card-body">
-                    <form action="#" method="post">
-                        @csrf
-                        <div class="row">
-                            <div class="col-xl-3">
-                                <div class="form-group">
-                                    <label for="start_date">Başlangıç Tarihi</label>
-                                    <input type="datetime-local" id="start_date" name="start_date" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-xl-3">
-                                <div class="form-group">
-                                    <label for="end_date">Bitiş Tarihi</label>
-                                    <input type="datetime-local" id="end_date" name="end_date" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-xl-3">
-                                <div class="form-group">
-                                    <label for="min_price">Min. Ücret</label>
-                                    <input type="text" id="min_price" name="min_price" class="form-control decimal">
-                                </div>
-                            </div>
-                            <div class="col-xl-3">
-                                <div class="form-group">
-                                    <label for="max_price">Max. Ücret</label>
-                                    <input type="text" id="max_price" name="max_price" class="form-control decimal">
-                                </div>
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="start_date">Başlangıç Tarihi</label>
+                                <input type="datetime-local" id="start_date" name="start_date" class="form-control receiptsFilterer">
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-xl-12 text-right">
-                                <button class="btn btn-sm btn-success">Filtrele</button>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="end_date">Bitiş Tarihi</label>
+                                <input type="datetime-local" id="end_date" name="end_date" class="form-control receiptsFilterer">
                             </div>
                         </div>
-                    </form>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="min_price">Min. Ücret</label>
+                                <input type="text" id="min_price" name="min_price" class="form-control decimal receiptsFilterer">
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group">
+                                <label for="max_price">Max. Ücret</label>
+                                <input type="text" id="max_price" name="max_price" class="form-control decimal receiptsFilterer">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12 text-right">
+                            <button class="btn btn-sm btn-primary" id="clearFilterReceiptsButton">Temizle</button>
+                            <button class="btn btn-sm btn-success" id="filterReceiptsButton">Filtrele</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

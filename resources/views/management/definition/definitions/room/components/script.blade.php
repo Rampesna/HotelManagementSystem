@@ -73,6 +73,14 @@
         select: 'single'
     });
 
+    $('#rooms tbody').on('mousedown', 'tr', function (e) {
+        if (e.button === 0) {
+            return false;
+        } else {
+            rooms.row(this).select();
+        }
+    });
+
     $('body').on('contextmenu', function (e) {
         var selectedRows = rooms.rows({selected: true});
         if (selectedRows.count() > 0) {

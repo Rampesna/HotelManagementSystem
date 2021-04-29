@@ -22,4 +22,9 @@ class Company extends Model
     {
         return $this->hasMany(Reservation::class);
     }
+
+    public function addresses()
+    {
+        return $this->morphMany(Address::class, 'relation');
+    }
 }

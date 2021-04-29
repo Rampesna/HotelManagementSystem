@@ -2,6 +2,10 @@
 <script src="{{ asset('assets/js/pages/crud/datatables/extensions/buttons.js?v=7.0.3') }}"></script>
 
 <script>
+
+    var filterReceiptsButton = $("#filterReceiptsButton");
+    var clearFilterReceiptsButton = $("#clearFilterReceiptsButton");
+
     var receipts = $('#receipts').DataTable({
         language: {
             info: "_TOTAL_ Kayıttan _START_ - _END_ Arasındaki Kayıtlar Gösteriliyor.",
@@ -82,7 +86,20 @@
 
         processing: true,
         serverSide: true,
-        ajax: '{!! route('ajax.receipts.index') !!}',
+        ajax: {
+            url: '{{ route('ajax.receipts.index') }}',
+            data: function (d) {
+                return $.extend({}, d, {
+                    start_date: $("#start_date").val(),
+                    end_date: $("#end_date").val(),
+                    min_price: $("#min_price").val(),
+                    max_price: $("#max_price").val()
+                });
+            },
+            complete: function (response) {
+                console.log(response.responseJSON)
+            }
+        },
         columns: [
             {data: 'id', name: 'id', width: "3%"},
             {data: 'date', name: 'date', width: "12%"},
@@ -106,5 +123,31 @@
                 val = val.replace(/\.+$/, "");
         }
         $(this).val(val);
+    });
+
+    filterReceiptsButton.click(function () {
+        receipts.ajax.reload().draw();
+    });
+
+    clearFilterReceiptsButton.click(function () {
+        $("#start_date").val(null);
+        $("#end_date").val(null);
+        $("#min_price").val(null);
+        $("#max_price").val(null);
+        receipts.ajax.reload().draw();
+    });
+
+    $(document).delegate('.receiptsFilterer', 'keydown', function (e) {
+        if (e.keyCode === 13) {
+            receipts.ajax.reload().draw();
+        }
+    });
+
+    $('#receipts tbody').on('mousedown', 'tr', function (e) {
+        if (e.button === 0) {
+            return false;
+        } else {
+            receipts.row(this).select();
+        }
     });
 </script>

@@ -19,7 +19,25 @@ class ReceiptsController extends Controller
         setlocale(LC_ALL, 'tr_TR.UTF-8');
         setlocale(LC_TIME, 'Turkish');
 
-        return Datatables::of(Receipt::query())->
+        $receipts = Receipt::with([]);
+
+        if ($request->start_date) {
+            $receipts = $receipts->where('date', '>=', $request->start_date);
+        }
+
+        if ($request->end_date) {
+            $receipts = $receipts->where('date', '<=', $request->end_date);
+        }
+
+        if ($request->min_price) {
+            $receipts = $receipts->where('price', '>=', $request->min_price);
+        }
+
+        if ($request->max_price) {
+            $receipts = $receipts->where('price', '>=', $request->max_price);
+        }
+
+        return Datatables::of($receipts)->
         filterColumn('user_id', function ($receipts, $id) {
             return $id == 0 ? $receipts : $receipts->where('user_id', $id);
         })->

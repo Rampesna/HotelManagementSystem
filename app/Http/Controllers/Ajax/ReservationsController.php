@@ -126,7 +126,8 @@ class ReservationsController extends Controller
             'room',
             'safeActivities' => function ($safeActivities) {
                 $safeActivities->with([
-                    'paymentType'
+                    'paymentType',
+                    'user'
                 ]);
             },
             'company'
@@ -183,7 +184,8 @@ class ReservationsController extends Controller
     {
         return response()->json(SafeActivity::with([
             'extra',
-            'paymentType'
+            'paymentType',
+            'user'
         ])->where('reservation_id', $request->reservation_id)->get(), 200);
     }
 }

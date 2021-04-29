@@ -12,6 +12,7 @@
                             <th>Ücret</th>
                             <th>Ödeme Türü</th>
                             <th>Ekstra</th>
+                            <th>İşlemi Yapan</th>
                             <th>Detaylar</th>
                         </tr>
                         </thead>

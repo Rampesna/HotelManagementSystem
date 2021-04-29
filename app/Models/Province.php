@@ -6,27 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Address extends Model
+class Province extends Model
 {
     use HasFactory, SoftDeletes;
-
-    public function relation()
-    {
-        return $this->morphTo();
-    }
 
     public function country()
     {
         return $this->belongsTo(Country::class);
     }
 
-    public function province()
+    public function distritcs()
     {
-        return $this->belongsTo(Province::class);
-    }
-
-    public function district()
-    {
-        return $this->belongsTo(District::class);
+        return $this->hasMany(District::class);
     }
 }
