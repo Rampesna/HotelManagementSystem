@@ -517,7 +517,7 @@
         var selectedRows = reservationEditCustomers.rows({selected: true});
         if (selectedRows.count() > 0) {
             reservationEditCustomersDeleteRowButton.show();
-            if (type === 'row') {
+            if (type == 'row') {
                 var data = reservationEditCustomers.rows(indexes).data()[0]['DT_RowId'].replace('customer_id_', '');
                 $("#editing_reservation_deleting_customer_id").val(data);
             }
@@ -537,7 +537,7 @@
         var selectedRows = editReservationSelectCustomerTable.rows({selected: true});
         if (selectedRows.count() > 0) {
             editReservationSelectCustomerButton.show();
-            if (type === 'row') {
+            if (type == 'row') {
                 var data = editReservationSelectCustomerTable.rows(indexes).data()[0]['id'];
                 $("#edit_reservation_selected_customer_id").val(data);
             }
@@ -563,7 +563,7 @@
                     `<td>${customer.surname}</td>` +
                     `<td>${customer.title ?? ''}</td>` +
                     `<td>${customer.nationality.name}</td>` +
-                    `<td>${customer.gender === 1 ? 'Erkek' : 'Kadın'}</td>` +
+                    `<td>${customer.gender == 1 ? 'Erkek' : 'Kadın'}</td>` +
                     `</tr>` +
                     ``)[0];
 
@@ -593,17 +593,17 @@
         var mother_name = $("#edit_reservation_customer_create_mother_name").val();
         var father_name = $("#edit_reservation_customer_create_father_name").val();
 
-        if (name === '' || name == null) {
+        if (name == '' || name == null) {
             toastr.warning('Ad Boş Olamaz');
-        } else if (surname === '' || surname == null) {
+        } else if (surname == '' || surname == null) {
             toastr.warning('Soyad Boş Olamaz');
-        } else if (gender === '' || gender == null) {
+        } else if (gender == '' || gender == null) {
             toastr.warning('Cinsiyet Seçmediniz!');
-        } else if (nationality_id === '' || nationality_id == null) {
+        } else if (nationality_id == '' || nationality_id == null) {
             toastr.warning('Uyruk Seçmediniz!');
-        } else if (identity_type_id === '' || identity_type_id == null) {
+        } else if (identity_type_id == '' || identity_type_id == null) {
             toastr.warning('Kimlik Türü Seçmediniz!');
-        } else if (identity_number === '' || identity_number == null) {
+        } else if (identity_number == '' || identity_number == null) {
             toastr.warning('Kimlik Numarası Olamaz');
         } else {
             $.ajax({
@@ -632,7 +632,7 @@
                         `<td>${customer.surname}</td>` +
                         `<td>${customer.title ?? ''}</td>` +
                         `<td>${customer.nationality.name}</td>` +
-                        `<td>${customer.gender === 1 ? 'Erkek' : 'Kadın'}</td>` +
+                        `<td>${customer.gender == 1 ? 'Erkek' : 'Kadın'}</td>` +
                         `</tr>` +
                         ``)[0];
 
@@ -661,21 +661,21 @@
         var room_use_type_id = $("#room_use_type_id_edit").val();
         var status_id = $("#selected_reservation_status_id").val();
 
-        if (reservation_id === '' || reservation_id == null) {
+        if (reservation_id == '' || reservation_id == null) {
             toastr.error('Reservasyon Seçiminde Hata Oluştu. Sayfayı Yenilemeyi Deneyin');
-        } else if (customer_name == null || customer_name === '') {
+        } else if (customer_name == null || customer_name == '') {
             toastr.warning('Rezervasyonu Yaptıran Müşteri Adını Giriniz!');
-        } else if (start_date == null || start_date === '') {
+        } else if (start_date == null || start_date == '') {
             toastr.warning('Geliş Tarihini Seçmediniz!');
-        } else if (end_date == null || end_date === '') {
+        } else if (end_date == null || end_date == '') {
             toastr.warning('Gidiş Tarihini Seçmediniz!');
-        } else if (room_type_id == null || room_type_id === '') {
+        } else if (room_type_id == null || room_type_id == '') {
             toastr.warning('Oda Tipini Seçmediniz!');
-        } else if (pan_type_id == null || pan_type_id === '') {
+        } else if (pan_type_id == null || pan_type_id == '') {
             toastr.warning('Pan Tipini Seçmediniz!');
-        } else if (room_id == null || room_id === '') {
+        } else if (room_id == null || room_id == '') {
             toastr.warning('Oda Seçimi Yapmadınız!');
-        } else if (room_use_type_id == null || room_use_type_id === '') {
+        } else if (room_use_type_id == null || room_use_type_id == '') {
             toastr.warning('Oda Kullanım Tipini Seçmediniz!');
         } else {
             customerList = reservationEditCustomers.rows().data();
@@ -723,13 +723,13 @@
         var description = $("#create_extra_description").val();
         var date = $("#create_extra_date").val();
 
-        if (reservation_id === '' || reservation_id == null) {
+        if (reservation_id == '' || reservation_id == null) {
             toastr.error('Rezervasyon Seçiminde Hata Oluştu. Sayfayı Yenilemeyi Deneyin!');
-        } else if (extra_id === '' || extra_id == null) {
+        } else if (extra_id == '' || extra_id == null) {
             toastr.warning('Ekstra Seçimi Yapmadınız!');
-        } else if (price === '' || price == null) {
+        } else if (price == '' || price == null) {
             toastr.warning('Ücret Girmediniz!');
-        } else if (date === '' || date == null) {
+        } else if (date == '' || date == null) {
             toastr.warning('Tarih Seçmediniz!');
         } else {
             $.ajax({
@@ -782,7 +782,7 @@
         pricesControl = 1;
 
         $.each(paymentTypes, function (index) {
-            if ($(this).val() == null || $(this).val() === '') {
+            if ($(this).val() == null || $(this).val() == '') {
                 paymentTypesControl = 0;
                 return;
             }
@@ -791,9 +791,9 @@
             }
         });
 
-        if (paymentTypesControl === 1) {
+        if (paymentTypesControl == 1) {
             $.each(prices, function (index) {
-                if ($(this).val() == null || $(this).val() === '') {
+                if ($(this).val() == null || $(this).val() == '') {
                     pricesControl = 0;
                     return;
                 }
@@ -804,9 +804,9 @@
             });
         }
 
-        if (paymentTypesControl === 0) {
+        if (paymentTypesControl == 0) {
             toastr.warning('Boş Ödeme Türü Alanı Var');
-        } else if (pricesControl === 0) {
+        } else if (pricesControl == 0) {
             toastr.warning('Boş Fiyat Alanı Var');
         } else {
             $.ajax({
@@ -849,7 +849,7 @@
         var selectedRows = reservationCustomers.rows({selected: true});
         if (selectedRows.count() > 0) {
             customersDeleteRowButton.show();
-            if (type === 'row') {
+            if (type == 'row') {
                 var data = reservationCustomers.rows(indexes).data()[0]['DT_RowId'].replace('customer_id_', '');
                 $("#create_reservation_deleting_customer_id").val(data);
             }
@@ -874,17 +874,17 @@
         var mother_name = $("#customer_create_mother_name").val();
         var father_name = $("#customer_create_father_name").val();
 
-        if (name === '' || name == null) {
+        if (name == '' || name == null) {
             toastr.warning('Ad Boş Olamaz');
-        } else if (surname === '' || surname == null) {
+        } else if (surname == '' || surname == null) {
             toastr.warning('Soyad Boş Olamaz');
-        } else if (gender === '' || gender == null) {
+        } else if (gender == '' || gender == null) {
             toastr.warning('Cinsiyet Seçmediniz!');
-        } else if (nationality_id === '' || nationality_id == null) {
+        } else if (nationality_id == '' || nationality_id == null) {
             toastr.warning('Uyruk Seçmediniz!');
-        } else if (identity_type_id === '' || identity_type_id == null) {
+        } else if (identity_type_id == '' || identity_type_id == null) {
             toastr.warning('Kimlik Türü Seçmediniz!');
-        } else if (identity_number === '' || identity_number == null) {
+        } else if (identity_number == '' || identity_number == null) {
             toastr.warning('Kimlik Numarası Olamaz');
         } else {
             $.ajax({
@@ -913,7 +913,7 @@
                         `<td>${customer.surname}</td>` +
                         `<td>${customer.title ?? ''}</td>` +
                         `<td>${customer.nationality.name}</td>` +
-                        `<td>${customer.gender === 1 ? 'Erkek' : 'Kadın'}</td>` +
+                        `<td>${customer.gender == 1 ? 'Erkek' : 'Kadın'}</td>` +
                         `</tr>` +
                         ``)[0];
 
@@ -939,7 +939,7 @@
         var selectedRows = createReservationSelectCustomerTable.rows({selected: true});
         if (selectedRows.count() > 0) {
             createReservationSelectCustomerButton.show();
-            if (type === 'row') {
+            if (type == 'row') {
                 var data = createReservationSelectCustomerTable.rows(indexes).data()[0]['id'];
                 $("#create_reservation_selected_customer_id").val(data);
             }
@@ -965,7 +965,7 @@
                     `<td>${customer.surname}</td>` +
                     `<td>${customer.title ?? ''}</td>` +
                     `<td>${customer.nationality.name}</td>` +
-                    `<td>${customer.gender === 1 ? 'Erkek' : 'Kadın'}</td>` +
+                    `<td>${customer.gender == 1 ? 'Erkek' : 'Kadın'}</td>` +
                     `</tr>` +
                     ``)[0];
 
@@ -991,19 +991,19 @@
         var room_use_type_id = $("#room_use_type_id_create").val();
         var price = $("#price_create").val();
 
-        if (customer_name == null || customer_name === '') {
+        if (customer_name == null || customer_name == '') {
             toastr.warning('Rezervasyonu Yaptıran Müşteri Adını Giriniz!');
-        } else if (start_date == null || start_date === '') {
+        } else if (start_date == null || start_date == '') {
             toastr.warning('Geliş Tarihini Seçmediniz!');
-        } else if (end_date == null || end_date === '') {
+        } else if (end_date == null || end_date == '') {
             toastr.warning('Gidiş Tarihini Seçmediniz!');
-        } else if (room_type_id == null || room_type_id === '') {
+        } else if (room_type_id == null || room_type_id == '') {
             toastr.warning('Oda Tipini Seçmediniz!');
-        } else if (pan_type_id == null || pan_type_id === '') {
+        } else if (pan_type_id == null || pan_type_id == '') {
             toastr.warning('Pan Tipini Seçmediniz!');
-        } else if (room_id == null || room_id === '') {
+        } else if (room_id == null || room_id == '') {
             toastr.warning('Oda Seçimi Yapmadınız!');
-        } else if (room_use_type_id == null || room_use_type_id === '') {
+        } else if (room_use_type_id == null || room_use_type_id == '') {
             toastr.warning('Oda Kullanım Tipini Seçmediniz!');
         } else {
             customerList = reservationCustomers.rows().data();
@@ -1079,7 +1079,7 @@
                     roomSelector.html('').selectpicker('refresh');
                     roomSelector.append(`<option selected hidden disabled></option>`);
                     $.each(rooms, function (index) {
-                        roomSelector.append(`<option ${rooms[index].id === id ? 'selected' : null} value="${rooms[index].id}">${rooms[index].number}</option>`);
+                        roomSelector.append(`<option ${rooms[index].id == id ? 'selected' : null} value="${rooms[index].id}">${rooms[index].number}</option>`);
                     });
                     roomSelector.selectpicker('refresh');
                 },
@@ -1111,7 +1111,7 @@
                     roomEditSelector.html('').selectpicker('refresh');
                     roomEditSelector.append(`<option selected hidden disabled></option>`);
                     $.each(rooms, function (index) {
-                        roomEditSelector.append(`<option ${rooms[index].id === id ? 'selected' : null} value="${rooms[index].id}">${rooms[index].number}</option>`);
+                        roomEditSelector.append(`<option ${rooms[index].id == id ? 'selected' : null} value="${rooms[index].id}">${rooms[index].number}</option>`);
                     });
                     roomEditSelector.selectpicker('refresh');
                 },
@@ -1160,7 +1160,7 @@
                             `<td>${reservation.customers[index].surname}</td>` +
                             `<td>${reservation.customers[index].title ?? ''}</td>` +
                             `<td>${reservation.customers[index].nationality.name}</td>` +
-                            `<td>${reservation.customers[index].gender === 1 ? 'Erkek' : 'Kadın'}</td>` +
+                            `<td>${reservation.customers[index].gender == 1 ? 'Erkek' : 'Kadın'}</td>` +
                             `</tr>` +
                             ``)[0];
 
@@ -1189,10 +1189,10 @@
                 $.each(safeActivities, function (index) {
                     reservationSafeActivities.row.add([
                         safeActivities[index].id,
-                        `<span class="btn btn-pill btn-sm btn-${safeActivities[index].direction === 1 ? 'danger' : 'success'}" style="font-size: 11px; height: 20px; padding-top: 2px">${safeActivities[index].direction === 1 ? 'Gider' : 'Gelir'}</span>`,
+                        `<span class="btn btn-pill btn-sm btn-${safeActivities[index].direction == 1 ? 'danger' : 'success'}" style="font-size: 11px; height: 20px; padding-top: 2px">${safeActivities[index].direction == 1 ? 'Gider' : 'Gelir'}</span>`,
                         `${safeActivities[index].date ? reformatDate(safeActivities[index].date) : reformatDate(safeActivities[index].created_at)}`,
                         `${parseFloat(safeActivities[index].price).toFixed(2)} TL`,
-                        `${safeActivities[index].payment_type_id ? safeActivities[index].payment_type.name : (safeActivities[index].direction === 1 ? 'Kasadan' : '')}`,
+                        `${safeActivities[index].payment_type_id ? safeActivities[index].payment_type.name : (safeActivities[index].direction == 1 ? 'Kasadan' : '')}`,
                         `${safeActivities[index].extra ? safeActivities[index].extra.name : 'Oda Ücreti'}`,
                         `${safeActivities[index].user ? safeActivities[index].user.name : ''}`,
                         `${safeActivities[index].description ?? ''}`
@@ -1272,10 +1272,6 @@
     });
 
     $('.roomPlusIcon').click(function () {
-
-        console.log('Tıklandı')
-        console.log('----------------------')
-
         var room_id = $(this).data('id');
         $("#roomDropdownList_" + room_id).hide();
 
@@ -1286,17 +1282,9 @@
                 room_id: room_id
             },
             success: function (room) {
-
-                console.log('Oda Bilgisi Ajaxdan Geldi')
-                console.log('----------------------')
-
-                if (parseInt(room.room_status_id) === 1 || parseInt(room.room_status_id) === 2) {
-
-                    console.log('Oda Durumu 1 yada 2')
-                    console.log('----------------------')
-
+                if (parseInt(room.room_status_id) == 1 || parseInt(room.room_status_id) == 2) {
                     $("#roomDropdownList_" + room.id).show();
-                    if (room.room_status_id === 2 && room.activeReservation != null) {
+                    if (room.room_status_id == 2 && room.activeReservation != null) {
                         $.ajax({
                             type: 'get',
                             url: '{{ route('ajax.reservations.debtControl') }}',
@@ -1315,9 +1303,6 @@
                             }
                         });
                     }
-                } else {
-                    console.log('Oda Durumu 1 yada 2 DEĞİL')
-                    console.log('----------------------')
                 }
             },
             error: function (error) {
@@ -1371,7 +1356,7 @@
 
                 $.each(list, function (index) {
                     $(this).removeClass();
-                    if (status_id === (index + 1)) {
+                    if (status_id == (index + 1)) {
                         $(this).addClass('dropdown_icon_selector fa fa-check-circle text-success');
                     } else {
                         $(this).addClass(' dropdown_icon_selector fa fa-check-circle ');

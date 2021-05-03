@@ -82,6 +82,12 @@
 
         },
 
+        loading: function (isLoading, view) {
+            if (isLoading) {
+
+            }
+        },
+
         eventClick: function (calEvent, jsEvent, view) {
             $.ajax({
                 type: 'get',
@@ -119,7 +125,7 @@
             $("#show_reservation_rightbar_toggle").click();
         },
 
-        events: function(start, end, timezone, callback) {
+        events: function (start, end, timezone, callback) {
             $.ajax({
                 url: '{{ route('ajax.reservations.calendar') }}',
                 dataType: 'json',
@@ -127,7 +133,7 @@
                     start_date: start.format(),
                     end_date: end.format()
                 },
-                success: function(reservations) {
+                success: function (reservations) {
                     var events = [];
 
                     $.each(reservations, function (index) {

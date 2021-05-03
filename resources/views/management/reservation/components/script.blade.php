@@ -510,35 +510,35 @@
                 }
             });
 
-            if (reservation.status_id === 1) {
+            if (reservation.status_id == 1) {
                 reservationEditContext.show();
                 reservationStartStayContext.hide();
                 reservationStopStayContext.hide();
                 reservationApproveContext.show();
                 reservationDenyContext.show();
                 downloadInvoiceContext.hide();
-            } else if (reservation.status_id === 2) {
+            } else if (reservation.status_id == 2) {
                 reservationEditContext.show();
                 reservationStartStayContext.show();
                 reservationStopStayContext.hide();
                 reservationApproveContext.hide();
                 reservationDenyContext.show();
                 downloadInvoiceContext.hide();
-            } else if (reservation.status_id === 3) {
+            } else if (reservation.status_id == 3) {
                 reservationEditContext.show();
                 reservationStartStayContext.hide();
                 reservationStopStayContext.hide();
                 reservationApproveContext.show();
                 reservationDenyContext.hide();
                 downloadInvoiceContext.hide();
-            } else if (reservation.status_id === 4) {
+            } else if (reservation.status_id == 4) {
                 reservationEditContext.show();
                 reservationStartStayContext.hide();
                 reservationStopStayContext.hide();
                 reservationApproveContext.hide();
                 reservationDenyContext.hide();
                 downloadInvoiceContext.hide();
-            } else if (reservation.status_id === 5) {
+            } else if (reservation.status_id == 5) {
                 reservationEditContext.hide();
                 reservationStartStayContext.hide();
                 reservationStopStayContext.hide();
