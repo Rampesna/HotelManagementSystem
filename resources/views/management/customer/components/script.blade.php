@@ -242,8 +242,7 @@
         }
     });
 
-    function createCustomer()
-    {
+    function createCustomer() {
         $("#create_customer_rightbar_toggle").click();
     }
 
@@ -261,6 +260,8 @@
                 $("#editing_customer_name").val(customer.name);
                 $("#editing_customer_surname").val(customer.surname);
                 $("#editing_customer_title").val(customer.title);
+                $("#editing_customer_phone_number").val(customer.phone_number);
+                $("#editing_customer_email").val(customer.email);
                 $("#editing_customer_nationality_id").val(customer.nationality_id).selectpicker('refresh');
                 $("#editing_customer_gender").val(customer.gender).selectpicker('refresh');
                 $("#editing_customer_marriage").val(customer.marriage).selectpicker('refresh');
@@ -285,6 +286,8 @@
         var name = $("#creating_customer_name").val();
         var surname = $("#creating_customer_surname").val();
         var title = $("#creating_customer_title").val();
+        var phone_number = $("#creating_customer_phone_number").val();
+        var email = $("#creating_customer_email").val();
         var nationality_id = $("#creating_customer_nationality_id").val();
         var gender = $("#creating_customer_gender").val();
         var marriage = $("#creating_customer_marriage").val();
@@ -307,6 +310,8 @@
                 surname: surname,
                 gender: gender,
                 title: title,
+                phone_number: phone_number,
+                email: email,
                 nationality_id: nationality_id,
                 marriage: marriage,
                 identity_type_id: identity_type_id,
@@ -337,6 +342,8 @@
         var name = $("#editing_customer_name").val();
         var surname = $("#editing_customer_surname").val();
         var title = $("#editing_customer_title").val();
+        var phone_number = $("#editing_customer_phone_number").val();
+        var email = $("#editing_customer_email").val();
         var nationality_id = $("#editing_customer_nationality_id").val();
         var gender = $("#editing_customer_gender").val();
         var marriage = $("#editing_customer_marriage").val();
@@ -360,6 +367,8 @@
                 surname: surname,
                 gender: gender,
                 title: title,
+                phone_number: phone_number,
+                email: email,
                 nationality_id: nationality_id,
                 marriage: marriage,
                 identity_type_id: identity_type_id,

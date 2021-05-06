@@ -61,12 +61,15 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
 
     Route::prefix('reservations')->group(function () {
         Route::any('index', 'ReservationsController@index')->name('ajax.reservations.index');
+        Route::any('exceptIndex', 'ReservationsController@exceptIndex')->name('ajax.reservations.exceptIndex');
         Route::any('calendar', 'ReservationsController@calendar')->name('ajax.reservations.calendar');
         Route::any('edit', 'ReservationsController@edit')->name('ajax.reservations.edit');
         Route::any('save', 'ReservationsController@save')->name('ajax.reservations.save');
         Route::any('setStatus', 'ReservationsController@setStatus')->name('ajax.reservations.setStatus');
+        Route::any('endWithWaitingPayment', 'ReservationsController@endWithWaitingPayment')->name('ajax.reservations.endWithWaitingPayment');
         Route::any('debtControl', 'ReservationsController@debtControl')->name('ajax.reservations.debtControl');
         Route::any('safeActivities', 'ReservationsController@safeActivities')->name('ajax.reservations.safeActivities');
+        Route::any('transferExtrasAndSafeActivities', 'ReservationsController@transferExtrasAndSafeActivities')->name('ajax.reservations.transferExtrasAndSafeActivities');
     });
 
     Route::prefix('safes')->group(function () {
@@ -80,6 +83,10 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
         Route::any('safeTotal', 'ReceiptsController@safeTotal')->name('ajax.receipts.safeTotal');
     });
 
+    Route::prefix('waiting-payments')->group(function () {
+        Route::any('index', 'WaitingPaymentsController@index')->name('ajax.waiting-payments.index');
+    });
+
     Route::prefix('stayers')->group(function () {
         Route::any('index', 'StayersController@reservations')->name('ajax.stayers.reservations');
     });
@@ -87,6 +94,7 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
     Route::prefix('safe-activities')->group(function () {
         Route::post('create', 'SafeActivitiesController@create')->name('ajax.safe-activities.create');
         Route::any('getPayment', 'SafesController@getPayment')->name('ajax.safe-activities.getPayment');
+        Route::any('refund', 'SafesController@refund')->name('ajax.safe-activities.refund');
         Route::get('getByReservationId', 'SafeActivitiesController@getByReservationId')->name('ajax.safe-activities.getByReservationId');
     });
 });

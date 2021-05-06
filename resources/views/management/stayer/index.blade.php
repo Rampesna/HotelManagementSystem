@@ -23,6 +23,7 @@
                         <tr>
                             <th>#</th>
                             <th>Müşteri</th>
+                            <th>Firma</th>
                             <th>Geliş Tarihi</th>
                             <th>Gidiş Tarihi</th>
                             <th>Durum</th>
@@ -36,6 +37,7 @@
                         <tr>
                             <th>#</th>
                             <th>Müşteri</th>
+                            <th>Firma</th>
                             <th>Geliş Tarihi</th>
                             <th>Gidiş Tarihi</th>
                             <th>Durum</th>

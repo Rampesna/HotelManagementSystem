@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Ajax;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company;
 use App\Models\PanType;
 use App\Models\Reservation;
 use App\Models\Room;
@@ -21,28 +22,16 @@ class StayersController extends Controller
 
         return Datatables::of(Reservation::where('status_id', 4))->
         filterColumn('room_type_id', function ($reservation, $keyword) {
-            $ids = [];
-            $types = RoomType::where('name', 'like', '%' . $keyword . '%')->get();
-            foreach ($types as $type) {
-                $ids[] = $type->id;
-            }
-            return $reservation->whereIn('room_type_id', $ids);
+            return $reservation->whereIn('room_type_id', RoomType::where('name', 'like', '%' . $keyword . '%')->pluck('id'));
         })->
         filterColumn('pan_type_id', function ($reservation, $keyword) {
-            $ids = [];
-            $types = PanType::where('name', 'like', '%' . $keyword . '%')->get();
-            foreach ($types as $type) {
-                $ids[] = $type->id;
-            }
-            return $reservation->whereIn('room_type_id', $ids);
+            return $reservation->whereIn('room_type_id', PanType::where('name', 'like', '%' . $keyword . '%')->pluck('id'));
         })->
         filterColumn('room_id', function ($reservation, $keyword) {
-            $ids = [];
-            $rooms = Room::where('number', 'like', '%' . $keyword . '%')->get();
-            foreach ($rooms as $room) {
-                $ids[] = $room->id;
-            }
-            return $reservation->whereIn('room_id', $ids);
+            return $reservation->whereIn('room_id', Room::where('number', 'like', '%' . $keyword . '%')->pluck('id'));
+        })->
+        filterColumn('company_id', function ($reservation, $keyword) {
+            return $reservation->whereIn('company_id', Company::where('title', 'like', '%' . $keyword . '%')->pluck('id'));
         })->
         filterColumn('start_date', function ($reservation, $date) {
             return $reservation->where('start_date', '>=', $date);
@@ -51,12 +40,7 @@ class StayersController extends Controller
             return $reservation->where('end_date', '<=', $date);
         })->
         filterColumn('price', function ($reservation, $price) {
-            $ids = [];
-            $safeActivities = SafeActivity::where('price', $price)->get();
-            foreach ($safeActivities as $safeActivity) {
-                $ids[] = $safeActivity->reservation_id;
-            }
-            return $reservation->whereIn('id', $ids);
+            return $reservation->whereIn('id', SafeActivity::where('price', $price)->pluck('reservation_id'));
         })->
         editColumn('id', function ($reservation) {
             return '#' . $reservation->id;
@@ -75,6 +59,9 @@ class StayersController extends Controller
         })->
         editColumn('pan_type_id', function ($reservation) {
             return $reservation->panType->name;
+        })->
+        editColumn('company_id', function ($reservation) {
+            return $reservation->company->title ?? '';
         })->
         editColumn('room_id', function ($reservation) {
             return $reservation->room->number;

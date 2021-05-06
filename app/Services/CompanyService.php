@@ -28,8 +28,11 @@ class CompanyService
     public function save(Request $request)
     {
         $this->company->title = $request->title;
+        $this->company->phone_number = $request->phone_number;
         $this->company->tax_number = $request->tax_number;
-        $this->company->custom_discount_percent = $request->custom_discount_percent;
+        $this->company->tax_office = $request->tax_office;
+        $this->company->custom_discount = $request->custom_discount;
+        $this->company->invoice_address = $request->invoice_address;
         $this->company->save();
 
         return $this->company;

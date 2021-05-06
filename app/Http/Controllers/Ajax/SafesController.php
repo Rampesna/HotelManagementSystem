@@ -22,11 +22,28 @@ class SafesController extends Controller
                 1,
                 $request->reservation_id,
                 0, $checkout['price'],
-                null,
+                $checkout['description'],
                 date('Y-m-d H:i:s'),
                 null,
                 $checkout['payment_type_id']
             );
         }
+    }
+
+    public function refund(Request $request)
+    {
+        $safeActivityService = new SafeActivityService;
+        $safeActivityService->setSafeActivity(new SafeActivity);
+        $safeActivity = $safeActivityService->save(
+            auth()->user()->id(),
+            1,
+            $request->reservation_id,
+            1,
+            $request->price,
+            'İade',
+            date('Y-m-d H:i:s'),
+            null,
+            null
+        );
     }
 }

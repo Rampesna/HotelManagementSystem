@@ -13,7 +13,7 @@
                 <div class="modal-body">
                     <div data-repeater-list="checkouts">
                         <div class="row checkoutRepeaterList" data-repeater-item>
-                            <div class="col-xl-6">
+                            <div class="col-xl-3">
                                 <div class="form-group">
                                     <label for="payment_type_id">Ödeme Türü</label>
                                     <select id="payment_type_id" name="payment_type_id" class="form-control paymentTypeSelector" required>
@@ -23,10 +23,16 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-xl-5">
+                            <div class="col-xl-3">
                                 <div class="form-group">
                                     <label for="price">Alınan Miktar</label>
                                     <input id="price" name="price" type="text" class="form-control decimal priceSelector" required>
+                                </div>
+                            </div>
+                            <div class="col-xl-5">
+                                <div class="form-group">
+                                    <label for="description">Açıklama</label>
+                                    <input id="description" name="description" type="text" class="form-control descriptionSelector" required>
                                 </div>
                             </div>
                             <div class="col-xl-1">

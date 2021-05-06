@@ -19,16 +19,22 @@
                         <tr>
                             <th>#</th>
                             <th>Firma Ünvanı</th>
-                            <th>Firma Vergi Numarası</th>
-                            <th>Tanımlı İndirim Yüzdesi</th>
+                            <th>Telefon Numarası</th>
+                            <th>Vergi Numarası</th>
+                            <th>Vergi Dairesi</th>
+                            <th>İndirim Ücreti</th>
+                            <th>Fatura Adresi</th>
                         </tr>
                         </thead>
                         <tfoot>
                         <tr>
                             <th>#</th>
                             <th>Firma Ünvanı</th>
-                            <th>Firma Vergi Numarası</th>
-                            <th>Tanımlı İndirim Yüzdesi</th>
+                            <th>Telefon Numarası</th>
+                            <th>Vergi Numarası</th>
+                            <th>Vergi Dairesi</th>
+                            <th>İndirim Ücreti</th>
+                            <th>Fatura Adresi</th>
                         </tr>
                         </tfoot>
                     </table>

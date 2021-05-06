@@ -3,12 +3,17 @@
 namespace App\Http\Controllers\Ajax;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company;
 use App\Models\PanType;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\RoomType;
 use App\Models\SafeActivity;
+use App\Models\WaitingPayment;
 use App\Services\ReservationService;
+use App\Services\RoomService;
+use App\Services\SafeActivityService;
+use App\Services\WaitingPaymentService;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
@@ -24,28 +29,16 @@ class ReservationsController extends Controller
             return $id == 0 ? $reservation : $reservation->where('status_id', $id);
         })->
         filterColumn('room_type_id', function ($reservation, $keyword) {
-            $ids = [];
-            $types = RoomType::where('name', 'like', '%' . $keyword . '%')->get();
-            foreach ($types as $type) {
-                $ids[] = $type->id;
-            }
-            return $reservation->whereIn('room_type_id', $ids);
+            return $reservation->whereIn('room_type_id', RoomType::where('name', 'like', '%' . $keyword . '%')->pluck('id'));
         })->
         filterColumn('pan_type_id', function ($reservation, $keyword) {
-            $ids = [];
-            $types = PanType::where('name', 'like', '%' . $keyword . '%')->get();
-            foreach ($types as $type) {
-                $ids[] = $type->id;
-            }
-            return $reservation->whereIn('room_type_id', $ids);
+            return $reservation->whereIn('room_type_id', PanType::where('name', 'like', '%' . $keyword . '%')->pluck('id'));
+        })->
+        filterColumn('company_id', function ($reservation, $keyword) {
+            return $reservation->whereIn('company_id', Company::where('title', 'like', '%' . $keyword . '%')->pluck('id'));
         })->
         filterColumn('room_id', function ($reservation, $keyword) {
-            $ids = [];
-            $rooms = Room::where('number', 'like', '%' . $keyword . '%')->get();
-            foreach ($rooms as $room) {
-                $ids[] = $room->id;
-            }
-            return $reservation->whereIn('room_id', $ids);
+            return $reservation->whereIn('room_id', Room::where('number', 'like', '%' . $keyword . '%')->pluck('id'));
         })->
         filterColumn('start_date', function ($reservation, $date) {
             return $reservation->where('start_date', '>=', $date);
@@ -54,12 +47,7 @@ class ReservationsController extends Controller
             return $reservation->where('end_date', '<=', $date);
         })->
         filterColumn('price', function ($reservation, $price) {
-            $ids = [];
-            $safeActivities = SafeActivity::where('price', $price)->get();
-            foreach ($safeActivities as $safeActivity) {
-                $ids[] = $safeActivity->reservation_id;
-            }
-            return $reservation->whereIn('id', $ids);
+            return $reservation->whereIn('id', SafeActivity::where('price', $price)->pluck('reservation_id'));
         })->
         editColumn('id', function ($reservation) {
             return '#' . $reservation->id;
@@ -79,6 +67,9 @@ class ReservationsController extends Controller
         editColumn('pan_type_id', function ($reservation) {
             return $reservation->panType->name;
         })->
+        editColumn('company_id', function ($reservation) {
+            return $reservation->company->title ?? '';
+        })->
         editColumn('room_id', function ($reservation) {
             return $reservation->room->number;
         })->
@@ -87,6 +78,13 @@ class ReservationsController extends Controller
         })->
         rawColumns(['customer_id', 'status_id'])->
         make(true);
+    }
+
+    public function exceptIndex(Request $request)
+    {
+        return response()->json(Reservation::with([
+            'room'
+        ])->where('id', '<>', $request->id)->where('status_id', 4)->get());
     }
 
     public function calendar(Request $request)
@@ -187,5 +185,47 @@ class ReservationsController extends Controller
             'paymentType',
             'user'
         ])->where('reservation_id', $request->reservation_id)->get(), 200);
+    }
+
+    public function transferExtrasAndSafeActivities(Request $request)
+    {
+        $safeActivityService = new SafeActivityService;
+        $safeActivities = SafeActivity::where('reservation_id', $request->from)->get();
+        foreach ($safeActivities as $safeActivity) {
+            $safeActivityService->setSafeActivity(new SafeActivity);
+            $safeActivityService->save(
+                $safeActivity->user_id,
+                $safeActivity->safe_id,
+                $request->to,
+                $safeActivity->direction,
+                $safeActivity->price,
+                $safeActivity->description,
+                $safeActivity->date,
+                $safeActivity->extra_id
+            );
+
+            $safeActivity->delete();
+        }
+
+        $from = Reservation::find($request->from);
+
+        $roomService = new RoomService;
+        $roomService->setRoom(Room::find($from->room_id));
+        $roomService->setStatus(1);
+
+        $reservationService = new ReservationService;
+        $reservationService->setReservation(Reservation::find($request->from));
+        $reservationService->setStatus(5);
+    }
+
+    public function endWithWaitingPayment(Request $request)
+    {
+        $waitingPaymentService = new WaitingPaymentService;
+        $waitingPaymentService->setWaitingPayment(new WaitingPayment);
+        $waitingPaymentService->save($request->reservation_id, 0);
+
+        $reservationService = new ReservationService;
+        $reservationService->setReservation(Reservation::find($request->reservation_id));
+        $reservationService->setStatus(5);
     }
 }

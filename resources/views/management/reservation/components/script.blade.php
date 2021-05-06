@@ -240,9 +240,9 @@
             this.api().columns().every(function (index) {
                 var column = this;
                 var input = document.createElement('input');
-                if (index === 2 || index === 3) {
+                if (index === 3 || index === 4) {
                     input.setAttribute("type", "datetime-local");
-                } else if (index === 4) {
+                } else if (index === 5) {
                     input = document.createElement('select');
                     var option = document.createElement("option");
                     option.setAttribute("value", 0);
@@ -269,6 +269,7 @@
         columns: [
             {data: 'id', name: 'id'},
             {data: 'customer_name', name: 'customer_name'},
+            {data: 'company_id', name: 'company_id'},
             {data: 'start_date', name: 'start_date'},
             {data: 'end_date', name: 'end_date'},
             {data: 'status_id', name: 'status_id'},
@@ -582,6 +583,18 @@
         }
     });
 
+    $('.decimal').on("copy cut paste drop", function () {
+        return false;
+    }).keyup(function () {
+        var val = $(this).val();
+        if (isNaN(val)) {
+            val = val.replace(/[^0-9\.]/g, '');
+            if (val.split('.').length > 2)
+                val = val.replace(/\.+$/, "");
+        }
+        $(this).val(val);
+    });
+
     var CreateReservationRightBar = function () {
         // Private properties
         var _element;
@@ -775,6 +788,8 @@
             toastr.warning('Oda Seçimi Yapmadınız!');
         } else if (room_use_type_id == null || room_use_type_id === '') {
             toastr.warning('Oda Kullanım Tipini Seçmediniz!');
+        } else if (price == null || price === '') {
+            toastr.warning('Oda Ücretini Girmediniz!');
         } else {
             customerList = reservationCustomers.rows().data();
             customerListArray = [];
@@ -793,8 +808,8 @@
                 pan_type_id: pan_type_id,
                 room_id: room_id,
                 room_use_type_id: room_use_type_id,
-                price: price,
                 status_id: 1,
+                price: price,
                 customers: customerListArray
             }
 
@@ -847,6 +862,7 @@
         var room_id = $("#room_id_edit").val();
         var room_use_type_id = $("#room_use_type_id_edit").val();
         var status_id = $("#editing_reservation_status_id").val();
+        var price = $("#price_edit").val();
 
         if (reservation_id === '' || reservation_id == null) {
             toastr.error('Reservasyon Seçiminde Hata Oluştu. Sayfayı Yenilemeyi Deneyin');
@@ -864,6 +880,8 @@
             toastr.warning('Oda Seçimi Yapmadınız!');
         } else if (room_use_type_id == null || room_use_type_id === '') {
             toastr.warning('Oda Kullanım Tipini Seçmediniz!');
+        } else if (price == null || price === '') {
+            toastr.warning('Oda Ücretini Girmediniz!');
         } else {
             customerList = reservationEditCustomers.rows().data();
             customerListArray = [];
@@ -884,6 +902,7 @@
                 room_id: room_id,
                 room_use_type_id: room_use_type_id,
                 status_id: status_id,
+                price: price,
                 customers: customerListArray
             }
 
@@ -913,6 +932,8 @@
         var surname = $("#customer_create_surname").val();
         var gender = $("#customer_create_gender").val();
         var title = $("#customer_create_title").val();
+        var phone_number = $("#customer_create_phone_number").val();
+        var email = $("#customer_create_email").val();
         var nationality_id = $("#customer_create_nationality_id").val();
         var marriage = $("#customer_create_marriage").val();
         var identity_type_id = $("#customer_create_identity_type_id").val();
@@ -945,6 +966,8 @@
                     surname: surname,
                     gender: gender,
                     title: title,
+                    phone_number: phone_number,
+                    email: email,
                     nationality_id: nationality_id,
                     marriage: marriage,
                     identity_type_id: identity_type_id,
@@ -984,6 +1007,8 @@
         var surname = $("#edit_reservation_customer_create_surname").val();
         var gender = $("#edit_reservation_customer_create_gender").val();
         var title = $("#edit_reservation_customer_create_title").val();
+        var phone_number = $("#edit_reservation_customer_create_phone_number").val();
+        var email = $("#edit_reservation_customer_create_email").val();
         var nationality_id = $("#edit_reservation_customer_create_nationality_id").val();
         var marriage = $("#edit_reservation_customer_create_marriage").val();
         var identity_type_id = $("#edit_reservation_customer_create_identity_type_id").val();
@@ -1016,6 +1041,8 @@
                     surname: surname,
                     gender: gender,
                     title: title,
+                    phone_numer: phone_numer,
+                    email: email,
                     nationality_id: nationality_id,
                     marriage: marriage,
                     identity_type_id: identity_type_id,
@@ -1051,6 +1078,7 @@
     });
 
     reservationEditContext.click(function () {
+        $("#edit_reservation_rightbar").hide();
         var reservation_id = $("#editing_reservation_id").val();
         var reservation_room_id = $("#editing_reservation_room_id").val();
         $("#edit_reservation_rightbar_toggle").click();
@@ -1067,6 +1095,7 @@
                 $("#end_date_edit").val(dateReCreator(reservation.end_date));
                 $("#editing_reservation_status_id").val(reservation.status_id);
                 $("#company_id_edit").val(reservation.company_id).selectpicker('refresh');
+                $("#price_edit").val(reservation.price);
 
                 roomTypeEditSelector.val(reservation.room_type.id).selectpicker('refresh');
                 panTypeEditSelector.val(reservation.pan_type.id).selectpicker('refresh');
@@ -1090,6 +1119,7 @@
                     reservationEditCustomers.row.add(customer);
                     reservationEditCustomers.draw(false);
                 });
+                $("#edit_reservation_rightbar").fadeIn(250);
             },
             error: function (error) {
                 console.log(error)

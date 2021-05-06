@@ -28,6 +28,8 @@ class CustomerService
         $this->customer->name = $request->name;
         $this->customer->surname = $request->surname;
         $this->customer->title = $request->title;
+        $this->customer->phone_number = $request->phone_number;
+        $this->customer->email = $request->email;
         $this->customer->nationality_id = $request->nationality_id;
         $this->customer->gender = $request->gender;
         $this->customer->marriage = $request->marriage;

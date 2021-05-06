@@ -16,7 +16,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/test', function () {
-    return \App\Models\Country::find(223)->provinces;
+    return bcrypt(123456);
+//    return \App\Models\Country::find(223)->provinces;
 //    $startDate = '2021-05-02 15:00:00';
 //    $endDate = '2021-05-07 15:00:00';
 //
@@ -70,6 +71,13 @@ Route::middleware(['auth'])->namespace('App\\Http\\Controllers')->group(function
                 return redirect()->route('management.receipt.index');
             });
             Route::get('index', 'ReceiptController@index')->name('management.receipt.index')->middleware('Authority:1');
+        });
+
+        Route::prefix('waiting-payment')->group(function () {
+            Route::get('/', function () {
+                return redirect()->route('management.waiting-payment.index');
+            });
+            Route::get('index', 'WaitingPaymentController@index')->name('management.waiting-payment.index')->middleware('Authority:1');
         });
 
         Route::prefix('stayer')->group(function () {

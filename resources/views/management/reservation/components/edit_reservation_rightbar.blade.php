@@ -104,6 +104,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-xl-9"></div>
+                    <div class="col-xl-3">
+                        <div class="form-group">
+                            <label for="price_edit">Oda Ücreti</label>
+                            <input type="text" id="price_edit" class="form-control decimal">
+                        </div>
+                    </div>
+                </div>
             </div>
             <hr>
             <div class="offcanvas-wrapper mb-5 scroll-pull">

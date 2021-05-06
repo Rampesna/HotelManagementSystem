@@ -305,6 +305,10 @@
     var getPaymentButton = $("#getPaymentButton");
     var setRoomPriceCollectiveButton = $("#setRoomPriceCollectiveButton");
     var setRoomStatusCollectiveButton = $("#setRoomStatusCollectiveButton");
+    var transferExtrasAndSafeActivitiesButton = $("#transferExtrasAndSafeActivitiesButton");
+    var transferToSelector = $("#transfer_to");
+    var refundButton = $("#refundButton");
+    var endWithWaitingPaymentButton = $("#endWithWaitingPaymentButton");
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -650,6 +654,7 @@
     });
 
     updateReservationButton.click(function () {
+        $("#loader").fadeIn(250);
         var reservation_id = $("#selected_reservation_id").val();
         var company_id = $("#company_id_edit").val();
         var customer_name = $("#customer_name_edit").val();
@@ -660,6 +665,7 @@
         var room_id = $("#room_id_edit").val();
         var room_use_type_id = $("#room_use_type_id_edit").val();
         var status_id = $("#selected_reservation_status_id").val();
+        var price = $("#price_edit").val();
 
         if (reservation_id == '' || reservation_id == null) {
             toastr.error('Reservasyon Seçiminde Hata Oluştu. Sayfayı Yenilemeyi Deneyin');
@@ -677,6 +683,8 @@
             toastr.warning('Oda Seçimi Yapmadınız!');
         } else if (room_use_type_id == null || room_use_type_id == '') {
             toastr.warning('Oda Kullanım Tipini Seçmediniz!');
+        } else if (price == null || price == '') {
+            toastr.warning('Oda Ücretini Girmediniz!');
         } else {
             customerList = reservationEditCustomers.rows().data();
             customerListArray = [];
@@ -697,6 +705,7 @@
                 room_id: room_id,
                 room_use_type_id: room_use_type_id,
                 status_id: status_id,
+                price: price,
                 customers: customerListArray
             }
 
@@ -708,6 +717,8 @@
                     location.reload();
                 },
                 error: function (error) {
+                    $("#loader").fadeOut(250);
+                    toastr.error('Bir Hata Oluştu!');
                     console.log(error)
                 }
             });
@@ -777,6 +788,7 @@
 
         var paymentTypes = $('select.paymentTypeSelector');
         var prices = $('input.priceSelector');
+        var descriptions = $('input.descriptionSelector');
 
         paymentTypesControl = 1;
         pricesControl = 1;
@@ -804,6 +816,16 @@
             });
         }
 
+        if (paymentTypesControl == 1 && pricesControl == 1) {
+            $.each(descriptions, function (index) {
+                checkouts[index] = {
+                    payment_type_id: checkouts[index].payment_type_id,
+                    price: checkouts[index].price,
+                    description: $(this).val()
+                };
+            });
+        }
+
         if (paymentTypesControl == 0) {
             toastr.warning('Boş Ödeme Türü Alanı Var');
         } else if (pricesControl == 0) {
@@ -821,6 +843,49 @@
                     toastr.success('Ödeme Başarıyla Alındı');
                     $("#GetPaymentModal").modal('hide');
                     $("#GetPaymentForm").trigger('reset');
+
+                    $.ajax({
+                        type: 'get',
+                        url: '{{ route('ajax.reservations.debtControl') }}',
+                        data: {
+                            reservation_id: reservation_id
+                        },
+                        success: function (response) {
+                            $("#reservationCheckout_" + reservation_id).html(parseFloat(response.incoming - response.outgoing).toFixed(2));
+                        },
+                        error: function (error) {
+                            console.log(error)
+                        }
+                    });
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            });
+        }
+    });
+
+    refundButton.click(function () {
+        var reservation_id = $("#refund_reservation_id").val();
+        var price = $("#refund_price").val();
+
+        if (reservation_id == null || reservation_id === '') {
+            toastr.error('Rezervasyon Seçiminde Hata Oluştu! Sayfayı Yenilemeyi Deneyin.');
+        } else if (price == null || price === '') {
+            toastr.warning('İade Edilecek Tutarı Girmediniz!');
+        } else {
+            $.ajax({
+                type: 'post',
+                url: '{{ route('ajax.safe-activities.refund') }}',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    reservation_id: reservation_id,
+                    price: price
+                },
+                success: function () {
+                    toastr.success('İade Başarıyla Yapıldı');
+                    $("#RefundModal").modal('hide');
+                    $("#RefundForm").trigger('reset');
 
                     $.ajax({
                         type: 'get',
@@ -1005,6 +1070,8 @@
             toastr.warning('Oda Seçimi Yapmadınız!');
         } else if (room_use_type_id == null || room_use_type_id == '') {
             toastr.warning('Oda Kullanım Tipini Seçmediniz!');
+        } else if (price == null || price == '') {
+            toastr.warning('Oda Ücretini Girmediniz!');
         } else {
             customerList = reservationCustomers.rows().data();
             customerListArray = [];
@@ -1144,6 +1211,7 @@
                     $("#selected_reservation_status_id").val(reservation.status_id);
                     $("#selected_reservation_room_id").val(reservation.room_id);
                     $("#company_id_edit").val(reservation.company_id).selectpicker('refresh');
+                    $("#price_edit").val(reservation.price);
 
                     roomTypeEditSelector.val(reservation.room_type.id).selectpicker('refresh');
                     panTypeEditSelector.val(reservation.pan_type.id).selectpicker('refresh');
@@ -1193,7 +1261,7 @@
                         `${safeActivities[index].date ? reformatDate(safeActivities[index].date) : reformatDate(safeActivities[index].created_at)}`,
                         `${parseFloat(safeActivities[index].price).toFixed(2)} TL`,
                         `${safeActivities[index].payment_type_id ? safeActivities[index].payment_type.name : (safeActivities[index].direction == 1 ? 'Kasadan' : '')}`,
-                        `${safeActivities[index].extra ? safeActivities[index].extra.name : 'Oda Ücreti'}`,
+                        `${safeActivities[index].direction == 1 ? (safeActivities[index].extra ? safeActivities[index].extra.name : 'Oda Ücreti') : ''}`,
                         `${safeActivities[index].user ? safeActivities[index].user.name : ''}`,
                         `${safeActivities[index].description ?? ''}`
                     ]).draw();
@@ -1228,6 +1296,91 @@
             }
         });
     }
+
+    function endWithWaitingPayment(reservation_id) {
+        $("#EndWithWaitingPaymentModal").modal('show');
+        $("#end_with_waiting_payment_reservation_id").val(reservation_id);
+    }
+
+    endWithWaitingPaymentButton.click(function () {
+        $("#loader").fadeIn(250);
+        $("#EndWithWaitingPaymentModal").modal('hide');
+
+        var reservation_id = $("#end_with_waiting_payment_reservation_id").val();
+
+        $.ajax({
+            type: 'post',
+            url: '{{ route('ajax.reservations.endWithWaitingPayment') }}',
+            data: {
+                _token: '{{ csrf_token() }}',
+                reservation_id: reservation_id
+            },
+            success: function (response) {
+                location.reload();
+            },
+            error: function (error) {
+                $("#loader").fadeOut(250);
+                console.log(error)
+            }
+        });
+    });
+
+    function transfer(reservation_id) {
+        $("#TransferExtrasAndSafeActivitiesModal").modal('show');
+        $("#transfer_from").val(reservation_id);
+
+        $.ajax({
+            type: 'get',
+            url: '{{ route('ajax.reservations.exceptIndex') }}',
+            data: {
+                id: reservation_id
+            },
+            success: function (reservations) {
+                transferToSelector.empty();
+                $.each(reservations, function (index) {
+                    transferToSelector.append(`<option value="${reservations[index].id}">${reservations[index].room.number} - ${reservations[index].customer_name}</option>`);
+                });
+                transferToSelector.selectpicker('refresh');
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    }
+
+    function refund(reservation_id) {
+        $("#RefundModal").modal('show');
+        $("#refund_reservation_id").val(reservation_id);
+    }
+
+    transferExtrasAndSafeActivitiesButton.click(function () {
+        var from = $("#transfer_from").val();
+        var to = $("#transfer_to").val();
+
+        if (to == null || to === '') {
+            toastr.warning('Transfer Edilecek Oda Seçilmedi!');
+        } else {
+            $("#TransferExtrasAndSafeActivitiesModal").modal('hide');
+            $("#loader").fadeIn(250);
+            $.ajax({
+                type: 'post',
+                url: '{{ route('ajax.reservations.transferExtrasAndSafeActivities') }}',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    from: from,
+                    to: to
+                },
+                success: function (response) {
+                    location.reload();
+                },
+                error: function (error) {
+                    toastr.error('Sistemsel Bir Hata Oluştu!');
+                    console.log(error)
+                    $("#loader").fadeOut(250);
+                }
+            });
+        }
+    });
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1283,9 +1436,9 @@
             },
             success: function (room) {
                 if (parseInt(room.room_status_id) == 1 || parseInt(room.room_status_id) == 2) {
-                    $("#roomDropdownList_" + room.id).show();
                     if (room.room_status_id == 2 && room.activeReservation != null) {
                         $.ajax({
+                            async: false,
                             type: 'get',
                             url: '{{ route('ajax.reservations.debtControl') }}',
                             data: {
@@ -1294,8 +1447,10 @@
                             success: function (response) {
                                 if ((response.incoming - response.outgoing) < 0) {
                                     $("#endReservationDropdown_" + response.reservation.id).hide();
+                                    $("#endWithWaitingPaymentReservationDropdown_" + response.reservation.id).fadeIn(250);
                                 } else {
-                                    $("#endReservationDropdown_" + response.reservation.id).show();
+                                    $("#endReservationDropdown_" + response.reservation.id).fadeIn(250);
+                                    $("#endWithWaitingPaymentReservationDropdown_" + response.reservation.id).hide();
                                 }
                             },
                             error: function (error) {
@@ -1303,6 +1458,7 @@
                             }
                         });
                     }
+                    $("#roomDropdownList_" + room.id).show();
                 }
             },
             error: function (error) {

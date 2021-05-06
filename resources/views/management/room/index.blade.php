@@ -17,6 +17,9 @@
     @include('management.room.modals.get-payment')
     @include('management.room.modals.set-room-price-collective')
     @include('management.room.modals.set-room-status-collective')
+    @include('management.room.modals.transfer')
+    @include('management.room.modals.refund')
+    @include('management.room.modals.end-with-waiting-payment')
 
     <input type="hidden" id="edit_reservation_rightbar_toggle">
     <input type="hidden" id="reservation_safe_activities_rightbar_toggle">
@@ -94,6 +97,14 @@
                                                         <span class="navi-text">Checkout</span>
                                                     </a>
                                                 </li>
+                                                <li class="navi-item" >
+                                                    <a onclick="refund({{ $room->activeReservation()->id }})" class="navi-link cursor-pointer">
+                                                        <span class="navi-icon">
+                                                            <i class="fas fa-undo-alt text-info"></i>
+                                                        </span>
+                                                        <span class="navi-text">İade Oluştur</span>
+                                                    </a>
+                                                </li>
                                                 <li class="navi-item">
                                                     <a onclick="openAddExtraModal({{ $room->activeReservation()->id ?? null }})" class="navi-link cursor-pointer">
                                                         <span class="navi-icon">
@@ -110,6 +121,28 @@
                                                                 <i class="fas fa-stop-circle text-dark-75"></i>
                                                             </span>
                                                             <span class="navi-text">Konaklamayı Sonlandır</span>
+                                                        </a>
+                                                    </li>
+                                                </div>
+                                                <div id="endWithWaitingPaymentReservationDropdown_{{ $room->activeReservation()->id }}" @if($room->activeReservation()->debtControl() <= 0) style="display: none" @endif>
+                                                    <hr>
+                                                    <li class="navi-item" >
+                                                        <a onclick="endWithWaitingPayment({{ $room->activeReservation()->id }})" class="navi-link cursor-pointer">
+                                                            <span class="navi-icon">
+                                                                <i class="fas fa-stop-circle text-dark-75"></i>
+                                                            </span>
+                                                            <span class="navi-text">Bekleyen Ödemeyle Sonlandır</span>
+                                                        </a>
+                                                    </li>
+                                                </div>
+                                                <div id="transferExtrasAndSafeActivitiesReservationDropdown_{{ $room->activeReservation()->id }}">
+                                                    <hr>
+                                                    <li class="navi-item" >
+                                                        <a onclick="transfer({{ $room->activeReservation()->id }})" class="navi-link cursor-pointer">
+                                                            <span class="navi-icon">
+                                                                <i class="fas fa-exchange-alt text-warning"></i>
+                                                            </span>
+                                                            <span class="navi-text">Başka Odaya Transfer Et</span>
                                                         </a>
                                                     </li>
                                                 </div>

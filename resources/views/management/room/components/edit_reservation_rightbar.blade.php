@@ -18,6 +18,9 @@
                         <div class="form-group">
                             <label for="company_id_edit">Firma Seçimi</label>
                             <select id="company_id_edit" class="form-control">
+                                <optgroup label="">
+                                    <option value="" selected>Seçim Yok</option>
+                                </optgroup>
                                 @foreach($companies as $company)
                                     <option value="{{ $company->id }}">{{ $company->title }}</option>
                                 @endforeach
@@ -88,6 +91,15 @@
                                     <option value="{{ $roomUseType->id }}">{{ $roomUseType->name }}</option>
                                 @endforeach
                             </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-9"></div>
+                    <div class="col-xl-3">
+                        <div class="form-group">
+                            <label for="price_edit">Oda Ücreti</label>
+                            <input type="text" id="price_edit" class="form-control decimal">
                         </div>
                     </div>
                 </div>

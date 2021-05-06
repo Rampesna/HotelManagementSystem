@@ -16,8 +16,11 @@ class CreateCompaniesTable extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('tax_number');
-            $table->double('custom_discount_percent')->unsigned()->default(0);
+            $table->string('phone_number')->nullable();
+            $table->string('tax_number')->nullable();
+            $table->string('tax_office')->nullable();
+            $table->double('custom_discount')->unsigned()->default(0);
+            $table->text('invoice_address')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -63,8 +63,11 @@
         columns: [
             {data: 'id', name: 'id', width: "3%"},
             {data: 'title', name: 'title'},
+            {data: 'phone_number', name: 'phone_number'},
             {data: 'tax_number', name: 'tax_number'},
-            {data: 'custom_discount_percent', name: 'custom_discount_percent'}
+            {data: 'tax_office', name: 'tax_office'},
+            {data: 'custom_discount', name: 'custom_discount'},
+            {data: 'invoice_address', name: 'invoice_address'}
         ],
 
         responsive: true,
@@ -281,8 +284,11 @@
             success: function (extra) {
                 $("#editing_company_id").val(extra.id);
                 $("#editing_company_title").val(extra.title);
+                $("#editing_company_phone_number").val(extra.phone_number);
                 $("#editing_company_tax_number").val(extra.tax_number);
-                $("#editing_company_custom_discount_percent").val(extra.custom_discount_percent);
+                $("#editing_company_tax_office").val(extra.tax_office);
+                $("#editing_company_custom_discount").val(extra.custom_discount);
+                $("#editing_company_invoice_address").val(extra.invoice_address);
             },
             error: function (error) {
                 console.log(error)
@@ -298,8 +304,11 @@
 
     createCompanyButton.click(function () {
         var title = $("#creating_company_title").val();
+        var phone_number = $("#creating_company_phone_number").val();
         var tax_number = $("#creating_company_tax_number").val();
-        var custom_discount_percent = $("#creating_company_custom_discount_percent").val();
+        var tax_office = $("#creating_company_tax_office").val();
+        var custom_discount = $("#creating_company_custom_discount").val();
+        var invoice_address = $("#creating_company_invoice_address").val();
 
         $.ajax({
             type: 'post',
@@ -307,8 +316,11 @@
             data: {
                 _token: '{{ csrf_token() }}',
                 title: title,
+                phone_number: phone_number,
                 tax_number: tax_number,
-                custom_discount_percent: custom_discount_percent
+                tax_office: tax_office,
+                custom_discount: custom_discount,
+                invoice_address: invoice_address
             },
             success: function () {
                 toastr.success('Yeni Firma Oluşturuldu');
@@ -325,8 +337,11 @@
     updateCompanyButton.click(function () {
         var id = $("#editing_company_id").val();
         var title = $("#editing_company_title").val();
+        var phone_number = $("#editing_company_phone_number").val();
         var tax_number = $("#editing_company_tax_number").val();
-        var custom_discount_percent = $("#editing_company_custom_discount_percent").val();
+        var tax_office = $("#editing_company_tax_office").val();
+        var custom_discount = $("#editing_company_custom_discount").val();
+        var invoice_address = $("#editing_company_invoice_address").val();
 
         $.ajax({
             type: 'post',
@@ -335,8 +350,11 @@
                 _token: '{{ csrf_token() }}',
                 id: id,
                 title: title,
+                phone_number: phone_number,
                 tax_number: tax_number,
-                custom_discount_percent: custom_discount_percent
+                tax_office: tax_office,
+                custom_discount: custom_discount,
+                invoice_address: invoice_address
             },
             success: function () {
                 toastr.success('Başarıyla Güncellendi');

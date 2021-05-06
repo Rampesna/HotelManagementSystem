@@ -41,6 +41,20 @@
                         </div>
                         <div class="col-xl-4">
                             <div class="form-group">
+                                <label for="customer_create_phone_number">Telefon Numarası</label>
+                                <input type="text" class="form-control mobile-phone-number" id="customer_create_phone_number">
+                            </div>
+                        </div>
+                        <div class="col-xl-4">
+                            <div class="form-group">
+                                <label for="customer_create_email">E-posta Adresi</label>
+                                <input type="text" class="form-control email-input-mask" id="customer_create_email">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-6">
+                            <div class="form-group">
                                 <label for="customer_create_nationality_id">Uyruk *</label>
                                 <select class="form-control" id="customer_create_nationality_id">
                                     @foreach($nationalities as $nationality)
@@ -49,12 +63,12 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-xl-4">
+                        <div class="col-xl-6">
                             <div class="form-group">
                                 <label for="customer_create_marriage">Evlilik Durumu</label>
                                 <select id="customer_create_marriage" class="form-control">
-                                    <option value="1">Evli</option>
                                     <option value="0">Bekar</option>
+                                    <option value="1">Evli</option>
                                 </select>
                             </div>
                         </div>

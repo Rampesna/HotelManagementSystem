@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Receipt;
 use App\Models\SafeActivity;
 use Illuminate\Http\Request;
 
@@ -47,6 +48,17 @@ class SafeActivityService
         $this->safeActivity->date = $date;
         $this->safeActivity->payment_type_id = $paymentTypeId;
         $this->safeActivity->save();
+
+//        $receiptService = new ReceiptService;
+//        $receiptService->setReceipt(new Receipt);
+//        $receiptService->save(
+//            $userId,
+//            $safeId,
+//            $direction,
+//            $date,
+//            $price,
+//            $description
+//        );
 
         return $this->safeActivity;
     }

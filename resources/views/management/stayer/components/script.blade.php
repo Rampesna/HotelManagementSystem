@@ -203,6 +203,7 @@
         columns: [
             {data: 'id', name: 'id', className: 'details-control cursor-pointer'},
             {data: 'customer_name', name: 'customer_name', className: 'details-control cursor-pointer'},
+            {data: 'company_id', name: 'company_id', className: 'details-control cursor-pointer'},
             {data: 'start_date', name: 'start_date', className: 'details-control cursor-pointer'},
             {data: 'end_date', name: 'end_date', className: 'details-control cursor-pointer'},
             {data: 'status_id', name: 'status_id', className: 'details-control cursor-pointer'},
@@ -524,6 +525,7 @@
         var room_id = $("#room_id_edit").val();
         var room_use_type_id = $("#room_use_type_id_edit").val();
         var status_id = $("#selected_reservation_status_id").val();
+        var price = $("#price_edit").val();
 
         if (reservation_id === '' || reservation_id == null) {
             toastr.error('Reservasyon Seçiminde Hata Oluştu. Sayfayı Yenilemeyi Deneyin');
@@ -541,6 +543,8 @@
             toastr.warning('Oda Seçimi Yapmadınız!');
         } else if (room_use_type_id == null || room_use_type_id === '') {
             toastr.warning('Oda Kullanım Tipini Seçmediniz!');
+        } else if (price == null || price === '') {
+            toastr.warning('Oda Ücretini Girmediniz!');
         } else {
             customerList = reservationEditCustomers.rows().data();
             customerListArray = [];
@@ -561,6 +565,7 @@
                 room_id: room_id,
                 room_use_type_id: room_use_type_id,
                 status_id: status_id,
+                price: price,
                 customers: customerListArray
             }
 
@@ -657,6 +662,7 @@
     });
 
     reservationEditContext.click(function () {
+        $("#edit_reservation_rightbar").hide();
         var reservation_id = $("#selected_reservation_id").val();
         $("#edit_reservation_rightbar_toggle").click();
 
@@ -673,6 +679,7 @@
                 $("#selected_reservation_status_id").val(reservation.status_id);
                 $("#selected_reservation_room_id").val(reservation.room_id);
                 $("#company_id_edit").val(reservation.company_id).selectpicker('refresh');
+                $("#price_edit").val(reservation.price);
 
                 roomTypeEditSelector.val(reservation.room_type.id).selectpicker('refresh');
                 panTypeEditSelector.val(reservation.pan_type.id).selectpicker('refresh');
@@ -696,6 +703,7 @@
                     reservationEditCustomers.row.add(customer);
                     reservationEditCustomers.draw(false);
                 });
+                $("#edit_reservation_rightbar").fadeIn(250);
             },
             error: function (error) {
                 console.log(error)

@@ -56,6 +56,26 @@
                 </div>
                 <div class="row mt-6">
                     <div class="col-xl-3 mt-2">
+                        <span class="font-weight-bold">Telefon Numarası: </span>
+                    </div>
+                    <div class="col-xl-9">
+                        <label style="width: 100%">
+                            <input type="text" class="form-control mobile-phone-number" id="editing_customer_phone_number">
+                        </label>
+                    </div>
+                </div>
+                <div class="row mt-6">
+                    <div class="col-xl-3 mt-2">
+                        <span class="font-weight-bold">E-posta Adresi: </span>
+                    </div>
+                    <div class="col-xl-9">
+                        <label style="width: 100%">
+                            <input type="text" class="form-control email-input-mask" id="editing_customer_email">
+                        </label>
+                    </div>
+                </div>
+                <div class="row mt-6">
+                    <div class="col-xl-3 mt-2">
                         <span class="font-weight-bold">Uyruk: </span>
                     </div>
                     <div class="col-xl-9">

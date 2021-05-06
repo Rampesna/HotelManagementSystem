@@ -22,6 +22,16 @@
                 </div>
                 <div class="row mt-6">
                     <div class="col-xl-3 mt-2">
+                        <span class="font-weight-bold">Telefon Numarası: </span>
+                    </div>
+                    <div class="col-xl-9">
+                        <label style="width: 100%">
+                            <input type="text" class="form-control mobile-phone-number" id="editing_company_phone_number">
+                        </label>
+                    </div>
+                </div>
+                <div class="row mt-6">
+                    <div class="col-xl-3 mt-2">
                         <span class="font-weight-bold">Vergi Numarası: </span>
                     </div>
                     <div class="col-xl-9">
@@ -32,11 +42,31 @@
                 </div>
                 <div class="row mt-6">
                     <div class="col-xl-3 mt-2">
-                        <span class="font-weight-bold">İndirim Yüzdesi: </span>
+                        <span class="font-weight-bold">Vergi Dairesi: </span>
                     </div>
                     <div class="col-xl-9">
                         <label style="width: 100%">
-                            <input type="text" class="form-control percent" id="editing_company_custom_discount_percent">
+                            <input type="text" class="form-control" maxlength="11" id="editing_company_tax_office">
+                        </label>
+                    </div>
+                </div>
+                <div class="row mt-6">
+                    <div class="col-xl-3 mt-2">
+                        <span class="font-weight-bold">İndirim Ücreti: </span>
+                    </div>
+                    <div class="col-xl-9">
+                        <label style="width: 100%">
+                            <input type="text" class="form-control onlyNumber" id="editing_company_custom_discount">
+                        </label>
+                    </div>
+                </div>
+                <div class="row mt-6">
+                    <div class="col-xl-3 mt-2">
+                        <span class="font-weight-bold">Fatura Adresi: </span>
+                    </div>
+                    <div class="col-xl-9">
+                        <label style="width: 100%">
+                            <textarea type="text" class="form-control" id="editing_company_invoice_address"></textarea>
                         </label>
                     </div>
                 </div>

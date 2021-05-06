@@ -61,7 +61,7 @@ $('.datepicker').datepicker({
     language: 'tr'
 });
 
-$('.mobile-phone-number').inputmask('(999) 999-99-99', {placeholder: '(___) ___-__-__'});
+$('.mobile-phone-number').inputmask('+99 (999) 999-99-99', {placeholder: '+__ (___) ___-__-__'});
 
 $(".email-input-mask").inputmask({
     mask: "*{1,20}[.*{1,20}][.*{1,20}][.*{1,20}]@*{1,20}[.*{2,6}][.*{1,2}]",
