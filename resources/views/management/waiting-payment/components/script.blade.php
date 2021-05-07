@@ -3,6 +3,8 @@
 
 <script>
 
+    var getPaymentButton = $("#getPaymentButton");
+
     var waitingPayments = $('#waitingPayments').DataTable({
         language: {
             info: "_TOTAL_ Kayıttan _START_ - _END_ Arasındaki Kayıtlar Gösteriliyor.",
@@ -92,6 +94,7 @@
             {data: 'paid', name: 'paid', width: "7%"},
             {data: 'price', name: 'price', width: "10%"},
             {data: 'paid_date', name: 'paid_date', width: "15%"},
+            {data: 'user_id', name: 'user_id', width: "10%"},
             {data: 'start_date', name: 'start_date', width: "15%"},
             {data: 'end_date', name: 'end_date', width: "15%"}
         ],
@@ -99,6 +102,10 @@
         responsive: true,
         select: 'single'
     });
+
+    function getPayment() {
+        $("#GetPaymentModal").modal('show');
+    }
 
     $('.decimal').on("copy cut paste drop", function () {
         return false;
@@ -123,14 +130,18 @@
     $('body').on('contextmenu', function (e) {
         var selectedRows = waitingPayments.rows({selected: true});
         if (selectedRows.count() > 0) {
-            var top = e.pageY - 10;
-            var left = e.pageX - 10;
+            if (selectedRows.data()[0].is_paid == 0) {
+                $("#waiting_payment_id").val(selectedRows.data()[0].id);
 
-            $("#context-menu").css({
-                display: "block",
-                top: top,
-                left: left
-            });
+                var top = e.pageY - 10;
+                var left = e.pageX - 10;
+
+                $("#context-menu").css({
+                    display: "block",
+                    top: top,
+                    left: left
+                });
+            }
         }
         return false;
     }).on("click", function () {
@@ -144,6 +155,36 @@
         } else {
             $("#context-menu").hide();
             waitingPayments.rows().deselect();
+        }
+    });
+
+    getPaymentButton.click(function () {
+        var waiting_payment_id = $("#waiting_payment_id").val();
+        var paid_date = $("#paid_date").val();
+
+        if (waiting_payment_id == null || waiting_payment_id === '') {
+            toastr.error('Ödeme Seçiminde Sistemsel Bir Hata Oluştu!');
+        } else if (paid_date == null || paid_date === '') {
+            toastr.warning('Ödeme Tarihini Seçmediniz!');
+        } else {
+            $.ajax({
+                type: 'post',
+                url: '{{ route('ajax.waiting-payments.getPayment') }}',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    waiting_payment_id: waiting_payment_id,
+                    paid_date: paid_date
+                },
+                success: function (response) {
+                    $("#GetPaymentModal").modal('hide');
+                    $("#GetPaymentForm").trigger('reset');
+                    waitingPayments.search('').columns().search('').ajax.reload().draw();
+                    toastr.success('Ödeme Başarıyla Alındı');
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            });
         }
     });
 </script>

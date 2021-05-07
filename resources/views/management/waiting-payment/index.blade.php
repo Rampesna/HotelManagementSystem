@@ -5,6 +5,8 @@
 
 @section('content')
 
+    @include('management.waiting-payment.modals.get-payment')
+
     <div class="row">
         <div class="col-xl-12">
             <div class="card" id="waitingPaymentsCard">
@@ -17,6 +19,7 @@
                             <th>Durum</th>
                             <th>Ödenecek Tutar</th>
                             <th>Ödenme Tarihi</th>
+                            <th>Ödemeyi Alan</th>
                             <th>Rezervasyon Başlangıç Tarihi</th>
                             <th>Rezervasyon Bitiş Tarihi</th>
                         </tr>
@@ -28,6 +31,7 @@
                             <th>Durum</th>
                             <th>Ödenecek Tutar</th>
                             <th>Ödenme Tarihi</th>
+                            <th>Ödemeyi Alan</th>
                             <th>Rezervasyon Başlangıç Tarihi</th>
                             <th>Rezervasyon Bitiş Tarihi</th>
                         </tr>

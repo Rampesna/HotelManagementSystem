@@ -27,11 +27,17 @@ class WaitingPaymentService
 
     public function save(
         $reservationId,
-        $paid
+        $price,
+        $paid,
+        $paidDate = null,
+        $userId = null
     )
     {
         $this->waitingPayment->reservation_id = $reservationId;
+        $this->waitingPayment->price = $price;
         $this->waitingPayment->paid = $paid;
+        $this->waitingPayment->paid_date = $paidDate;
+        $this->waitingPayment->user_id = $userId;
         $this->waitingPayment->save();
 
         return $this->waitingPayment;

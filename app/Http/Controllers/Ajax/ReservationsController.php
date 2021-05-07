@@ -220,12 +220,13 @@ class ReservationsController extends Controller
 
     public function endWithWaitingPayment(Request $request)
     {
-        $waitingPaymentService = new WaitingPaymentService;
-        $waitingPaymentService->setWaitingPayment(new WaitingPayment);
-        $waitingPaymentService->save($request->reservation_id, 0);
-
         $reservationService = new ReservationService;
         $reservationService->setReservation(Reservation::find($request->reservation_id));
+
+        $waitingPaymentService = new WaitingPaymentService;
+        $waitingPaymentService->setWaitingPayment(new WaitingPayment);
+        $waitingPaymentService->save($request->reservation_id, abs($reservationService->getReservation()->debtControl()), 0);
+
         $reservationService->setStatus(5);
     }
 }

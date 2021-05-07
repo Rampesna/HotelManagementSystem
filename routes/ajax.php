@@ -85,6 +85,7 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
 
     Route::prefix('waiting-payments')->group(function () {
         Route::any('index', 'WaitingPaymentsController@index')->name('ajax.waiting-payments.index');
+        Route::post('getPayment', 'WaitingPaymentsController@getPayment')->name('ajax.waiting-payments.getPayment');
     });
 
     Route::prefix('stayers')->group(function () {
