@@ -283,6 +283,8 @@
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    var roomStatusOptions = $('.roomStatusOption');
+
     var reservationEditCustomersDeleteRowButton = $("#reservationEditCustomersDeleteRowButton");
     var customersDeleteRowButton = $("#customersDeleteRowButton");
     var editReservationCreateCustomerButton = $("#editReservationCreateCustomerButton");
@@ -309,6 +311,7 @@
     var transferToSelector = $("#transfer_to");
     var refundButton = $("#refundButton");
     var endWithWaitingPaymentButton = $("#endWithWaitingPaymentButton");
+    var roomStatusFilterer = $("#roomStatusFilterer");
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1496,9 +1499,13 @@
         room_id = $(this).data('id');
         status_id = $(this).data('status-id');
 
+        var roomSpanSelector = $("#room_span_id_" + room_id);
+        var roomNumberSelector = $("#room_number_selector_" + room_id);
+
         var list = $(this).parent().parent().find('.dropdown_icon_selector');
 
         $.ajax({
+            async: false,
             type: 'post',
             url: '{{ route('ajax.rooms.setRoomStatus') }}',
             data: {
@@ -1507,20 +1514,20 @@
                 status_id: status_id
             },
             success: function (room) {
-                $("#room_span_id_" + room.id).removeClass().addClass('btn btn-pill btn-sm btn-' + room.status.color).html(room.status.name);
-                $("#room_number_selector_" + room.id).removeClass().addClass('cursor-pointer text-' + room.status.color);
+                roomSpanSelector.removeClass().addClass('btn btn-pill btn-sm btn-' + room.status.color).text(room.status.name).attr('data-status-id', room.room_status_id);
+                roomNumberSelector.removeClass().addClass('cursor-pointer text-' + room.status.color);
 
                 $.each(list, function (index) {
                     $(this).removeClass();
-                    if (status_id == (index + 1)) {
+                    if (status_id === (index + 1)) {
                         $(this).addClass('dropdown_icon_selector fa fa-check-circle text-success');
                     } else {
                         $(this).addClass(' dropdown_icon_selector fa fa-check-circle ');
                     }
                 });
             },
-            error: function () {
-
+            error: function (error) {
+                console.log(error)
             }
         });
     });
@@ -1606,5 +1613,24 @@
                 $(this).remove();
             }
         });
+    });
+
+    roomStatusFilterer.change(function (e) {
+        e.preventDefault();
+        var status_id = $(this).val();
+        if (status_id == 0) {
+            $(".roomNumberOption").fadeIn(250);
+        } else {
+            $(".roomNumberOption").fadeOut(250);
+            $.each(roomStatusOptions, function (index) {
+                if ($(this).attr('data-status-id') == status_id) {
+                    $("#roomNumberCard" + $(this).data('room-number')).fadeIn(250);
+                }
+            });
+        }
+    });
+
+    $(document).delegate('.roomStatusOption', 'click', function() {
+        console.log($(this).data('status-id'))
     });
 </script>

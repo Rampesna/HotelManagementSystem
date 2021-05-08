@@ -26,15 +26,32 @@
     <input type="hidden" id="create_reservation_rightbar_toggle">
 
     <div class="row">
+        <div class="col-xl-2">
+            <div class="form-group">
+                <label style="width: 100%">
+                    <select class="form-control selectpicker" id="roomStatusFilterer">
+                        <optgroup label="">
+                            <option value="0">Tümü</option>
+                        </optgroup>
+                        @foreach($roomStatuses as $roomStatus)
+                            <option value="{{ $roomStatus->id }}">{{ $roomStatus->name }}</option>
+                        @endforeach
+                    </select>
+                </label>
+            </div>
+        </div>
+    </div>
+    <hr class="mt-n5">
+    <div class="row">
         @foreach($rooms as $room)
-            <div class="col-xl-2 mt-10">
+            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 mb-10 roomNumberOption" id="roomNumberCard{{ $room->number }}">
                 <div class="card">
                     <div class="card-header py-4">
                         <div class="row">
                             <div class="col-xl-6">
                                 <div class="dropdown dropdown-inline ml-n3">
                                     <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <span id="room_span_id_{{ $room->id }}" class="btn btn-pill btn-sm btn-{{ $room->status->color }}" style="font-size: 11px; height: 20px; padding-top: 2px">{{ $room->status->name }}</span>
+                                        <span id="room_span_id_{{ $room->id }}" class="btn btn-pill btn-sm btn-{{ $room->status->color }} roomStatusOption" data-room-number="{{ $room->number }}" data-status-id="{{ $room->status->id }}" style="font-size: 11px; height: 20px; padding-top: 2px">{{ $room->status->name }}</span>
                                     </a>
                                     @if(!$room->activeReservation())
                                         <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
@@ -43,7 +60,7 @@
                                                     <li class="navi-item" @if($roomStatus->id == 2) style="display: none" @endif>
                                                         <a data-id="{{ $room->id }}" data-status-id="{{ $roomStatus->id }}" class="navi-link cursor-pointer roomStatusSelector" id="room_status_selector_id_{{ $room->id }}">
                                                             <span class="navi-icon">
-                                                                <i data-test="{{ $room->id . '_' . $roomStatus->id }}" class="dropdown_icon_selector fa fa-check-circle @if($room->status->id == $roomStatus->id) text-success @endif"></i>
+                                                                <i class="dropdown_icon_selector fa fa-check-circle @if($room->status->id == $roomStatus->id) text-success @endif"></i>
                                                             </span>
                                                             <span class="navi-text">{{ $roomStatus->name }}</span>
                                                         </a>
