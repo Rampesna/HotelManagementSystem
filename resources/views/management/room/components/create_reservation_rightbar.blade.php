@@ -18,7 +18,7 @@
                             <label for="company_id_create">Firma Seçimi</label>
                             <select id="company_id_create" class="form-control">
                                 <optgroup label="">
-                                    <option selected>Seçim Yok</option>
+                                    <option value="" selected>Seçim Yok</option>
                                 </optgroup>
                                 @foreach($companies as $company)
                                     <option value="{{ $company->id }}">{{ $company->title }}</option>
