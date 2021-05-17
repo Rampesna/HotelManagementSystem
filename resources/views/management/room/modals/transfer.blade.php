@@ -20,6 +20,17 @@
                             </div>
                         </div>
                     </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="form-group">
+                                <label for="transfer_safe_activities">Transfer Edilecek Kalemleri Seçiniz</label>
+                                <select class="form-control selectpicker" id="transfer_safe_activities" multiple>
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success" id="transferExtrasAndSafeActivitiesButton">Transfer Et</button>

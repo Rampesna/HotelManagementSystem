@@ -189,8 +189,9 @@ class ReservationsController extends Controller
 
     public function transferExtrasAndSafeActivities(Request $request)
     {
+//        return $request;
         $safeActivityService = new SafeActivityService;
-        $safeActivities = SafeActivity::where('reservation_id', $request->from)->get();
+        $safeActivities = SafeActivity::whereIn('id', $request->safe_activities)->get();
         foreach ($safeActivities as $safeActivity) {
             $safeActivityService->setSafeActivity(new SafeActivity);
             $safeActivityService->save(
@@ -207,15 +208,15 @@ class ReservationsController extends Controller
             $safeActivity->delete();
         }
 
-        $from = Reservation::find($request->from);
-
-        $roomService = new RoomService;
-        $roomService->setRoom(Room::find($from->room_id));
-        $roomService->setStatus(1);
-
-        $reservationService = new ReservationService;
-        $reservationService->setReservation(Reservation::find($request->from));
-        $reservationService->setStatus(5);
+//        $from = Reservation::find($request->from);
+//
+//        $roomService = new RoomService;
+//        $roomService->setRoom(Room::find($from->room_id));
+//        $roomService->setStatus(1);
+//
+//        $reservationService = new ReservationService;
+//        $reservationService->setReservation(Reservation::find($request->from));
+//        $reservationService->setStatus(5);
     }
 
     public function endWithWaitingPayment(Request $request)

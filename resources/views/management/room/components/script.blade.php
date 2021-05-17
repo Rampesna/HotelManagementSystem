@@ -309,6 +309,7 @@
     var setRoomStatusCollectiveButton = $("#setRoomStatusCollectiveButton");
     var transferExtrasAndSafeActivitiesButton = $("#transferExtrasAndSafeActivitiesButton");
     var transferToSelector = $("#transfer_to");
+    var transferSafeActivitiesSelector = $("#transfer_safe_activities");
     var refundButton = $("#refundButton");
     var endWithWaitingPaymentButton = $("#endWithWaitingPaymentButton");
     var roomStatusFilterer = $("#roomStatusFilterer");
@@ -1339,11 +1340,34 @@
                 id: reservation_id
             },
             success: function (reservations) {
+                var safeActivities = [];
+                $.ajax({
+                    async: false,
+                    type: 'get',
+                    url: '{{ route('ajax.reservations.safeActivities') }}',
+                    data: {
+                        reservation_id: reservation_id
+                    },
+                    success: function (response) {
+                        safeActivities = response;
+                    },
+                    error: function (error) {
+                        toastr.error('Rezervasyon Kalemleri Alınırken Bir Hata Oluştu');
+                        console.log(error);
+                    }
+                });
+
                 transferToSelector.empty();
                 $.each(reservations, function (index) {
                     transferToSelector.append(`<option value="${reservations[index].id}">${reservations[index].room.number} - ${reservations[index].customer_name}</option>`);
                 });
                 transferToSelector.selectpicker('refresh');
+
+                transferSafeActivitiesSelector.empty();
+                $.each(safeActivities, function (index) {
+                    transferSafeActivitiesSelector.append(`<option value="${safeActivities[index].id}">${safeActivities[index].direction == 1 ? '(Gider)' : '(Gelir)'} (${safeActivities[index].price} TL) -> ${safeActivities[index].direction == 1 ? (safeActivities[index].extra ? safeActivities[index].extra.name : 'Oda Ücreti') : ''}${safeActivities[index].description ? ' -> ' + safeActivities[index].description : ''}</option>`);
+                });
+                transferSafeActivitiesSelector.selectpicker('refresh');
             },
             error: function (error) {
                 console.log(error)
@@ -1359,22 +1383,55 @@
     transferExtrasAndSafeActivitiesButton.click(function () {
         var from = $("#transfer_from").val();
         var to = $("#transfer_to").val();
+        var safe_activities = transferSafeActivitiesSelector.val();
 
         if (to == null || to === '') {
             toastr.warning('Transfer Edilecek Oda Seçilmedi!');
         } else {
             $("#TransferExtrasAndSafeActivitiesModal").modal('hide');
-            $("#loader").fadeIn(250);
+            // $("#loader").fadeIn(250);
             $.ajax({
                 type: 'post',
                 url: '{{ route('ajax.reservations.transferExtrasAndSafeActivities') }}',
                 data: {
                     _token: '{{ csrf_token() }}',
                     from: from,
-                    to: to
+                    to: to,
+                    safe_activities: safe_activities
                 },
                 success: function (response) {
-                    location.reload();
+                    console.log(response)
+
+                    $.ajax({
+                        async: false,
+                        type: 'get',
+                        url: '{{ route('ajax.reservations.debtControl') }}',
+                        data: {
+                            reservation_id: from
+                        },
+                        success: function (response) {
+                            $("#reservationCheckout_" + from).html(parseFloat(response.incoming - response.outgoing).toFixed(2));
+                        },
+                        error: function (error) {
+                            console.log(error)
+                        }
+                    });
+
+                    $.ajax({
+                        async: false,
+                        type: 'get',
+                        url: '{{ route('ajax.reservations.debtControl') }}',
+                        data: {
+                            reservation_id: to
+                        },
+                        success: function (response) {
+                            $("#reservationCheckout_" + to).html(parseFloat(response.incoming - response.outgoing).toFixed(2));
+                        },
+                        error: function (error) {
+                            console.log(error)
+                        }
+                    });
+                    // location.reload();
                 },
                 error: function (error) {
                     toastr.error('Sistemsel Bir Hata Oluştu!');
