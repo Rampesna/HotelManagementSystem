@@ -98,4 +98,14 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
         Route::any('refund', 'SafesController@refund')->name('ajax.safe-activities.refund');
         Route::get('getByReservationId', 'SafeActivitiesController@getByReservationId')->name('ajax.safe-activities.getByReservationId');
     });
+
+    Route::prefix('role')->group(function () {
+        Route::post('permissionsUpdate', 'RoleController@permissionsUpdate')->name('ajax.role.permissionsUpdate');
+    });
+
+    Route::prefix('user')->group(function () {
+        Route::post('emailControl', 'UserController@emailControl')->name('ajax.user.emailControl');
+    });
+
+
 });

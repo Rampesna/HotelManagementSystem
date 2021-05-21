@@ -101,6 +101,7 @@ Route::middleware(['auth'])->namespace('App\\Http\\Controllers')->group(function
             });
             Route::get('index', 'CustomerController@index')->name('management.customers.index')->middleware('Authority:1');
         });
+
         Route::prefix('companies')->group(function () {
             Route::get('/', function () {
                 return redirect()->route('management.companies.index');
@@ -148,6 +149,29 @@ Route::middleware(['auth'])->namespace('App\\Http\\Controllers')->group(function
                 });
                 Route::get('index', 'ExtraController@index')->name('management.definitions.extra.index')->middleware('Authority:1');
             });
+        });
+
+        Route::prefix('roles')->group(function () {
+            Route::get('/', function () {
+                return redirect()->route('management.roles.index');
+            });
+            Route::get('index', 'RoleController@index')->name('management.roles.index')->middleware('Authority:1');
+            Route::post('/store', 'RoleController@store')->name('setting.roles.store');
+            Route::get('/edit', 'RoleController@edit')->name('setting.roles.edit');
+            Route::get('/permissions', 'RoleController@permissions')->name('setting.roles.permissions');
+            Route::post('/permissions/update', 'RoleController@permissionsUpdate')->name('setting.roles.permissions.update');
+            Route::post('/update', 'RoleController@update')->name('setting.roles.update');
+            Route::post('/delete', 'RoleController@delete')->name('setting.roles.delete');
+        });
+
+        Route::prefix('users')->group(function () {
+            Route::get('/', function () {
+                return redirect()->route('setting.users.index');
+            });
+            Route::get('/index', 'UserController@index')->name('management.users.index');
+            Route::post('/save', 'UserController@save')->name('management.users.save');
+            Route::get('/edit', 'UserController@edit')->name('management.users.edit');
+            Route::post('/delete', 'UserController@delete')->name('management.users.delete');
         });
     });
 });

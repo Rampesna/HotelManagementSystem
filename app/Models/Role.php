@@ -10,6 +10,11 @@ class Role extends Model
 {
     use HasFactory, SoftDeletes;
 
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
     public function permissions()
     {
         return $this->belongsToMany(Permission::class);
