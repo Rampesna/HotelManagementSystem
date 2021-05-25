@@ -62,7 +62,7 @@ class Reservation extends Model
     public function debtControl()
     {
         $safeActivities = SafeActivity::where('reservation_id', $this->id)->get();
-        return $safeActivities->where('direction', 0)->sum('price') - $safeActivities->where('direction', 1)->sum('price');
+        return $safeActivities->where('direction', 1)->sum('price') - $safeActivities->where('direction', 0)->sum('price');
     }
 
     public function waitingPayments()

@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Reservation;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -16,24 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/test', function () {
-    return bcrypt(123456);
-//    return \App\Models\Country::find(223)->provinces;
-//    $startDate = '2021-05-02 15:00:00';
-//    $endDate = '2021-05-07 15:00:00';
-//
-//    $reservations = Reservation::
-//    where(function ($dates) use ($startDate, $endDate) {
-//        $dates->where(function ($forStartDate) use ($startDate, $endDate) {
-//            $forStartDate->where('start_date', '<=', $startDate)->where('end_date', '>=', $startDate);
-//        })->
-//        orWhere(function ($forEndDate) use ($startDate, $endDate) {
-//            $forEndDate->where('start_date', '<=', $endDate)->where('end_date', '>=', $endDate);
-//        });
-//    })->
-//    whereIn('status_id', [1, 2, 4])->
-//    pluck('id');
-//
-//    return $reservations;
+    return $period = Carbon::createFromDate('2021-05-24')->diffInDays('2021-05-26');
 });
 
 Auth::routes();
@@ -149,6 +133,10 @@ Route::middleware(['auth'])->namespace('App\\Http\\Controllers')->group(function
                 });
                 Route::get('index', 'ExtraController@index')->name('management.definitions.extra.index')->middleware('Authority:1');
             });
+        });
+
+        Route::prefix('setting')->group(function () {
+            Route::get('index', 'SettingController@index')->name('management.setting.index');
         });
 
         Route::prefix('roles')->group(function () {

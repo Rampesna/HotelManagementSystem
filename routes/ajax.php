@@ -107,5 +107,8 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
         Route::post('emailControl', 'UserController@emailControl')->name('ajax.user.emailControl');
     });
 
+    Route::prefix('setting')->group(function () {
+        Route::post('setNight', 'SettingsController@setNight')->name('ajax.setting.setNight');
+    });
 
 });
