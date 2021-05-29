@@ -41,6 +41,23 @@
                             </div>
                         </div>
                     </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-xl-8">
+                            <label for="create_extra_safe_activity_control">Kasaya İşlensin mi?</label>
+                            <select id="create_extra_safe_activity_control" class="form-control">
+                                <option value="0">Hayır</option>
+                                <option value="1">Evet</option>
+                            </select>
+                        </div>
+                        <div class="col-xl-4">
+                            <label for="create_extra_safe_activity_direction">Kasaya İşlenme Türü</label>
+                            <select id="create_extra_safe_activity_direction" class="form-control">
+                                <option value="0">Gelir Fişi</option>
+                                <option value="1">Gider Fişi</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success" id="addExtraReservationButton">Ekle</button>

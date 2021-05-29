@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Ajax;
 
 use App\Http\Controllers\Controller;
-use App\Models\Reservation;
-use App\Models\Room;
+use App\Models\PaymentType;
+use App\Models\Receipt;
 use App\Models\SafeActivity;
+use App\Services\ReceiptService;
 use App\Services\SafeActivityService;
 use Illuminate\Http\Request;
-use Yajra\DataTables\DataTables;
 
 class SafesController extends Controller
 {
@@ -21,11 +21,23 @@ class SafesController extends Controller
                 auth()->user()->id(),
                 1,
                 $request->reservation_id,
-                0, $checkout['price'],
+                0,
+                $checkout['price'],
                 $checkout['description'],
                 date('Y-m-d H:i:s'),
                 null,
                 $checkout['payment_type_id']
+            );
+
+            $receiptService = new ReceiptService;
+            $receiptService->setReceipt(new Receipt);
+            $receiptService->save(
+                auth()->user()->id(),
+                1,
+                0,
+                date('Y-m-d H:i:s'),
+                $checkout['price'],
+                '#' . $request->reservation_id . ' Numaralı Rezervasyon ' . PaymentType::find($checkout['payment_type_id'])->name . ' Alınan Ödeme, ' . $checkout['description']
             );
         }
     }

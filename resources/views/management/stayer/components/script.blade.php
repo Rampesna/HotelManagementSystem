@@ -73,6 +73,7 @@
                     extrasList = extrasList +
                         `    <tr>` +
                         `        <td>${extras[index].id}</td>` +
+                        `        <td>${extras[index].direction == 1 ? '<span class="btn btn-pill btn-sm btn-danger" style="font-size: 11px; height: 20px; padding-top: 2px">Gider</span>' : '<span class="btn btn-pill btn-sm btn-success" style="font-size: 11px; height: 20px; padding-top: 2px">Gelir</span>'}</td>` +
                         `        <td>${extras[index].extra ? extras[index].extra.name : 'Oda Ücreti'}</td>` +
                         `        <td>${extras[index].description ?? ''}</td>` +
                         `        <td>${extras[index].date ? reformatDate(extras[index].date) : ''}</td>` +
@@ -85,11 +86,14 @@
             }
         });
 
+        // <span class="btn btn-pill btn-sm btn-" style="font-size: 11px; height: 20px; padding-top: 2px"></span>
+
         return `` +
             `<table id="${reservation.id}" class="table" style="padding-left:50px;">` +
             `<thead>` +
             `    <tr>` +
             `        <th>#</th>` +
+            `        <th>İşlem</th>` +
             `        <th>Ekstra</th>` +
             `        <th>Detaylar</th>` +
             `        <th>Tarih</th>` +
@@ -526,6 +530,7 @@
         var room_use_type_id = $("#room_use_type_id_edit").val();
         var status_id = $("#selected_reservation_status_id").val();
         var price = $("#price_edit").val();
+        var description = $("#description_edit").val();
 
         if (reservation_id === '' || reservation_id == null) {
             toastr.error('Reservasyon Seçiminde Hata Oluştu. Sayfayı Yenilemeyi Deneyin');
@@ -566,6 +571,7 @@
                 room_use_type_id: room_use_type_id,
                 status_id: status_id,
                 price: price,
+                description: description,
                 customers: customerListArray
             }
 
@@ -680,6 +686,7 @@
                 $("#selected_reservation_room_id").val(reservation.room_id);
                 $("#company_id_edit").val(reservation.company_id).selectpicker('refresh');
                 $("#price_edit").val(reservation.price);
+                $("#description_edit").val(reservation.description);
 
                 roomTypeEditSelector.val(reservation.room_type.id).selectpicker('refresh');
                 panTypeEditSelector.val(reservation.pan_type.id).selectpicker('refresh');

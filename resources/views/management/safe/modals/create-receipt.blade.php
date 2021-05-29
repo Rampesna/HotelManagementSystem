@@ -14,8 +14,8 @@
                             <div class="form-group">
                                 <label for="create_receipt_direction">Gelir/Gider</label>
                                 <select class="form-control" id="create_receipt_direction">
-                                    <option value="1">Gelir Fişi</option>
-                                    <option value="0">Gider Fişi</option>
+                                    <option value="0">Gelir Fişi</option>
+                                    <option value="1">Gider Fişi</option>
                                 </select>
                             </div>
                         </div>

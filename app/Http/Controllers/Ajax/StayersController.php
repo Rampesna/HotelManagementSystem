@@ -67,7 +67,7 @@ class StayersController extends Controller
             return $reservation->room->number;
         })->
         editColumn('price', function ($reservation) {
-            return number_format((SafeActivity::where('reservation_id', $reservation->id)->where('direction', 1)->sum('price') ?? 0), 2) . ' TL';
+            return number_format($reservation->debtControl(), 2) . ' TL';
         })->
         rawColumns(['status_id'])->
         make(true);

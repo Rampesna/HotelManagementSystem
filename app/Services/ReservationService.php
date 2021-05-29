@@ -48,6 +48,7 @@ class ReservationService
         $this->reservation->use_type_id = $request->room_use_type_id;
         $this->reservation->status_id = $request->status_id;
         $this->reservation->price = $request->price;
+        $this->reservation->description = $request->description;
         $this->reservation->save();
 
         $this->setReservationStatusActivity($request->status_id);

@@ -659,6 +659,7 @@
 
     updateReservationButton.click(function () {
         $("#loader").fadeIn(250);
+        $("#edit_reservation_rightbar_toggle").click();
         var reservation_id = $("#selected_reservation_id").val();
         var company_id = $("#company_id_edit").val();
         var customer_name = $("#customer_name_edit").val();
@@ -670,6 +671,7 @@
         var room_use_type_id = $("#room_use_type_id_edit").val();
         var status_id = $("#selected_reservation_status_id").val();
         var price = $("#price_edit").val();
+        var description = $("#description_edit").val();
 
         if (reservation_id == '' || reservation_id == null) {
             toastr.error('Reservasyon Seçiminde Hata Oluştu. Sayfayı Yenilemeyi Deneyin');
@@ -710,6 +712,7 @@
                 room_use_type_id: room_use_type_id,
                 status_id: status_id,
                 price: price,
+                description: description,
                 customers: customerListArray
             }
 
@@ -737,6 +740,8 @@
         var price = $("#create_extra_price").val();
         var description = $("#create_extra_description").val();
         var date = $("#create_extra_date").val();
+        var safe_activity_control = $("#create_extra_safe_activity_control").val();
+        var safe_activity_direction = $("#create_extra_safe_activity_direction").val();
 
         if (reservation_id == '' || reservation_id == null) {
             toastr.error('Rezervasyon Seçiminde Hata Oluştu. Sayfayı Yenilemeyi Deneyin!');
@@ -752,13 +757,16 @@
                 url: '{{ route('ajax.safe-activities.create') }}',
                 data: {
                     _token: '{{ csrf_token() }}',
+                    user_id: '{{ auth()->user()->id() }}',
                     safe_id: safe_id,
                     reservation_id: reservation_id,
                     extra_id: extra_id,
                     direction: direction,
                     price: price,
                     description: description,
-                    date: date
+                    date: date,
+                    safe_activity_control: safe_activity_control,
+                    safe_activity_direction: safe_activity_direction,
                 },
                 success: function () {
                     toastr.success('Ekstra Başarıyla Eklendi');
@@ -1050,6 +1058,8 @@
     });
 
     createReservationButton.click(function () {
+        $("#loader").fadeIn(250);
+        $("#create_reservation_rightbar_toggle").click();
         var company_id = $("#company_id_create").val();
         var customer_name = $("#customer_name_create").val();
         var start_date = $("#start_date_create").val();
@@ -1059,6 +1069,7 @@
         var room_id = $("#room_id_create").val();
         var room_use_type_id = $("#room_use_type_id_create").val();
         var price = $("#price_create").val();
+        var description = $("#description_create").val();
 
         if (customer_name == null || customer_name == '') {
             toastr.warning('Rezervasyonu Yaptıran Müşteri Adını Giriniz!');
@@ -1095,6 +1106,7 @@
                 room_id: room_id,
                 room_use_type_id: room_use_type_id,
                 price: price,
+                description: description,
                 status_id: 4,
                 customers: customerListArray
             }
@@ -1216,6 +1228,7 @@
                     $("#selected_reservation_room_id").val(reservation.room_id);
                     $("#company_id_edit").val(reservation.company_id).selectpicker('refresh');
                     $("#price_edit").val(reservation.price);
+                    $("#description_edit").val(reservation.description);
 
                     roomTypeEditSelector.val(reservation.room_type.id).selectpicker('refresh');
                     panTypeEditSelector.val(reservation.pan_type.id).selectpicker('refresh');

@@ -773,6 +773,7 @@
         var room_id = $("#room_id_create").val();
         var room_use_type_id = $("#room_use_type_id_create").val();
         var price = $("#price_create").val();
+        var description = $("#description_create").val();
 
         if (customer_name == null || customer_name === '') {
             toastr.warning('Rezervasyonu Yaptıran Müşteri Adını Giriniz!');
@@ -810,6 +811,7 @@
                 room_use_type_id: room_use_type_id,
                 status_id: 1,
                 price: price,
+                description: description,
                 customers: customerListArray
             }
 
@@ -863,6 +865,7 @@
         var room_use_type_id = $("#room_use_type_id_edit").val();
         var status_id = $("#editing_reservation_status_id").val();
         var price = $("#price_edit").val();
+        var description = $("#description_edit").val();
 
         if (reservation_id === '' || reservation_id == null) {
             toastr.error('Reservasyon Seçiminde Hata Oluştu. Sayfayı Yenilemeyi Deneyin');
@@ -903,6 +906,7 @@
                 room_use_type_id: room_use_type_id,
                 status_id: status_id,
                 price: price,
+                description: description,
                 customers: customerListArray
             }
 
@@ -1096,6 +1100,7 @@
                 $("#editing_reservation_status_id").val(reservation.status_id);
                 $("#company_id_edit").val(reservation.company_id).selectpicker('refresh');
                 $("#price_edit").val(reservation.price);
+                $("#description_edit").val(reservation.description);
 
                 roomTypeEditSelector.val(reservation.room_type.id).selectpicker('refresh');
                 panTypeEditSelector.val(reservation.pan_type.id).selectpicker('refresh');

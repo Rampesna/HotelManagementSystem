@@ -104,6 +104,15 @@
                 </div>
             </div>
             <hr>
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="form-group">
+                        <label for="description_create">Ek Notlar</label>
+                        <textarea class="form-control" id="description_create" rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+            <hr>
             <div class="offcanvas-wrapper mb-5 scroll-pull">
                 <div class="row">
                     <div class="col-xl-8">
