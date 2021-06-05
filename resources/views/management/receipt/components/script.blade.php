@@ -36,7 +36,28 @@
             }
         },
 
-        dom: 'rtipl',
+        buttons: [
+            {
+                extend: 'collection',
+                text: '<i class="fa fa-download"></i> Dışa Aktar',
+                buttons: [
+                    {
+                        extend: 'pdf',
+                        text: '<i class="fa fa-file-pdf"></i> PDF İndir'
+                    },
+                    {
+                        extend: 'excel',
+                        text: '<i class="fa fa-file-excel"></i> Excel İndir'
+                    }
+                ]
+            },
+            {
+                extend: 'print',
+                text: '<i class="fa fa-print"></i> Yazdır'
+            }
+        ],
+
+        dom: 'Brtipl',
 
         initComplete: function () {
             var r = $('#receipts tfoot tr');
@@ -105,6 +126,7 @@
             {data: 'date', name: 'date', width: "12%"},
             {data: 'direction', name: 'direction', width: "10%"},
             {data: 'price', name: 'price', width: "12%"},
+            {data: 'payment_type_id', name: 'payment_type_id', width: "12%"},
             {data: 'user_id', name: 'user_id', width: "13%"},
             {data: 'description', name: 'description'}
         ],

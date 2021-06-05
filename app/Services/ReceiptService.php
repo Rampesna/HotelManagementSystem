@@ -31,7 +31,8 @@ class ReceiptService
         $direction,
         $date,
         $price,
-        $description
+        $description,
+        $paymentTypeId = null
     )
     {
         $this->receipt->user_id = $userId;
@@ -40,6 +41,7 @@ class ReceiptService
         $this->receipt->date = $date;
         $this->receipt->price = $price;
         $this->receipt->description = $description;
+        $this->receipt->payment_type_id = $paymentTypeId;
         $this->receipt->save();
 
         return $this->receipt;

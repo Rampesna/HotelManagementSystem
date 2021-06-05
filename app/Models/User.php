@@ -43,6 +43,16 @@ class User extends Authenticatable
         return $this->id;
     }
 
+    public function name()
+    {
+        return $this->name;
+    }
+
+    public function phoneNumber()
+    {
+        return $this->phone_number;
+    }
+
     public function authority($permission): bool
     {
         return $this->role->permissions()->where('permission_id', $permission)->exists() ? true : false;

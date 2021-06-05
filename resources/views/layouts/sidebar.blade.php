@@ -19,6 +19,7 @@
         <div id="kt_aside_menu" class="aside-menu my-4" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
             <ul class="menu-nav">
 
+                @Authority(1)
                 <li class="menu-item {{ request()->segment(2) === 'dashboard' && request()->segment(3) === 'index' ? 'menu-item-active' : null }}" aria-haspopup="true">
                     <a href="{{ route('management.dashboard.index') }}" class="menu-link">
                         <span class="svg-icon menu-icon">
@@ -33,11 +34,13 @@
                         <span class="menu-text">Anasayfa</span>
                     </a>
                 </li>
+                @endAuthority
 
                 <li class="menu-section">
                     <h4 class="menu-text">OTEL YÖNETİMİ</h4>
                     <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
                 </li>
+                @Authority(2)
                 <li class="menu-item {{ request()->segment(2) === 'reservation' && request()->segment(3) === 'index' ? 'menu-item-active' : null }}" aria-haspopup="true">
                     <a href="{{ route('management.reservation.index') }}" class="menu-link">
                         <span class="svg-icon menu-icon">
@@ -51,6 +54,9 @@
                         <span class="menu-text">Rezervasyonlar</span>
                     </a>
                 </li>
+                @endAuthority
+
+                @Authority(10)
                 <li class="menu-item {{ request()->segment(2) === 'stayer' && request()->segment(3) === 'index' ? 'menu-item-active' : null }}" aria-haspopup="true">
                     <a href="{{ route('management.stayer.index') }}" class="menu-link">
                         <span class="svg-icon menu-icon">
@@ -66,6 +72,9 @@
                         <span class="menu-text">Konaklayanlar</span>
                     </a>
                 </li>
+                @endAuthority
+
+                @Authority(19)
                 <li class="menu-item {{ (request()->segment(2) === 'safe' || request()->segment(2) === 'receipt') && request()->segment(3) === 'index' ? 'menu-item-active' : null }}" aria-haspopup="true">
                     <a href="{{ route('management.safe.index') }}" class="menu-link">
                         <span class="svg-icon menu-icon">
@@ -80,6 +89,9 @@
                         <span class="menu-text">Kasa</span>
                     </a>
                 </li>
+                @endAuthority
+
+                @Authority(23)
                 <li class="menu-item {{ request()->segment(2) === 'waiting-payment' && request()->segment(3) === 'index' ? 'menu-item-active' : null }}" aria-haspopup="true">
                     <a href="{{ route('management.waiting-payment.index') }}" class="menu-link">
                         <span class="svg-icon menu-icon">
@@ -94,6 +106,9 @@
                         <span class="menu-text">Beklenen Ödemeler</span>
                     </a>
                 </li>
+                @endAuthority
+
+                @Authority(11)
                 <li class="menu-item {{ request()->segment(2) === 'room' && request()->segment(3) === 'index' ? 'menu-item-active' : null }}" aria-haspopup="true">
                     <a href="{{ route('management.room.index') }}" class="menu-link">
                         <span class="svg-icon menu-icon">
@@ -108,42 +123,13 @@
                         <span class="menu-text">Oda Yönetimi</span>
                     </a>
                 </li>
-{{--                <li class="menu-item {{ request()->segment(2) === 'food' && request()->segment(3) === 'index' ? 'menu-item-active' : null }}" aria-haspopup="true">--}}
-{{--                    <a href="#" class="menu-link">--}}
-{{--                        <span class="svg-icon menu-icon">--}}
-{{--                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" >--}}
-{{--                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">--}}
-{{--                                    <rect x="0" y="0" width="24" height="24"/>--}}
-{{--                                    <path d="M12.5,19 C8.91014913,19 6,16.0898509 6,12.5 C6,8.91014913 8.91014913,6 12.5,6 C16.0898509,6 19,8.91014913 19,12.5 C19,16.0898509 16.0898509,19 12.5,19 Z M12.5,16.4 C14.6539105,16.4 16.4,14.6539105 16.4,12.5 C16.4,10.3460895 14.6539105,8.6 12.5,8.6 C10.3460895,8.6 8.6,10.3460895 8.6,12.5 C8.6,14.6539105 10.3460895,16.4 12.5,16.4 Z M12.5,15.1 C11.0640597,15.1 9.9,13.9359403 9.9,12.5 C9.9,11.0640597 11.0640597,9.9 12.5,9.9 C13.9359403,9.9 15.1,11.0640597 15.1,12.5 C15.1,13.9359403 13.9359403,15.1 12.5,15.1 Z" fill="#000000" opacity="0.3"/>--}}
-{{--                                    <path d="M22,13.5 L22,13.5 C22.2864451,13.5 22.5288541,13.7115967 22.5675566,13.9954151 L23.0979976,17.8853161 C23.1712756,18.4226878 22.7950533,18.9177172 22.2576815,18.9909952 C22.2137086,18.9969915 22.1693798,19 22.125,19 L22.125,19 C21.5576012,19 21.0976335,18.5400324 21.0976335,17.9726335 C21.0976335,17.9415812 21.0990414,17.9105449 21.1018527,17.8796201 L21.4547321,13.9979466 C21.4803698,13.7159323 21.7168228,13.5 22,13.5 Z" fill="#000000" opacity="0.3"/>--}}
-{{--                                    <path d="M24,5 L24,12 L21,12 L21,8 C21,6.34314575 22.3431458,5 24,5 Z" fill="#000000" transform="translate(22.500000, 8.500000) scale(-1, 1) translate(-22.500000, -8.500000) "/>--}}
-{{--                                    <path d="M0.714285714,5 L1.03696911,8.32873399 C1.05651593,8.5303749 1.22598532,8.68421053 1.42857143,8.68421053 C1.63115754,8.68421053 1.80062692,8.5303749 1.82017375,8.32873399 L2.14285714,5 L2.85714286,5 L3.17982625,8.32873399 C3.19937308,8.5303749 3.36884246,8.68421053 3.57142857,8.68421053 C3.77401468,8.68421053 3.94348407,8.5303749 3.96303089,8.32873399 L4.28571429,5 L5,5 L5,8.39473684 C5,9.77544872 3.88071187,10.8947368 2.5,10.8947368 C1.11928813,10.8947368 -7.19089982e-16,9.77544872 -8.8817842e-16,8.39473684 L0,5 L0.714285714,5 Z" fill="#000000"/>--}}
-{{--                                    <path d="M2.5,12.3684211 L2.5,12.3684211 C2.90055463,12.3684211 3.23115721,12.6816982 3.25269782,13.0816732 L3.51381042,17.9301218 C3.54396441,18.4900338 3.11451066,18.9683769 2.55459863,18.9985309 C2.53641556,18.9995101 2.51820943,19 2.5,19 L2.5,19 C1.93927659,19 1.48472045,18.5454439 1.48472045,17.9847204 C1.48472045,17.966511 1.48521034,17.9483049 1.48618958,17.9301218 L1.74730218,13.0816732 C1.76884279,12.6816982 2.09944537,12.3684211 2.5,12.3684211 Z" fill="#000000" opacity="0.3"/>--}}
-{{--                                </g>--}}
-{{--                            </svg>--}}
-{{--                        </span>--}}
-{{--                        <span class="menu-text">Yiyecek & İçecek</span>--}}
-{{--                    </a>--}}
-{{--                </li>--}}
-{{--                <li class="menu-item {{ request()->segment(2) === 'cleaning' && request()->segment(3) === 'index' ? 'menu-item-active' : null }}" aria-haspopup="true">--}}
-{{--                    <a href="#" class="menu-link">--}}
-{{--                        <span class="svg-icon menu-icon">--}}
-{{--                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" >--}}
-{{--                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">--}}
-{{--                                    <rect x="0" y="0" width="24" height="24"/>--}}
-{{--                                    <path d="M10.5278225,22.5278225 L8.79765312,20.7976531 L9.99546268,18.4463973 L7.35584531,19.3558453 L5.04895282,17.0489528 L8.15438502,11.6366281 L2.74206034,14.7420603 L1.30025253,13.3002525 L9.26548692,8.03126375 C11.3411817,6.65819522 14.1285885,7.15099488 15.6076701,9.15253022 C17.1660799,11.2614147 17.1219524,14.1519817 15.4998952,16.212313 L10.5278225,22.5278225 Z" fill="#000000" opacity="0.3"/>--}}
-{{--                                    <path d="M22.4246212,4.91054166 L18.4071175,8.92804534 C17.6260689,9.70909393 16.359739,9.70909393 15.5786904,8.92804534 C14.7976418,8.14699676 14.7976418,6.8806668 15.5786904,6.09961822 L19.6029298,2.0753788 C19.7817428,2.41498256 19.9878937,2.74436937 20.2214305,3.06039796 C20.8190224,3.86907629 21.5791361,4.49033747 22.4246212,4.91054166 Z" fill="#000000" transform="translate(18.708763, 5.794605) rotate(-180.000000) translate(-18.708763, -5.794605) "/>--}}
-{{--                                </g>--}}
-{{--                            </svg>--}}
-{{--                        </span>--}}
-{{--                        <span class="menu-text">Temizlik Yönetimi</span>--}}
-{{--                    </a>--}}
-{{--                </li>--}}
+                @endAuthority
 
                 <li class="menu-section">
                     <h4 class="menu-text">MÜŞTERİ YÖNETİMİ</h4>
                     <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
                 </li>
+                @Authority(25)
                 <li class="menu-item {{ request()->segment(2) === 'customers' && request()->segment(3) === 'index' ? 'menu-item-active' : null }}" aria-haspopup="true">
                     <a href="{{ route('management.customers.index') }}" class="menu-link">
                         <span class="svg-icon menu-icon">
@@ -158,6 +144,9 @@
                         <span class="menu-text">Müşteriler</span>
                     </a>
                 </li>
+                @endAuthority
+
+                @Authority(26)
                 <li class="menu-item {{ request()->segment(2) === 'companies' && request()->segment(3) === 'index' ? 'menu-item-active' : null }}" aria-haspopup="true">
                     <a href="{{ route('management.companies.index') }}" class="menu-link">
                         <span class="svg-icon menu-icon">
@@ -173,11 +162,13 @@
                         <span class="menu-text">Firmalar</span>
                     </a>
                 </li>
+                @endAuthority
 
                 <li class="menu-section">
                     <h4 class="menu-text">SİSTEM</h4>
                     <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
                 </li>
+                @Authority(18)
                 <li class="menu-item {{ request()->segment(2) === 'definitions' && request()->segment(3) === 'index' ? 'menu-item-active' : null }}" aria-haspopup="true">
                     <a href="{{ route('management.definitions.index') }}" class="menu-link">
                         <span class="svg-icon menu-icon">
@@ -192,6 +183,8 @@
                         <span class="menu-text">Tanımlamalar</span>
                     </a>
                 </li>
+                @endAuthority
+
                 <li class="menu-item {{ request()->segment(2) === 'settings' && request()->segment(3) === 'index' ? 'menu-item-active' : null }}" aria-haspopup="true">
                     <a href="{{ route('management.setting.index') }}" class="menu-link">
                         <span class="svg-icon menu-icon">

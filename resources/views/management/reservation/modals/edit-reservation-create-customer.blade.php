@@ -41,8 +41,8 @@
                         </div>
                         <div class="col-xl-4">
                             <div class="form-group">
-                                <label for="edit_reservation_customer_create_phone_number">Telefon Numarası</label>
-                                <input type="text" class="form-control" id="edit_reservation_customer_create_phone_number">
+                                <label for="edit_reservation_customer_create_phone_number">Telefon Numarası *</label>
+                                <input type="text" class="form-control mobile-phone-number" id="edit_reservation_customer_create_phone_number">
                             </div>
                         </div>
                         <div class="col-xl-4">
@@ -87,7 +87,7 @@
                         <div class="col-xl-4">
                             <div class="form-group">
                                 <label for="edit_reservation_customer_create_identity_number">Kimlik Numarası *</label>
-                                <input type="text" class="form-control" id="edit_reservation_customer_create_identity_number">
+                                <input type="text" class="form-control" id="edit_reservation_customer_create_identity_number" maxlength="11">
                             </div>
                         </div>
                         <div class="col-xl-4">

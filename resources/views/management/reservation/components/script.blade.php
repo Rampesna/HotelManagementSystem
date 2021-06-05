@@ -18,6 +18,9 @@
         'Aralık',
     ];
 
+    var filterReceiptsButton = $("#filterReceiptsButton");
+    var clearFilterReceiptsButton = $("#clearFilterReceiptsButton");
+
     var createReservationButton = $("#createReservationButton");
     var editReservationCreateCustomerButton = $("#editReservationCreateCustomerButton");
     var updateReservationButton = $("#updateReservationButton");
@@ -228,7 +231,7 @@
             {
                 text: '<i class="fas fa-undo"></i> Yenile',
                 action: function (e, dt, node, config) {
-                    $('input').val('');
+                    $('table').filter('input').val('');
                     reservations.search('').columns().search('').ajax.reload().draw();
                 }
             }
@@ -240,7 +243,9 @@
             this.api().columns().every(function (index) {
                 var column = this;
                 var input = document.createElement('input');
-                if (index === 3 || index === 4) {
+                if (index === 3) {
+                    input.setAttribute("type", "datetime-local");
+                }if (index === 4) {
                     input.setAttribute("type", "datetime-local");
                 } else if (index === 5) {
                     input = document.createElement('select');
@@ -265,7 +270,20 @@
 
         processing: true,
         serverSide: true,
-        ajax: '{!! route('ajax.reservations.index') !!}',
+        ajax: {
+            url: '{{ route('ajax.reservations.index') }}',
+            data: function (d) {
+                return $.extend({}, d, {
+                    f_start_date: $("#f_start_date").val(),
+                    f_end_date: $("#f_end_date").val(),
+                    f_min_price: $("#f_min_price").val(),
+                    f_max_price: $("#f_max_price").val()
+                });
+            },
+            complete: function (response) {
+                console.log(response)
+            }
+        },
         columns: [
             {data: 'id', name: 'id'},
             {data: 'customer_name', name: 'customer_name'},
@@ -276,11 +294,12 @@
             {data: 'room_type_id', name: 'room_type_id'},
             {data: 'pan_type_id', name: 'pan_type_id'},
             {data: 'room_id', name: 'room_id'},
-            {data: 'price', name: 'price'}
+            {data: 'price', name: 'price'},
+            {data: 'debt', name: 'debt'},
         ],
 
         responsive: true,
-        stateSave: true,
+        stateSave: false,
         select: 'single'
     });
 
@@ -934,9 +953,9 @@
     createCustomerButton.click(function () {
         var name = $("#customer_create_name").val();
         var surname = $("#customer_create_surname").val();
+        var phone_number = $("#customer_create_phone_number").val();
         var gender = $("#customer_create_gender").val();
         var title = $("#customer_create_title").val();
-        var phone_number = $("#customer_create_phone_number").val();
         var email = $("#customer_create_email").val();
         var nationality_id = $("#customer_create_nationality_id").val();
         var marriage = $("#customer_create_marriage").val();
@@ -952,6 +971,8 @@
             toastr.warning('Ad Boş Olamaz');
         } else if (surname === '' || surname == null) {
             toastr.warning('Soyad Boş Olamaz');
+        } else if (phone_number === '' || phone_number == null) {
+            toastr.warning('Telefon Numarası Boş Olamaz');
         } else if (gender === '' || gender == null) {
             toastr.warning('Cinsiyet Seçmediniz!');
         } else if (nationality_id === '' || nationality_id == null) {
@@ -1027,6 +1048,8 @@
             toastr.warning('Ad Boş Olamaz');
         } else if (surname === '' || surname == null) {
             toastr.warning('Soyad Boş Olamaz');
+        } else if (phone_number === '' || phone_number == null) {
+            toastr.warning('Telefon Numarası Boş Olamaz!');
         } else if (gender === '' || gender == null) {
             toastr.warning('Cinsiyet Seçmediniz!');
         } else if (nationality_id === '' || nationality_id == null) {
@@ -1045,7 +1068,7 @@
                     surname: surname,
                     gender: gender,
                     title: title,
-                    phone_numer: phone_numer,
+                    phone_number: phone_number,
                     email: email,
                     nationality_id: nationality_id,
                     marriage: marriage,
@@ -1259,5 +1282,31 @@
             }
         });
     });
+
+    filterReceiptsButton.click(function () {
+        reservations.ajax.reload().draw();
+    });
+
+    clearFilterReceiptsButton.click(function () {
+        $("#f_start_date").val(null);
+        $("#f_end_date").val(null);
+        $("#f_min_price").val(null);
+        $("#f_max_price").val(null);
+        reservations.ajax.reload().draw();
+    });
+
+    $(document).delegate('.receiptsFilterer', 'keydown', function (e) {
+        if (e.keyCode === 13) {
+            reservations.ajax.reload().draw();
+        }
+    });
+
+    // $(document).ready(function () {
+    //     setTimeout(function () {
+    //         toastr.error();
+    //         reservations.columns().ajax.reload().draw();
+    //         // reservations.search('').columns().search('').ajax.reload().draw();
+    //     },5000);
+    // });
 
 </script>

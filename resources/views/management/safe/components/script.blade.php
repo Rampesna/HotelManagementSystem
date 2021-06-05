@@ -48,6 +48,52 @@
     var safeTotalSpan = $("#safeTotalSpan");
     var createReceiptButton = $("#createReceiptButton");
 
+    var TriggerHandOverButton = $("#TriggerHandOverButton");
+    var TriggerDayEndButton = $("#TriggerDayEndButton");
+
+    var HandOverButton = $("#HandOverButton");
+    var DayEndButton = $("#DayEndButton");
+
+    var dayEndWaitingReceiptsForHandOver = $("#dayEndWaitingReceiptsForHandOver");
+    var totalHandOver = $("#totalHandOver");
+
+    /////////////////////////////////////////////////////////////////////////////////
+
+    TriggerHandOverButton.click(function () {
+        $.ajax({
+            type: 'get',
+            url: '{{ route('ajax.receipts.dayEndWaitingReceipts') }}',
+            data: {},
+            success: function (paymentTypes) {
+                var totalHandOverPrice = 0;
+                dayEndWaitingReceiptsForHandOver.html('');
+                $.each(paymentTypes, function (index) {
+                    totalHandOverPrice = totalHandOverPrice + paymentTypes[index].receipts_total_incoming - paymentTypes[index].receipts_total_outgoing;
+                    dayEndWaitingReceiptsForHandOver.append(`
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <span class="font-weight-bolder">${paymentTypes[index].payment_type_name}:</span>
+                        </div>
+                        <div class="col-xl-9">
+                            ${paymentTypes[index].receipts_total_incoming} TL Gelir / ${paymentTypes[index].receipts_total_outgoing} TL Gider
+                        </div>
+                    </div>
+                    `);
+                    totalHandOver.html(totalHandOverPrice + " TL");
+                });
+                $("#HandOverModal").modal('show');
+            },
+            error: function (error) {
+                toastr.error('Sistemsel Bir Sorun Oluştu. Sistem Yöneticisine Bilgi Verin!');
+                console.log(error);
+            }
+        });
+    });
+
+    HandOverButton.click(function () {
+        toastr.info('Devir İşlemleri Sistemi Henüz Tamamlanmadı...');
+    });
+
     /////////////////////////////////////////////////////////////////////////////////
 
     var dailyChartOptions = {
@@ -333,6 +379,7 @@
         var safe_id = 1;
         var direction = $("#create_receipt_direction").val();
         var date = $("#create_receipt_date").val();
+        var payment_type_id = $("#create_receipt_payment_type_id").val();
         var price = $("#create_receipt_price").val();
         var description = $("#create_receipt_description").val();
 
@@ -346,6 +393,8 @@
             toastr.warning('Tarih Seçmediniz!');
         } else if (price == null || price === '') {
             toastr.warning('Tutar Girmediniz!');
+        } else if (payment_type_id == null || payment_type_id === '') {
+            toastr.warning('Ödeme Türü Seçmediniz!');
         } else {
             $.ajax({
                 type: 'post',
@@ -357,7 +406,8 @@
                     direction: direction,
                     date: date,
                     price: price,
-                    description: description
+                    description: description,
+                    payment_type_id: payment_type_id,
                 },
                 success: function () {
                     toastr.success('Fiş Başarıyla Oluşturuldu');

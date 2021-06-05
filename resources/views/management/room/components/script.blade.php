@@ -210,6 +210,7 @@
             {data: 'id', name: 'id', width: "3%"},
             {data: 'name', name: 'name'},
             {data: 'surname', name: 'surname'},
+            {data: 'phone_number', name: 'phone_number'},
             {data: 'title', name: 'title'},
             {data: 'identity_number', name: 'identity_number'},
             {data: 'gender', name: 'gender'}
@@ -272,6 +273,7 @@
             {data: 'id', name: 'id', width: "3%"},
             {data: 'name', name: 'name'},
             {data: 'surname', name: 'surname'},
+            {data: 'phone_number', name: 'phone_number'},
             {data: 'title', name: 'title'},
             {data: 'identity_number', name: 'identity_number'},
             {data: 'gender', name: 'gender'}
@@ -311,6 +313,7 @@
     var transferToSelector = $("#transfer_to");
     var transferSafeActivitiesSelector = $("#transfer_safe_activities");
     var refundButton = $("#refundButton");
+    var discountButton = $("#discountButton");
     var endWithWaitingPaymentButton = $("#endWithWaitingPaymentButton");
     var roomStatusFilterer = $("#roomStatusFilterer");
 
@@ -589,6 +592,7 @@
     editReservationCreateCustomerButton.click(function () {
         var name = $("#edit_reservation_customer_create_name").val();
         var surname = $("#edit_reservation_customer_create_surname").val();
+        var phone_number = $("#edit_reservation_customer_create_phone_number").val();
         var gender = $("#edit_reservation_customer_create_gender").val();
         var title = $("#edit_reservation_customer_create_title").val();
         var nationality_id = $("#edit_reservation_customer_create_nationality_id").val();
@@ -607,6 +611,8 @@
             toastr.warning('Soyad Boş Olamaz');
         } else if (gender == '' || gender == null) {
             toastr.warning('Cinsiyet Seçmediniz!');
+        } else if (phone_number == '' || phone_number == null) {
+            toastr.warning('Telefon Numarası Boş Olamaz!');
         } else if (nationality_id == '' || nationality_id == null) {
             toastr.warning('Uyruk Seçmediniz!');
         } else if (identity_type_id == '' || identity_type_id == null) {
@@ -621,6 +627,7 @@
                     _token: '{{ csrf_token() }}',
                     name: name,
                     surname: surname,
+                    phone_number: phone_number,
                     gender: gender,
                     title: title,
                     nationality_id: nationality_id,
@@ -780,7 +787,7 @@
                             reservation_id: reservation_id
                         },
                         success: function (response) {
-                            $("#reservationCheckout_" + reservation_id).html(parseFloat(response.incoming - response.outgoing).toFixed(2));
+                            $("#reservationCheckout_" + reservation_id).html(parseFloat(response.outgoing - response.incoming).toFixed(2) + " TL");
                         },
                         error: function (error) {
                             console.log(error)
@@ -843,6 +850,10 @@
         } else if (pricesControl == 0) {
             toastr.warning('Boş Fiyat Alanı Var');
         } else {
+            $("#GetPaymentModal").modal('hide');
+            $("#GetPaymentForm").trigger('reset');
+            $("#loader").fadeIn(250);
+            toastr.info('İşlem Yapılıyor Lütfen Bekleyin!');
             $.ajax({
                 type: 'post',
                 url: '{{ route('ajax.safe-activities.getPayment') }}',
@@ -851,10 +862,9 @@
                     reservation_id: reservation_id,
                     checkouts: checkouts
                 },
-                success: function (response) {
+                success: function () {
+                    $("#loader").fadeOut(250);
                     toastr.success('Ödeme Başarıyla Alındı');
-                    $("#GetPaymentModal").modal('hide');
-                    $("#GetPaymentForm").trigger('reset');
 
                     $.ajax({
                         type: 'get',
@@ -863,7 +873,7 @@
                             reservation_id: reservation_id
                         },
                         success: function (response) {
-                            $("#reservationCheckout_" + reservation_id).html(parseFloat(response.incoming - response.outgoing).toFixed(2));
+                            $("#reservationCheckout_" + reservation_id).html(parseFloat(response.outgoing - response.incoming).toFixed(2) + " TL");
                         },
                         error: function (error) {
                             console.log(error)
@@ -871,6 +881,7 @@
                     });
                 },
                 error: function (error) {
+                    toastr.error('Ödeme Alınırken Sistemsel Bir Hata Oluştu!');
                     console.log(error)
                 }
             });
@@ -880,6 +891,7 @@
     refundButton.click(function () {
         var reservation_id = $("#refund_reservation_id").val();
         var price = $("#refund_price").val();
+        var description = $("#refund_description").val();
 
         if (reservation_id == null || reservation_id === '') {
             toastr.error('Rezervasyon Seçiminde Hata Oluştu! Sayfayı Yenilemeyi Deneyin.');
@@ -892,7 +904,8 @@
                 data: {
                     _token: '{{ csrf_token() }}',
                     reservation_id: reservation_id,
-                    price: price
+                    price: price,
+                    description: description,
                 },
                 success: function () {
                     toastr.success('İade Başarıyla Yapıldı');
@@ -906,7 +919,52 @@
                             reservation_id: reservation_id
                         },
                         success: function (response) {
-                            $("#reservationCheckout_" + reservation_id).html(parseFloat(response.incoming - response.outgoing).toFixed(2));
+                            $("#reservationCheckout_" + reservation_id).html(parseFloat(response.outgoing - response.incoming).toFixed(2) + " TL");
+                        },
+                        error: function (error) {
+                            console.log(error)
+                        }
+                    });
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            });
+        }
+    });
+
+    discountButton.click(function () {
+        var reservation_id = $("#discount_reservation_id").val();
+        var price = $("#discount_price").val();
+        var description = $("#discount_description").val();
+
+        if (reservation_id == null || reservation_id === '') {
+            toastr.error('Rezervasyon Seçiminde Hata Oluştu! Sayfayı Yenilemeyi Deneyin.');
+        } else if (price == null || price === '') {
+            toastr.warning('İndirim Yapılacak Tutarı Girmediniz!');
+        } else {
+            $.ajax({
+                type: 'post',
+                url: '{{ route('ajax.safe-activities.discount') }}',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    reservation_id: reservation_id,
+                    price: price,
+                    description: description,
+                },
+                success: function () {
+                    toastr.success('İndirim Başarıyla Uygulandı!');
+                    $("#DiscountModal").modal('hide');
+                    $("#DiscountForm").trigger('reset');
+
+                    $.ajax({
+                        type: 'get',
+                        url: '{{ route('ajax.reservations.debtControl') }}',
+                        data: {
+                            reservation_id: reservation_id
+                        },
+                        success: function (response) {
+                            $("#reservationCheckout_" + reservation_id).html(parseFloat(response.outgoing - response.incoming).toFixed(2) + " TL");
                         },
                         error: function (error) {
                             console.log(error)
@@ -939,6 +997,7 @@
     createCustomerButton.click(function () {
         var name = $("#customer_create_name").val();
         var surname = $("#customer_create_surname").val();
+        var phone_number = $("#customer_create_phone_number").val();
         var gender = $("#customer_create_gender").val();
         var title = $("#customer_create_title").val();
         var nationality_id = $("#customer_create_nationality_id").val();
@@ -955,6 +1014,8 @@
             toastr.warning('Ad Boş Olamaz');
         } else if (surname == '' || surname == null) {
             toastr.warning('Soyad Boş Olamaz');
+        } else if (phone_number == '' || phone_number == null) {
+            toastr.warning('Telefon Numarası Boş Olamaz!');
         } else if (gender == '' || gender == null) {
             toastr.warning('Cinsiyet Seçmediniz!');
         } else if (nationality_id == '' || nationality_id == null) {
@@ -971,6 +1032,7 @@
                     _token: '{{ csrf_token() }}',
                     name: name,
                     surname: surname,
+                    phone_number: phone_number,
                     gender: gender,
                     title: title,
                     nationality_id: nationality_id,
@@ -1107,7 +1169,7 @@
                 room_use_type_id: room_use_type_id,
                 price: price,
                 description: description,
-                status_id: 4,
+                status_id: new Date(start_date) <= new Date() ? 4 : 1,
                 customers: customerListArray
             }
 
@@ -1297,6 +1359,7 @@
     }
 
     function endReservation(reservation_id) {
+        $("#loader").fadeIn(250);
         $.ajax({
             type: 'post',
             url: '{{ route('ajax.reservations.setStatus') }}',
@@ -1393,6 +1456,41 @@
         $("#refund_reservation_id").val(reservation_id);
     }
 
+    function discount(reservation_id) {
+        $("#DiscountModal").modal('show');
+        $("#discount_reservation_id").val(reservation_id);
+    }
+
+    function setDailyRoomPrice(reservation_id) {
+        $.ajax({
+            type: 'post',
+            url: '{{ route('ajax.safe-activities.setDailyRoomPrice') }}',
+            data: {
+                _token: '{{ csrf_token() }}',
+                reservation_id: reservation_id
+            },
+            success: function () {
+                toastr.success('Ücret Yansıtıldı');
+                $.ajax({
+                    type: 'get',
+                    url: '{{ route('ajax.reservations.debtControl') }}',
+                    data: {
+                        reservation_id: reservation_id
+                    },
+                    success: function (response) {
+                        $("#reservationCheckout_" + reservation_id).html(parseFloat(response.outgoing - response.incoming).toFixed(2) + " TL");
+                    },
+                    error: function (error) {
+                        console.log(error)
+                    }
+                });
+            },
+            error: function () {
+
+            }
+        });
+    }
+
     transferExtrasAndSafeActivitiesButton.click(function () {
         var from = $("#transfer_from").val();
         var to = $("#transfer_to").val();
@@ -1423,7 +1521,7 @@
                             reservation_id: from
                         },
                         success: function (response) {
-                            $("#reservationCheckout_" + from).html(parseFloat(response.incoming - response.outgoing).toFixed(2));
+                            $("#reservationCheckout_" + from).html(parseFloat(response.outgoing - response.incoming).toFixed(2) + " TL");
                         },
                         error: function (error) {
                             console.log(error)
@@ -1438,7 +1536,7 @@
                             reservation_id: to
                         },
                         success: function (response) {
-                            $("#reservationCheckout_" + to).html(parseFloat(response.incoming - response.outgoing).toFixed(2));
+                            $("#reservationCheckout_" + to).html(parseFloat(response.outgoing - response.incoming).toFixed(2) + " TL");
                         },
                         error: function (error) {
                             console.log(error)
@@ -1518,7 +1616,7 @@
                                 reservation_id: room.activeReservation.id
                             },
                             success: function (response) {
-                                if ((response.incoming - response.outgoing) < 0) {
+                                if ((response.outgoing - response.incoming) > 0) {
                                     $("#endReservationDropdown_" + response.reservation.id).hide();
                                     $("#endWithWaitingPaymentReservationDropdown_" + response.reservation.id).fadeIn(250);
                                 } else {

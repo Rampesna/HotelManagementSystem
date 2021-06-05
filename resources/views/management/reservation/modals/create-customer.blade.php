@@ -87,7 +87,7 @@
                         <div class="col-xl-4">
                             <div class="form-group">
                                 <label for="customer_create_identity_number">Kimlik Numarası *</label>
-                                <input type="text" class="form-control" id="customer_create_identity_number">
+                                <input type="text" class="form-control" id="customer_create_identity_number" maxlength="11">
                             </div>
                         </div>
                         <div class="col-xl-4">

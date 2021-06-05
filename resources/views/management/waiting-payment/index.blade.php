@@ -44,6 +44,7 @@
 
     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="context-menu" style="width: 300px">
         <div id="getPaymentContext">
+            @Authority(24)
             <a onclick="getPayment()" class="dropdown-item cursor-pointer">
                 <div class="row">
                     <div class="col-xl-12">
@@ -51,6 +52,7 @@
                     </div>
                 </div>
             </a>
+            @endAuthority
         </div>
     </div>
 

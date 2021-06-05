@@ -36,9 +36,11 @@
 <body id="kt_body" class="header-fixed header-mobile-fixed subheader-enabled subheader-fixed aside-enabled aside-fixed aside-minimize-hoverable page-loading example">
 <div id="loader"></div>
 
+@Authority(30)
 <div class="QuickActions isHidden cursor-pointer" data-toggle="modal" data-target="#ManagementModal">
     <img class="QuickActions-button" src="{{ asset('assets/media/logos/quick-menu.png') }}" />
 </div>
+@endAuthority
 
 <div id="kt_header_mobile" class="header-mobile align-items-center header-mobile-fixed">
     <a href="#">

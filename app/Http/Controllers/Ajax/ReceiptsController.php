@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Ajax;
 
 use App\Http\Controllers\Controller;
+use App\Models\PaymentType;
 use App\Models\Receipt;
 use App\Models\Reservation;
 use App\Models\Room;
@@ -34,12 +35,15 @@ class ReceiptsController extends Controller
         }
 
         if ($request->max_price) {
-            $receipts = $receipts->where('price', '>=', $request->max_price);
+            $receipts = $receipts->where('price', '<=', $request->max_price);
         }
 
         return Datatables::of($receipts)->
         filterColumn('user_id', function ($receipts, $id) {
             return $id == 0 ? $receipts : $receipts->where('user_id', $id);
+        })->
+        filterColumn('payment_type_id', function ($receipts, $keyword) {
+            return $receipts->whereIn('payment_type_id', PaymentType::where('name', 'like', '%' . $keyword . '%')->get()->pluck('id'));
         })->
         filterColumn('direction', function ($receipts, $id) {
             return $id == 2 ? $receipts : $receipts->where('direction', $id);
@@ -52,6 +56,9 @@ class ReceiptsController extends Controller
         })->
         editColumn('price', function ($receipt) {
             return number_format($receipt->price, 2) . ' TL';
+        })->
+        editColumn('payment_type_id', function ($receipt) {
+            return $receipt->payment_type_id ? $receipt->paymentType->name : '';
         })->
         editColumn('direction', function ($receipt) {
             return '<span class="btn btn-pill btn-sm btn-' . ($receipt->direction == 1 ? 'danger' : 'success') . '" style="font-size: 11px; height: 20px; padding-top: 2px">' . ($receipt->direction == 1 ? 'Gider' : 'Gelir') . '</span>';
@@ -70,7 +77,8 @@ class ReceiptsController extends Controller
             $request->direction,
             $request->date,
             $request->price,
-            $request->description
+            $request->description,
+            $request->payment_type_id
         ), 200);
     }
 
@@ -90,5 +98,33 @@ class ReceiptsController extends Controller
             'incoming' => $receipts->where('direction', 0)->sum('price'),
             'outgoing' => $receipts->where('direction', 1)->sum('price')
         ], 200);
+    }
+
+    public function dayEndWaitingReceipts(Request $request)
+    {
+        $paymentTypes = PaymentType::all();
+        $response = [];
+
+        foreach ($paymentTypes as $paymentType) {
+            $receipts = Receipt::where('user_id', auth()->user()->id())->where('day_end', 0)->where('payment_type_id', $paymentType->id)->get();
+            $response[] = [
+                'payment_type_id' => $paymentType->id,
+                'payment_type_name' => $paymentType->name,
+                'receipts' => $receipts,
+                'receipts_total_incoming' => $receipts->where('direction', 0)->sum('price'),
+                'receipts_total_outgoing' => $receipts->where('direction', 1)->sum('price')
+            ];
+        }
+
+        $receipts = Receipt::where('user_id', auth()->user()->id())->where('day_end', 0)->where('payment_type_id', null)->get();
+        $response[] = [
+            'payment_type_id' => 0,
+            'payment_type_name' => 'Ödeme Türü Belirsiz',
+            'receipts' => $receipts,
+            'receipts_total_incoming' => $receipts->where('direction', 0)->sum('price'),
+            'receipts_total_outgoing' => $receipts->where('direction', 1)->sum('price')
+        ];
+
+        return response()->json($response, 200);
     }
 }

@@ -24,7 +24,25 @@ class ReservationsController extends Controller
         setlocale(LC_ALL, 'tr_TR.UTF-8');
         setlocale(LC_TIME, 'Turkish');
 
-        return Datatables::of(Reservation::query())->
+        $reservations = Reservation::with([]);
+
+        if ($request->f_start_date) {
+            $reservations = $reservations->where('start_date', '>=', $request->f_start_date);
+        }
+
+        if ($request->f_end_date) {
+            $reservations = $reservations->where('end_date', '<=', $request->f_end_date);
+        }
+
+        if ($request->f_min_price) {
+            $reservations = $reservations->where('price', '>=', $request->f_min_price);
+        }
+
+        if ($request->f_max_price) {
+            $reservations = $reservations->where('price', '<=', $request->f_max_price);
+        }
+
+        return Datatables::of($reservations)->
         filterColumn('status_id', function ($reservation, $id) {
             return $id == 0 ? $reservation : $reservation->where('status_id', $id);
         })->
@@ -40,12 +58,12 @@ class ReservationsController extends Controller
         filterColumn('room_id', function ($reservation, $keyword) {
             return $reservation->whereIn('room_id', Room::where('number', 'like', '%' . $keyword . '%')->pluck('id'));
         })->
-        filterColumn('start_date', function ($reservation, $date) {
-            return $reservation->where('start_date', '>=', $date);
-        })->
-        filterColumn('end_date', function ($reservation, $date) {
-            return $reservation->where('end_date', '<=', $date);
-        })->
+//        filterColumn('start_date', function ($reservation, $date) {
+//            return $reservation->where('start_date', '>=', $date);
+//        })->
+//        filterColumn('end_date', function ($reservation, $date) {
+//            return $reservation->where('end_date', '<=', $date);
+//        })->
         filterColumn('price', function ($reservation, $price) {
             return $reservation->whereIn('id', SafeActivity::where('price', $price)->pluck('reservation_id'));
         })->
@@ -74,7 +92,10 @@ class ReservationsController extends Controller
             return $reservation->room->number;
         })->
         editColumn('price', function ($reservation) {
-            return number_format((SafeActivity::where('reservation_id', $reservation->id)->where('direction', 1)->sum('price') ?? 0), 2) . ' TL';
+            return number_format($reservation->price ?? 0, 2) . ' TL';
+        })->
+        addColumn('debt', function ($reservation) {
+            return number_format(($reservation->debtControl() ?? 0), 2) . ' TL';
         })->
         rawColumns(['customer_id', 'status_id'])->
         make(true);

@@ -6,6 +6,8 @@
 @section('content')
 
     @include('management.safe.modals.create-receipt')
+    @include('management.safe.modals.hand-over')
+    @include('management.safe.modals.day-end')
 
     <div class="row">
         <div class="col-xl-3 mb-3">
@@ -37,12 +39,25 @@
                     </div>
                 </div>
                 <div class="card-body text-center py-10">
+                    @Authority(20)
                     <a href="{{ route('management.receipt.index') }}">
                         <h1 id="safeTotalSpan" class="cursor-pointer" style="font-size: 32px">--</h1>
                     </a>
+                    @else
+                    <a>
+                        <h1 id="safeTotalSpan" style="font-size: 32px">--</h1>
+                    </a>
+                    @endAuthority
                 </div>
                 <div class="card-footer">
-
+                    <div class="row">
+                        <div class="col">
+                            <button class="btn btn-sm btn-info" id="TriggerHandOverButton">Kasayı Devret</button>
+                        </div>
+                        <div class="col text-right">
+                            <button class="btn btn-sm btn-dark-75" id="TriggerDayEndButton">Gün Sonu Yap</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

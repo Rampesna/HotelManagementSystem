@@ -81,6 +81,8 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
         Route::any('save', 'ReceiptsController@save')->name('ajax.receipts.save');
         Route::any('receiptsByDate', 'ReceiptsController@receiptsByDate')->name('ajax.receipts.receiptsByDate');
         Route::any('safeTotal', 'ReceiptsController@safeTotal')->name('ajax.receipts.safeTotal');
+
+        Route::get('dayEndWaitingReceipts', 'ReceiptsController@dayEndWaitingReceipts')->name('ajax.receipts.dayEndWaitingReceipts');
     });
 
     Route::prefix('waiting-payments')->group(function () {
@@ -96,6 +98,8 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
         Route::post('create', 'SafeActivitiesController@create')->name('ajax.safe-activities.create');
         Route::any('getPayment', 'SafesController@getPayment')->name('ajax.safe-activities.getPayment');
         Route::any('refund', 'SafesController@refund')->name('ajax.safe-activities.refund');
+        Route::any('discount', 'SafesController@discount')->name('ajax.safe-activities.discount');
+        Route::any('setDailyRoomPrice', 'SafesController@setDailyRoomPrice')->name('ajax.safe-activities.setDailyRoomPrice');
         Route::get('getByReservationId', 'SafeActivitiesController@getByReservationId')->name('ajax.safe-activities.getByReservationId');
     });
 
@@ -109,6 +113,11 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
 
     Route::prefix('setting')->group(function () {
         Route::post('setNight', 'SettingsController@setNight')->name('ajax.setting.setNight');
+    });
+
+    Route::prefix('profile')->group(function () {
+        Route::post('updateProfile', 'ProfileController@updateProfile')->name('ajax.profile.updateProfile');
+        Route::post('updatePassword', 'ProfileController@updatePassword')->name('ajax.profile.updatePassword');
     });
 
 });

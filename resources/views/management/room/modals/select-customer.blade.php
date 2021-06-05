@@ -17,6 +17,7 @@
                                 <th>#</th>
                                 <th>Ad</th>
                                 <th>Soyad</th>
+                                <th>Telefon</th>
                                 <th>Ünvan</th>
                                 <th>Kimlik Numarası</th>
                                 <th>Cinsiyet</th>
@@ -27,6 +28,7 @@
                                 <th>#</th>
                                 <th>Ad</th>
                                 <th>Soyad</th>
+                                <th>Telefon</th>
                                 <th>Ünvan</th>
                                 <th>Kimlik Numarası</th>
                                 <th>Cinsiyet</th>

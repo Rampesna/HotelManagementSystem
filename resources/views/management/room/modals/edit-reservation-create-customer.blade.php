@@ -10,19 +10,25 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-xl-4">
+                        <div class="col-xl-6">
                             <div class="form-group">
                                 <label for="edit_reservation_customer_create_name">Ad *</label>
                                 <input type="text" id="edit_reservation_customer_create_name" class="form-control">
                             </div>
                         </div>
-                        <div class="col-xl-4">
+                        <div class="col-xl-6">
                             <div class="form-group">
                                 <label for="edit_reservation_customer_create_surname">Soyad *</label>
                                 <input type="text" id="edit_reservation_customer_create_surname" class="form-control">
                             </div>
                         </div>
-                        <div class="col-xl-4">
+                        <div class="col-xl-6">
+                            <div class="form-group">
+                                <label for="edit_reservation_customer_create_phone_number">Telefon Numarası *</label>
+                                <input type="text" id="edit_reservation_customer_create_phone_number" class="form-control mobile-phone-number">
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
                             <div class="form-group">
                                 <label for="edit_reservation_customer_create_gender">Cinsiyet *</label>
                                 <select class="form-control" id="edit_reservation_customer_create_gender">
@@ -73,7 +79,7 @@
                         <div class="col-xl-4">
                             <div class="form-group">
                                 <label for="edit_reservation_customer_create_identity_number">Kimlik Numarası *</label>
-                                <input type="text" class="form-control" id="edit_reservation_customer_create_identity_number">
+                                <input type="text" class="form-control" id="edit_reservation_customer_create_identity_number" maxlength="11">
                             </div>
                         </div>
                         <div class="col-xl-4">

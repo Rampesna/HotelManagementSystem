@@ -19,6 +19,7 @@
     @include('management.room.modals.set-room-status-collective')
     @include('management.room.modals.transfer')
     @include('management.room.modals.refund')
+    @include('management.room.modals.discount')
     @include('management.room.modals.end-with-waiting-payment')
 
     <input type="hidden" id="edit_reservation_rightbar_toggle">
@@ -54,6 +55,7 @@
                                         <span id="room_span_id_{{ $room->id }}" class="btn btn-pill btn-sm btn-{{ $room->status->color }} roomStatusOption" data-room-number="{{ $room->number }}" data-status-id="{{ $room->status->id }}" style="font-size: 11px; height: 20px; padding-top: 2px">{{ $room->status->name }}</span>
                                     </a>
                                     @if(!$room->activeReservation())
+                                        @Authority(12)
                                         <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
                                             <ul class="navi navi-hover">
                                                 @foreach($roomStatuses as $roomStatus)
@@ -68,6 +70,7 @@
                                                 @endforeach
                                             </ul>
                                         </div>
+                                        @endAuthority
                                     @endif
                                 </div>
                             </div>
@@ -98,6 +101,7 @@
                                     <div class="dropdown-menu dropdown-menu-sm" id="roomDropdownList_{{ $room->id }}" style="width: 300px">
                                         <ul class="navi navi-hover">
                                             @if(!$room->activeReservation())
+                                                @Authority(3)
                                                 <li class="navi-item" id="createReservationDropdownRoomId_{{ $room->id }}">
                                                     <a data-room-id="{{ $room->id }}" class="navi-link cursor-pointer reservationCreator">
                                                         <span class="navi-icon">
@@ -106,7 +110,20 @@
                                                         <span class="navi-text">Rezervasyon Oluştur</span>
                                                     </a>
                                                 </li>
+                                                @endAuthority
                                             @else
+                                                @Authority(27)
+                                                <li class="navi-item">
+                                                    <a onclick="setDailyRoomPrice({{ $room->activeReservation()->id ?? null }})" class="navi-link cursor-pointer">
+                                                        <span class="navi-icon">
+                                                            <i class="fas fa-money-bill-wave-alt text-dark-75"></i>
+                                                        </span>
+                                                        <span class="navi-text">Günlük Oda Ücretini Yansıt</span>
+                                                    </a>
+                                                </li>
+                                                @endAuthority
+
+                                                @Authority(13)
                                                 <li class="navi-item">
                                                     <a onclick="getPaymentModal({{ $room->activeReservation()->id ?? null }})" class="navi-link cursor-pointer">
                                                         <span class="navi-icon">
@@ -115,6 +132,9 @@
                                                         <span class="navi-text">Checkout</span>
                                                     </a>
                                                 </li>
+                                                @endAuthority
+
+                                                @Authority(14)
                                                 <li class="navi-item" >
                                                     <a onclick="refund({{ $room->activeReservation()->id }})" class="navi-link cursor-pointer">
                                                         <span class="navi-icon">
@@ -123,6 +143,20 @@
                                                         <span class="navi-text">İade Oluştur</span>
                                                     </a>
                                                 </li>
+                                                @endAuthority
+
+                                                @Authority(15)
+                                                <li class="navi-item" >
+                                                    <a onclick="discount({{ $room->activeReservation()->id }})" class="navi-link cursor-pointer">
+                                                        <span class="navi-icon">
+                                                            <i class="fas fa-percentage text-danger"></i>
+                                                        </span>
+                                                        <span class="navi-text">İndirim Uygula</span>
+                                                    </a>
+                                                </li>
+                                                @endAuthority
+
+                                                @Authority(16)
                                                 <li class="navi-item">
                                                     <a onclick="openAddExtraModal({{ $room->activeReservation()->id ?? null }})" class="navi-link cursor-pointer">
                                                         <span class="navi-icon">
@@ -131,6 +165,9 @@
                                                         <span class="navi-text">Ekstra Ekle</span>
                                                     </a>
                                                 </li>
+                                                @endAuthority
+
+                                                @Authority(8)
                                                 <div id="endReservationDropdown_{{ $room->activeReservation()->id }}" @if($room->activeReservation()->debtControl() <= 0) style="display: none" @endif>
                                                     <hr>
                                                     <li class="navi-item" >
@@ -142,6 +179,9 @@
                                                         </a>
                                                     </li>
                                                 </div>
+                                                @endAuthority
+
+                                                @Authority(9)
                                                 <div id="endWithWaitingPaymentReservationDropdown_{{ $room->activeReservation()->id }}" @if($room->activeReservation()->debtControl() <= 0) style="display: none" @endif>
                                                     <hr>
                                                     <li class="navi-item" >
@@ -153,6 +193,9 @@
                                                         </a>
                                                     </li>
                                                 </div>
+                                                @endAuthority
+
+                                                @Authority(17)
                                                 <div id="transferExtrasAndSafeActivitiesReservationDropdown_{{ $room->activeReservation()->id }}">
                                                     <hr>
                                                     <li class="navi-item" >
@@ -164,6 +207,7 @@
                                                         </a>
                                                     </li>
                                                 </div>
+                                                @endAuthority
                                             @endif
 
                                         </ul>

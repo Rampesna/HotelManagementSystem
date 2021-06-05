@@ -40,6 +40,9 @@
                     <a href="#" data-toggle="modal" data-target="#LogoutModal" class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5">
                         Çıkış Yap
                     </a>
+                    <a href="{{ route('management.profile.index') }}" class="btn btn-sm btn-light-dark font-weight-bolder py-2 px-5">
+                        Profili Düzenle
+                    </a>
 
                 </div>
             </div>

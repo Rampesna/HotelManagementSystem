@@ -39,61 +39,68 @@ Route::middleware(['auth'])->namespace('App\\Http\\Controllers')->group(function
             Route::get('/', function () {
                 return redirect()->route('management.reservation.index');
             });
-            Route::get('index', 'ReservationController@index')->name('management.reservation.index')->middleware('Authority:1');
-            Route::get('downloadInvoice', 'ReservationController@downloadInvoice')->name('management.reservation.downloadInvoice')->middleware('Authority:1');
+            Route::get('index', 'ReservationController@index')->name('management.reservation.index')->middleware('Authority:2');
+            Route::get('downloadInvoice', 'ReservationController@downloadInvoice')->name('management.reservation.downloadInvoice')->middleware('Authority:2');
         });
 
         Route::prefix('safe')->group(function () {
             Route::get('/', function () {
                 return redirect()->route('management.safe.index');
             });
-            Route::get('index', 'SafeController@index')->name('management.safe.index')->middleware('Authority:1');
+            Route::get('index', 'SafeController@index')->name('management.safe.index')->middleware('Authority:19');
         });
 
         Route::prefix('receipt')->group(function () {
             Route::get('/', function () {
                 return redirect()->route('management.receipt.index');
             });
-            Route::get('index', 'ReceiptController@index')->name('management.receipt.index')->middleware('Authority:1');
+            Route::get('index', 'ReceiptController@index')->name('management.receipt.index')->middleware('Authority:20');
         });
 
         Route::prefix('waiting-payment')->group(function () {
             Route::get('/', function () {
                 return redirect()->route('management.waiting-payment.index');
             });
-            Route::get('index', 'WaitingPaymentController@index')->name('management.waiting-payment.index')->middleware('Authority:1');
+            Route::get('index', 'WaitingPaymentController@index')->name('management.waiting-payment.index')->middleware('Authority:23');
         });
 
         Route::prefix('stayer')->group(function () {
             Route::get('/', function () {
                 return redirect()->route('management.stayer.index');
             });
-            Route::get('index', 'StayerController@index')->name('management.stayer.index')->middleware('Authority:1');
+            Route::get('index', 'StayerController@index')->name('management.stayer.index')->middleware('Authority:10');
         });
 
         Route::prefix('room')->group(function () {
             Route::get('/', function () {
                 return redirect()->route('management.room.index');
             });
-            Route::get('index', 'RoomController@index')->name('management.room.index')->middleware('Authority:1');
-            Route::post('getPayment', 'RoomController@getPayment')->name('management.room.getPayment')->middleware('Authority:1');
+            Route::get('index', 'RoomController@index')->name('management.room.index')->middleware('Authority:11');
+            Route::post('getPayment', 'RoomController@getPayment')->name('management.room.getPayment')->middleware('Authority:11');
         });
 
         Route::prefix('customers')->group(function () {
             Route::get('/', function () {
                 return redirect()->route('management.customers.index');
             });
-            Route::get('index', 'CustomerController@index')->name('management.customers.index')->middleware('Authority:1');
+            Route::get('index', 'CustomerController@index')->name('management.customers.index')->middleware('Authority:25');
         });
 
         Route::prefix('companies')->group(function () {
             Route::get('/', function () {
                 return redirect()->route('management.companies.index');
             });
-            Route::get('index', 'CompanyController@index')->name('management.companies.index')->middleware('Authority:1');
+            Route::get('index', 'CompanyController@index')->name('management.companies.index')->middleware('Authority:26');
         });
 
-        Route::prefix('definitions')->namespace('Definition')->group(function () {
+        Route::prefix('profile')->group(function () {
+            Route::get('/', function () {
+                return redirect()->route('management.profile.index');
+            });
+            Route::get('index', 'ProfileController@index')->name('management.profile.index');
+        });
+
+        Route::prefix('definitions')->middleware(['Authority:18'])->namespace('Definition')->group(function () {
             Route::get('/', function () {
                 return redirect()->route('management.definitions.index');
             });
@@ -139,7 +146,7 @@ Route::middleware(['auth'])->namespace('App\\Http\\Controllers')->group(function
             Route::get('index', 'SettingController@index')->name('management.setting.index');
         });
 
-        Route::prefix('roles')->group(function () {
+        Route::prefix('roles')->middleware(['Authority:28'])->group(function () {
             Route::get('/', function () {
                 return redirect()->route('management.roles.index');
             });
@@ -152,7 +159,7 @@ Route::middleware(['auth'])->namespace('App\\Http\\Controllers')->group(function
             Route::post('/delete', 'RoleController@delete')->name('setting.roles.delete');
         });
 
-        Route::prefix('users')->group(function () {
+        Route::prefix('users')->middleware(['Authority:29'])->group(function () {
             Route::get('/', function () {
                 return redirect()->route('setting.users.index');
             });

@@ -10,25 +10,39 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-xl-4">
+                        <div class="col-xl-6">
                             <div class="form-group">
                                 <label for="create_receipt_direction">Gelir/Gider</label>
                                 <select class="form-control" id="create_receipt_direction">
+                                    @Authority(21)
                                     <option value="0">Gelir Fişi</option>
+                                    @endAuthority
+                                    @Authority(22)
                                     <option value="1">Gider Fişi</option>
+                                    @endAuthority
                                 </select>
                             </div>
                         </div>
-                        <div class="col-xl-4">
+                        <div class="col-xl-6">
                             <div class="form-group">
                                 <label for="create_receipt_date">Fiş Tarihi</label>
                                 <input type="datetime-local" id="create_receipt_date" class="form-control">
                             </div>
                         </div>
-                        <div class="col-xl-4">
+                        <div class="col-xl-6">
                             <div class="form-group">
                                 <label for="create_receipt_price">Fiş Tutarı</label>
                                 <input type="text" id="create_receipt_price" class="form-control decimal">
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="form-group">
+                                <label for="create_receipt_payment_type_id">Ödeme Türü</label>
+                                <select id="create_receipt_payment_type_id" class="form-control">
+                                    @foreach($paymentTypes as $paymentType)
+                                        <option value="{{ $paymentType->id }}">{{ $paymentType->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>

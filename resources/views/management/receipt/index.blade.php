@@ -16,13 +16,13 @@
                         <div class="col-xl-3">
                             <div class="form-group">
                                 <label for="start_date">Başlangıç Tarihi</label>
-                                <input type="datetime-local" id="start_date" name="start_date" class="form-control receiptsFilterer">
+                                <input type="datetime-local" id="start_date" value="{{ date('Y-m-d') . 'T00:00' }}" name="start_date" class="form-control receiptsFilterer">
                             </div>
                         </div>
                         <div class="col-xl-3">
                             <div class="form-group">
                                 <label for="end_date">Bitiş Tarihi</label>
-                                <input type="datetime-local" id="end_date" name="end_date" class="form-control receiptsFilterer">
+                                <input type="datetime-local" id="end_date" value="{{ date('Y-m-d') . 'T23:59' }}" name="end_date" class="form-control receiptsFilterer">
                             </div>
                         </div>
                         <div class="col-xl-3">
@@ -60,6 +60,7 @@
                             <th>Tarih</th>
                             <th>İşlem</th>
                             <th>Tutar</th>
+                            <th>Ödeme Türü</th>
                             <th>İşlemi Yapan</th>
                             <th>Açıklama</th>
                         </tr>
@@ -70,6 +71,7 @@
                             <th>Tarih</th>
                             <th>İşlem</th>
                             <th>Tutar</th>
+                            <th>Ödeme Türü</th>
                             <th>İşlemi Yapan</th>
                             <th>Açıklama</th>
                         </tr>

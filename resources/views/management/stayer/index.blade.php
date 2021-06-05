@@ -55,6 +55,7 @@
 
     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="context-menu" style="width: 300px">
         <div id="reservationEditContext">
+            @Authority(4)
             <a class="dropdown-item cursor-pointer">
                 <div class="row">
                     <div class="col-xl-12">
@@ -63,8 +64,10 @@
                 </div>
             </a>
             <hr>
+            @endAuthority
         </div>
         <div>
+            @Authority(16)
             <a class="dropdown-item cursor-pointer" data-toggle="modal" data-target="#AddExtraReservationModal">
                 <div class="row">
                     <div class="col-xl-12">
@@ -72,8 +75,10 @@
                     </div>
                 </div>
             </a>
+            @endAuthority
         </div>
         <div style="display: none">
+            @Authority(8)
             <a onclick="setStatus(5)" class="dropdown-item cursor-pointer">
                 <div class="row">
                     <div class="col-xl-12">
@@ -81,6 +86,7 @@
                     </div>
                 </div>
             </a>
+            @endAuthority
         </div>
     </div>
 
