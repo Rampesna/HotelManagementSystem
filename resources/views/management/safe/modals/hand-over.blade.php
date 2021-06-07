@@ -25,8 +25,8 @@
                     <div class="row">
                         <div class="col-xl-12">
                             <div class="form-group">
-                                <label for="user_id">Devredilecek Kişi</label>
-                                <select id="user_id" class="form-control">
+                                <label for="hand_over_to">Devredilecek Kişi</label>
+                                <select id="hand_over_to" class="form-control">
                                     <optgroup label="">
                                         <option value="">Seçim Yapılmadı</option>
                                     </optgroup>

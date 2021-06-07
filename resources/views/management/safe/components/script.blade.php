@@ -55,14 +55,20 @@
     var DayEndButton = $("#DayEndButton");
 
     var dayEndWaitingReceiptsForHandOver = $("#dayEndWaitingReceiptsForHandOver");
+    var dayEndWaitingReceiptsForDayEnd = $("#dayEndWaitingReceiptsForDayEnd");
     var totalHandOver = $("#totalHandOver");
+    var totalDayEnd = $("#totalDayEnd");
+
+    var dayEndDatetime = $("#day_end_datetime");
+    var withdrawn = $("#withdrawn");
+    var remaining = $("#remaining");
 
     /////////////////////////////////////////////////////////////////////////////////
 
     TriggerHandOverButton.click(function () {
         $.ajax({
             type: 'get',
-            url: '{{ route('ajax.receipts.dayEndWaitingReceipts') }}',
+            url: '{{ route('ajax.receipts.dayEndWaitingReceiptsForHandOver') }}',
             data: {},
             success: function (paymentTypes) {
                 var totalHandOverPrice = 0;
@@ -90,8 +96,109 @@
         });
     });
 
+    TriggerDayEndButton.click(function () {
+        $("#DayEndModal").modal('show');
+    });
+
+    dayEndDatetime.change(function () {
+        $.ajax({
+            type: 'get',
+            url: '{{ route('ajax.receipts.dayEndWaitingReceiptsForDayEnd') }}',
+            data: {
+                date: $(this).val()
+            },
+            success: function (paymentTypes) {
+                console.log(paymentTypes)
+                var totalDayEndPrice = 0;
+                dayEndWaitingReceiptsForDayEnd.html('');
+                $.each(paymentTypes, function (index) {
+                    totalDayEndPrice = totalDayEndPrice + paymentTypes[index].receipts_total_incoming - paymentTypes[index].receipts_total_outgoing;
+                    dayEndWaitingReceiptsForDayEnd.append(`
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <span class="font-weight-bolder">${paymentTypes[index].payment_type_name}:</span>
+                        </div>
+                        <div class="col-xl-9">
+                            ${paymentTypes[index].receipts_total_incoming} TL Gelir / ${paymentTypes[index].receipts_total_outgoing} TL Gider
+                        </div>
+                    </div>
+                    `);
+                });
+                totalDayEnd.html(totalDayEndPrice + " TL");
+                $("#dayEndSafeTotal").val(totalDayEndPrice);
+                $("#DayEndModal").modal('show');
+            },
+            error: function (error) {
+                toastr.error('Sistemsel Bir Sorun Oluştu. Sistem Yöneticisine Bilgi Verin!');
+                console.log(error);
+            }
+        });
+    });
+
+    withdrawn.keyup(function () {
+        var dayEndSafeTotal = $("#dayEndSafeTotal").val();
+        var withdrawnTotal = $(this).val();
+        $("#remaining").val(parseFloat((dayEndSafeTotal ?? 0) - (withdrawnTotal ?? 0)).toFixed(2));
+    });
+
     HandOverButton.click(function () {
-        toastr.info('Devir İşlemleri Sistemi Henüz Tamamlanmadı...');
+        var from = '{{ auth()->user()->id() }}';
+        var to = $("#hand_over_to").val();
+
+        if (to == null ||to === '') {
+            toastr.warning('Devredilecek Kişiyi Seçmediniz!');
+        } else {
+            $("#HandOverModal").modal('hide');
+            $.ajax({
+                type: 'post',
+                url: '{{ route('ajax.receipts.handOver') }}',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    from: from,
+                    to: to
+                },
+                success: function () {
+                    toastr.success('Kasa Başarıyla Devredildi');
+                },
+                error: function (error) {
+                    toastr.error('Devir İşleminde Sistemsel Bir Sorun Oluştu! Sistem Yöneticisi İle İletişime Geçin');
+                    console.log(error);
+                }
+            });
+        }
+    });
+
+    DayEndButton.click(function () {
+        var withdrawn = $("#withdrawn").val();
+        var remaining = $("#remaining").val();
+        var date = $("#day_end_datetime").val();
+
+        if (date == null || date === '') {
+            toastr.warning('Gün Sonu Yapılacak Tarihi Seçmediniz!');
+        } else if (withdrawn == null || withdrawn === '') {
+            toastr.warning('Kasadan Çekilecek Tutarı Girmediniz!');
+        } else {
+            $("#DayEndModal").modal('hide');
+            $.ajax({
+                type: 'post',
+                url: '{{ route('ajax.receipts.dayEnd') }}',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    auth_user_id: '{{ auth()->user()->id() }}',
+                    withdrawn: withdrawn,
+                    remaining: remaining,
+                    date: date
+                },
+                success: function (response) {
+                    // console.log(response)
+                    safeTotal();
+                },
+                error: function (error) {
+                    toastr.error('Gün Sonu Yapılırken Sistemsel Bir Hata Oluştu! Sistem Yöneticisi İle İletişime Geçin.');
+                    console.log(error)
+                }
+            });
+        }
     });
 
     /////////////////////////////////////////////////////////////////////////////////

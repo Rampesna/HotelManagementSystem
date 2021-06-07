@@ -40,7 +40,8 @@ class SafesController extends Controller
                 date('Y-m-d H:i:s'),
                 $checkout['price'],
                 '#' . $request->reservation_id . ' Numaralı Rezervasyon ' . PaymentType::find($checkout['payment_type_id'])->name . ' Alınan Ödeme, ' . $checkout['description'],
-                $checkout['payment_type_id']
+                $checkout['payment_type_id'],
+                $request->reservation_id
             );
         }
     }

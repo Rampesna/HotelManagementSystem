@@ -16,6 +16,7 @@ class CreateReceiptsTable extends Migration
         Schema::create('receipts', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->unsigned();
+            $table->bigInteger('reservation_id')->unsigned()->nullable();
             $table->bigInteger('safe_id')->unsigned();
             $table->boolean('direction');
             $table->dateTime('date');

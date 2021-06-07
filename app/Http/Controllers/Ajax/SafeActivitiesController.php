@@ -42,7 +42,9 @@ class SafeActivitiesController extends Controller
                 $request->safe_activity_direction,
                 $request->date,
                 $request->price,
-                '#' . $request->reservation_id . ' Numaralı Rezervasyon, ' . $request->description
+                '#' . $request->reservation_id . ' Numaralı Rezervasyon, ' . $request->description,
+                null,
+                $request->reservation_id
             ), 200);
         }
 

@@ -76,13 +76,25 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
 
     });
 
+    Route::prefix('hand-overs')->group(function () {
+        Route::get('datatable', 'HandOversController@datatable')->name('ajax.hand-overs.datatable');
+    });
+
+    Route::prefix('day-ends')->group(function () {
+        Route::get('datatable', 'DayEndsController@datatable')->name('ajax.day-ends.datatable');
+        Route::get('receipts', 'DayEndsController@receipts')->name('ajax.day-ends.receipts');
+    });
+
     Route::prefix('receipts')->group(function () {
         Route::any('index', 'ReceiptsController@index')->name('ajax.receipts.index');
         Route::any('save', 'ReceiptsController@save')->name('ajax.receipts.save');
         Route::any('receiptsByDate', 'ReceiptsController@receiptsByDate')->name('ajax.receipts.receiptsByDate');
         Route::any('safeTotal', 'ReceiptsController@safeTotal')->name('ajax.receipts.safeTotal');
 
-        Route::get('dayEndWaitingReceipts', 'ReceiptsController@dayEndWaitingReceipts')->name('ajax.receipts.dayEndWaitingReceipts');
+        Route::get('dayEndWaitingReceiptsForHandOver', 'ReceiptsController@dayEndWaitingReceiptsForHandOver')->name('ajax.receipts.dayEndWaitingReceiptsForHandOver');
+        Route::get('dayEndWaitingReceiptsForDayEnd', 'ReceiptsController@dayEndWaitingReceiptsForDayEnd')->name('ajax.receipts.dayEndWaitingReceiptsForDayEnd');
+        Route::post('handOver', 'ReceiptsController@handOver')->name('ajax.receipts.handOver');
+        Route::post('dayEnd', 'ReceiptsController@dayEnd')->name('ajax.receipts.dayEnd');
     });
 
     Route::prefix('waiting-payments')->group(function () {

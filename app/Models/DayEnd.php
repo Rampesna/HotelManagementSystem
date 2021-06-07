@@ -6,17 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class HandOver extends Model
+class DayEnd extends Model
 {
     use HasFactory, SoftDeletes;
 
-    public function fromUser()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'from', 'id');
-    }
-
-    public function toUser()
-    {
-        return $this->belongsTo(User::class, 'to', 'id');
+        return $this->belongsTo(User::class);
     }
 }

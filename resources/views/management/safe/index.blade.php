@@ -54,9 +54,11 @@
                         <div class="col">
                             <button class="btn btn-sm btn-info" id="TriggerHandOverButton">Kasayı Devret</button>
                         </div>
+                        @Authority(31)
                         <div class="col text-right">
                             <button class="btn btn-sm btn-dark-75" id="TriggerDayEndButton">Gün Sonu Yap</button>
                         </div>
+                        @endAuthority
                     </div>
                 </div>
             </div>
@@ -68,7 +70,7 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-xl-12">
-                                    <h4>Gün Sonu</h4>
+                                    <h4>Günlük Durum</h4>
                                 </div>
                             </div>
                         </div>

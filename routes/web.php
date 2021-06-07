@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/test', function () {
-    return $period = Carbon::createFromDate('2021-05-24')->diffInDays('2021-05-26');
+    return \App\Models\HandOver::find(1);
 });
 
 Auth::routes();
@@ -48,6 +48,20 @@ Route::middleware(['auth'])->namespace('App\\Http\\Controllers')->group(function
                 return redirect()->route('management.safe.index');
             });
             Route::get('index', 'SafeController@index')->name('management.safe.index')->middleware('Authority:19');
+        });
+
+        Route::prefix('hand-over')->group(function () {
+            Route::get('/', function () {
+                return redirect()->route('management.hand-over.index');
+            });
+            Route::get('index', 'HandOverController@index')->name('management.hand-over.index')->middleware('Authority:32');
+        });
+
+        Route::prefix('day-end')->group(function () {
+            Route::get('/', function () {
+                return redirect()->route('management.day-end.index');
+            });
+            Route::get('index', 'DayEndController@index')->name('management.day-end.index')->middleware('Authority:33');
         });
 
         Route::prefix('receipt')->group(function () {
