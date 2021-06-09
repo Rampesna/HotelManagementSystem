@@ -30,10 +30,10 @@ class RoomsController extends Controller
             return number_format($room->price, 2) . 'TL';
         })->
         editColumn('room_type_id', function ($room) {
-            return RoomType::find($room->room_type_id)->name;
+            return $room->type ? $room->type->name : '';
         })->
         editColumn('pan_type_id', function ($room) {
-            return PanType::find($room->pan_type_id)->name;
+            return $room->panType ? $room->panType->name : '';
         })->
         rawColumns(['price'])->
         make(true);

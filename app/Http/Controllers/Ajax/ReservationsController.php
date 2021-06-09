@@ -80,16 +80,16 @@ class ReservationsController extends Controller
             return '<span id="reservation_' . $reservation->id . '_status" class="btn btn-pill btn-sm btn-' . $reservation->status->color . '" style="font-size: 11px; height: 20px; padding-top: 2px">' . $reservation->status->name . '</span>';
         })->
         editColumn('room_type_id', function ($reservation) {
-            return $reservation->roomType->name;
+            return $reservation->roomType ? $reservation->roomType->name : '';
         })->
         editColumn('pan_type_id', function ($reservation) {
-            return $reservation->panType->name;
+            return $reservation->panType ? $reservation->panType->name : '';
         })->
         editColumn('company_id', function ($reservation) {
             return $reservation->company->title ?? '';
         })->
         editColumn('room_id', function ($reservation) {
-            return $reservation->room->number;
+            return $reservation->room ? $reservation->room->number : '';
         })->
         editColumn('price', function ($reservation) {
             return number_format($reservation->price ?? 0, 2) . ' TL';
