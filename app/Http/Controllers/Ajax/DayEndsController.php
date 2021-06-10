@@ -25,7 +25,7 @@ class DayEndsController extends Controller
             return date('d.m.Y, H:i', strtotime($dayEnd->date));
         })->
         editColumn('user_id', function ($dayEnd) {
-            return $dayEnd->user->name;
+            return $dayEnd->user()->withTrashed()->first() ? $dayEnd->user()->withTrashed()->first()->name : '';
         })->
         editColumn('withdrawn', function ($dayEnd) {
             return $dayEnd->withdrawn . ' TL';

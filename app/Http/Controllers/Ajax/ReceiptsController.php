@@ -54,7 +54,7 @@ class ReceiptsController extends Controller
             return $id == 2 ? $receipts : $receipts->where('direction', $id);
         })->
         editColumn('user_id', function ($receipt) {
-            return $receipt->user->name;
+            return $receipt->user()->withTrashed()->first() ? $receipt->user()->withTrashed()->first()->name : '';
         })->
         editColumn('date', function ($receipt) {
             return date('d.m.Y, H:i', strtotime($receipt->date));
@@ -63,7 +63,7 @@ class ReceiptsController extends Controller
             return number_format($receipt->price, 2) . ' TL';
         })->
         editColumn('payment_type_id', function ($receipt) {
-            return $receipt->payment_type_id ? $receipt->paymentType->name : '';
+            return $receipt->paymentType()->withTrashed()->first() ? $receipt->paymentType()->withTrashed()->first()->name : '';
         })->
         editColumn('direction', function ($receipt) {
             return '<span class="btn btn-pill btn-sm btn-' . ($receipt->direction == 1 ? 'danger' : 'success') . '" style="font-size: 11px; height: 20px; padding-top: 2px">' . ($receipt->direction == 1 ? 'Gider' : 'Gelir') . '</span>';

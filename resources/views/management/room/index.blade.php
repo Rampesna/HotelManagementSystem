@@ -88,7 +88,7 @@
                             <span class="font-weight-bold">{{ $room->activeReservation()->customer_name }}</span><br>
                             <span id="reservationCheckout_{{ $room->activeReservation()->id }}" onclick="getReservationExtras({{ $room->activeReservation()->id }})" class="btn btn-pill btn-sm btn-dark-75 mt-2" style="font-size: 11px; height: 20px; padding-top: 2px">{{ number_format($room->activeReservation()->debtControl(), 2) . ' TL' }}</span>
                         @else
-                            <span>{{ $room->type->name }}</span>
+                            <span>{{ @$room->type()->withTrashed()->first()->name }}</span>
                         @endif
                     </div>
                     <div class="card-footer py-3 text-center">

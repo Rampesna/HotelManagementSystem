@@ -23,10 +23,10 @@ class HandOversController extends Controller
             return '#' . $handOver->id;
         })->
         editColumn('from', function ($handOver) {
-            return $handOver->fromUser->name;
+            return $handOver->fromUser()->withTrashed()->first()->name;
         })->
         editColumn('to', function ($handOver) {
-            return $handOver->toUser->name;
+            return $handOver->toUser()->withTrashed()->first()->name;
         })->
         editColumn('incoming', function ($handOver) {
             return $handOver->incoming . ' TL';

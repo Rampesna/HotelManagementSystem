@@ -302,7 +302,7 @@
 
         $.ajax({
             type: 'post',
-            url: '{{ route('ajax.rooms.save') }}',
+            url: '{{ route('ajax.room-types.save') }}',
             data: {
                 _token: '{{ csrf_token() }}',
                 id: id,

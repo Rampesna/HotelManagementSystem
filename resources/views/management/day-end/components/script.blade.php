@@ -56,7 +56,7 @@
                         `        <td>${receipts[index].id}</td>` +
                         `        <td>${reformatDate(receipts[index].date)}</td>` +
                         `        <td>${receipts[index].direction == 1 ? '<span class="btn btn-pill btn-sm btn-danger" style="font-size: 11px; height: 20px; padding-top: 2px">Gider</span>' : '<span class="btn btn-pill btn-sm btn-success" style="font-size: 11px; height: 20px; padding-top: 2px">Gelir</span>'}</td>` +
-                        `        <td>${receipts[index].price.toFixed(2)} TL</td>` +
+                        `        <td>${receipts[index].price} TL</td>` +
                         `        <td>${receipts[index].payment_type_id ? receipts[index].payment_type.name : '--'}</td>` +
                         `        <td>${receipts[index].description ?? ''}</td>` +
                         `    </tr>`;

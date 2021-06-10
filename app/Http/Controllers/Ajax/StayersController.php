@@ -55,16 +55,16 @@ class StayersController extends Controller
             return '<span id="reservation_' . $reservation->id . '_status" class="btn btn-pill btn-sm btn-' . $reservation->status->color . '" style="font-size: 11px; height: 20px; padding-top: 2px">' . $reservation->status->name . '</span>';
         })->
         editColumn('room_type_id', function ($reservation) {
-            return $reservation->roomType ? $reservation->roomType->name : '';
+            return $reservation->roomType()->withTrashed()->first() ? $reservation->roomType()->withTrashed()->first()->name : '';
         })->
         editColumn('pan_type_id', function ($reservation) {
-            return $reservation->panType ? $reservation->panType->name : '';
+            return $reservation->panType()->withTrashed()->first() ? $reservation->panType()->withTrashed()->first()->name : '';
         })->
         editColumn('company_id', function ($reservation) {
-            return $reservation->company ? $reservation->company->title ?? '' : '';
+            return $reservation->company()->withTrashed()->first() ? $reservation->company()->withTrashed()->first()->title ?? '' : '';
         })->
         editColumn('room_id', function ($reservation) {
-            return $reservation->room ? $reservation->room->number : '';
+            return $reservation->room()->withTrashed()->first() ? $reservation->room()->withTrashed()->first()->number : '';
         })->
         editColumn('price', function ($reservation) {
             return number_format($reservation->debtControl(), 2) . ' TL';

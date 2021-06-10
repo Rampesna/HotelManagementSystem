@@ -39,7 +39,7 @@ class WaitingPaymentsController extends Controller
             return $receipt->paid_date ? date('d.m.Y, H:i', strtotime($receipt->paid_date)) : '';
         })->
         editColumn('customer_name', function ($waitingPayment) {
-            return ucwords($waitingPayment->reservation->customer_name);
+            return ucwords($waitingPayment->reservation()->withTrashed()->first()->customer_name);
         })->
         editColumn('paid', function ($waitingPayment) {
             return '<span class="btn btn-pill btn-sm btn-' . ($waitingPayment->paid == 1 ? 'success' : 'warning') . '" style="font-size: 11px; height: 20px; padding-top: 2px">' . ($waitingPayment->paid == 1 ? 'Ödendi' : 'Bekliyor') . '</span>';
@@ -51,7 +51,7 @@ class WaitingPaymentsController extends Controller
             return date('d.m.Y, H:i', strtotime($waitingPayment->reservation->end_date));
         })->
         editColumn('user_id', function ($waitingPayment) {
-            return ucwords($waitingPayment->user->name ?? '');
+            return $waitingPayment->user()->withTrashed()->first() ? $waitingPayment->user()->withTrashed()->first()->name : '';
         })->
         editColumn('is_paid', function ($waitingPayment) {
             return $waitingPayment->paid;
