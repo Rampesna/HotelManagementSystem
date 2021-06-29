@@ -1,7 +1,7 @@
 <div class="modal fade" id="GetPaymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content" id="checkoutRepeater">
-            <div id="GetPaymentForm">
+            <form id="GetPaymentForm">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title">Ödeme Al<i class="fa fa-plus-circle text-success cursor-pointer ml-5" data-repeater-create></i></h5>
@@ -45,7 +45,7 @@
                     <button type="button" class="btn btn-success" id="getPaymentButton">Ödeme Al</button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Vazgeç</button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>

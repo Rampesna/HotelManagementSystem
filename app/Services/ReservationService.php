@@ -34,7 +34,7 @@ class ReservationService
     {
         if ($this->reservation->room_id) {
             if ($this->reservation->room_id != $request->room_id) {
-                $this->setRoomStatus($this->reservation->room_id, 1);
+                $this->setRoomStatus($this->reservation->room_id, 4);
             }
         }
 
@@ -52,6 +52,7 @@ class ReservationService
         $this->reservation->save();
 
         $this->setReservationStatusActivity($request->status_id);
+        $this->setDailyPriceSafeActivity();
 
         if ($request->status_id == 4) {
 //            $this->setDefaultPrice();
@@ -110,7 +111,7 @@ class ReservationService
 
         if ($statusId == 5) {
 //            $this->setDefaultPrice();
-            $this->setRoomStatus($this->reservation->room_id, 1);
+            $this->setRoomStatus($this->reservation->room_id, 4);
         }
 
         return $this->reservation;
@@ -135,6 +136,32 @@ class ReservationService
             $safeActivity->price = $price;
             $safeActivity->save();
         }
+    }
+
+    public function setDailyPriceSafeActivity()
+    {
+        $reservation = Reservation::find($this->reservation->id);
+        $safeActivityService = new SafeActivityService;
+        if ($safeActivityExistControl = SafeActivity::where('reservation_id', $this->reservation->id)
+            ->whereBetween('date', [
+                date('Y-m-d 00:00:00'),
+                date('Y-m-d 23:59:59')
+            ])
+            ->where('extra_id', null)
+            ->where('direction', 1)
+            ->first()) {
+            $safeActivityExistControl->delete();
+        }
+        $safeActivityService->setSafeActivity(new SafeActivity);
+        $safeActivityService->save(
+            auth()->user()->id(),
+            1,
+            $this->reservation->id,
+            1,
+            $reservation->price,
+            null,
+            date('Y-m-d')
+        );
     }
 
     public function setRoomStatus($roomId, $status)

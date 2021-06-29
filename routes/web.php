@@ -17,7 +17,17 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/test', function () {
-    return \App\Models\HandOver::find(1);
+    for ($i = 1; $i <= 10; $i++) {
+        $toplam = 0;
+        for ($j = 1; $i - 1; $j++) {
+            if ($i % $j == 0) {
+                $toplam += $j;
+            }
+        }
+        if ($toplam == $i) {
+            echo $i . ", ";
+        }
+    }
 });
 
 Auth::routes();

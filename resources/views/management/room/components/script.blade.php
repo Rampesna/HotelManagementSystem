@@ -758,6 +758,8 @@
             toastr.warning('Ücret Girmediniz!');
         } else if (date == '' || date == null) {
             toastr.warning('Tarih Seçmediniz!');
+        } else if (description == '' || description == null) {
+            toastr.warning('Açıklama Boş Olamaz!');
         } else {
             $.ajax({
                 type: 'post',
@@ -812,79 +814,83 @@
         paymentTypesControl = 1;
         pricesControl = 1;
 
-        $.each(paymentTypes, function (index) {
-            if ($(this).val() == null || $(this).val() == '') {
-                paymentTypesControl = 0;
-                return;
-            }
-            checkouts[index] = {
-                payment_type_id: $(this).val()
-            }
-        });
-
-        if (paymentTypesControl == 1) {
-            $.each(prices, function (index) {
+        if (paymentTypes.length === 0) {
+            toastr.warning('Hiç Ödeme Eklemediniz!');
+        } else {
+            $.each(paymentTypes, function (index) {
                 if ($(this).val() == null || $(this).val() == '') {
-                    pricesControl = 0;
+                    paymentTypesControl = 0;
                     return;
                 }
                 checkouts[index] = {
-                    payment_type_id: checkouts[index].payment_type_id,
-                    price: $(this).val()
-                };
-            });
-        }
-
-        if (paymentTypesControl == 1 && pricesControl == 1) {
-            $.each(descriptions, function (index) {
-                checkouts[index] = {
-                    payment_type_id: checkouts[index].payment_type_id,
-                    price: checkouts[index].price,
-                    description: $(this).val()
-                };
-            });
-        }
-
-        if (paymentTypesControl == 0) {
-            toastr.warning('Boş Ödeme Türü Alanı Var');
-        } else if (pricesControl == 0) {
-            toastr.warning('Boş Fiyat Alanı Var');
-        } else {
-            $("#GetPaymentModal").modal('hide');
-            $("#GetPaymentForm").trigger('reset');
-            $("#loader").fadeIn(250);
-            toastr.info('İşlem Yapılıyor Lütfen Bekleyin!');
-            $.ajax({
-                type: 'post',
-                url: '{{ route('ajax.safe-activities.getPayment') }}',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    reservation_id: reservation_id,
-                    checkouts: checkouts
-                },
-                success: function () {
-                    $("#loader").fadeOut(250);
-                    toastr.success('Ödeme Başarıyla Alındı');
-
-                    $.ajax({
-                        type: 'get',
-                        url: '{{ route('ajax.reservations.debtControl') }}',
-                        data: {
-                            reservation_id: reservation_id
-                        },
-                        success: function (response) {
-                            $("#reservationCheckout_" + reservation_id).html(parseFloat(response.outgoing - response.incoming).toFixed(2) + " TL");
-                        },
-                        error: function (error) {
-                            console.log(error)
-                        }
-                    });
-                },
-                error: function (error) {
-                    toastr.error('Ödeme Alınırken Sistemsel Bir Hata Oluştu!');
-                    console.log(error)
+                    payment_type_id: $(this).val()
                 }
             });
+
+            if (paymentTypesControl == 1) {
+                $.each(prices, function (index) {
+                    if ($(this).val() == null || $(this).val() == '') {
+                        pricesControl = 0;
+                        return;
+                    }
+                    checkouts[index] = {
+                        payment_type_id: checkouts[index].payment_type_id,
+                        price: $(this).val()
+                    };
+                });
+            }
+
+            if (paymentTypesControl == 1 && pricesControl == 1) {
+                $.each(descriptions, function (index) {
+                    checkouts[index] = {
+                        payment_type_id: checkouts[index].payment_type_id,
+                        price: checkouts[index].price,
+                        description: $(this).val()
+                    };
+                });
+            }
+
+            if (paymentTypesControl == 0) {
+                toastr.warning('Boş Ödeme Türü Alanı Var');
+            } else if (pricesControl == 0) {
+                toastr.warning('Boş Fiyat Alanı Var');
+            } else {
+                $("#GetPaymentModal").modal('hide');
+                $("#GetPaymentForm").trigger('reset');
+                $("#loader").fadeIn(250);
+                toastr.info('İşlem Yapılıyor Lütfen Bekleyin!');
+                $.ajax({
+                    type: 'post',
+                    url: '{{ route('ajax.safe-activities.getPayment') }}',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        reservation_id: reservation_id,
+                        checkouts: checkouts
+                    },
+                    success: function () {
+                        $("#loader").fadeOut(250);
+                        toastr.success('Ödeme Başarıyla Alındı');
+
+                        $.ajax({
+                            type: 'get',
+                            url: '{{ route('ajax.reservations.debtControl') }}',
+                            data: {
+                                reservation_id: reservation_id
+                            },
+                            success: function (response) {
+                                $("#reservationCheckout_" + reservation_id).html(parseFloat(response.outgoing - response.incoming).toFixed(2) + " TL");
+                            },
+                            error: function (error) {
+                                console.log(error)
+                            }
+                        });
+                    },
+                    error: function (error) {
+                        toastr.error('Ödeme Alınırken Sistemsel Bir Hata Oluştu!');
+                        console.log(error)
+                    }
+                });
+            }
         }
     });
 
@@ -897,6 +903,8 @@
             toastr.error('Rezervasyon Seçiminde Hata Oluştu! Sayfayı Yenilemeyi Deneyin.');
         } else if (price == null || price === '') {
             toastr.warning('İade Edilecek Tutarı Girmediniz!');
+        } else if (description == null || description === '') {
+            toastr.warning('Açıklama Boş Olamaz!');
         } else {
             $.ajax({
                 type: 'post',
@@ -942,6 +950,8 @@
             toastr.error('Rezervasyon Seçiminde Hata Oluştu! Sayfayı Yenilemeyi Deneyin.');
         } else if (price == null || price === '') {
             toastr.warning('İndirim Yapılacak Tutarı Girmediniz!');
+        } else if (description == null || description === '') {
+            toastr.warning('Açıklama Boş Olamaz!');
         } else {
             $.ajax({
                 type: 'post',
@@ -1354,6 +1364,7 @@
     }
 
     function getPaymentModal(reservation_id) {
+        $('.checkoutRepeaterList').remove();
         $("#selected_reservation_id").val(reservation_id);
         $("#GetPaymentModal").modal('show');
     }
@@ -1366,7 +1377,8 @@
             data: {
                 _token: '{{ csrf_token() }}',
                 reservations: [reservation_id],
-                status_id: 5
+                status_id: 5,
+                ending: 1
             },
             success: function () {
                 location.reload();

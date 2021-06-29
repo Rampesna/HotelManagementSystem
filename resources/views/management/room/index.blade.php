@@ -112,17 +112,6 @@
                                                 </li>
                                                 @endAuthority
                                             @else
-                                                @Authority(27)
-                                                <li class="navi-item">
-                                                    <a onclick="setDailyRoomPrice({{ $room->activeReservation()->id ?? null }})" class="navi-link cursor-pointer">
-                                                        <span class="navi-icon">
-                                                            <i class="fas fa-money-bill-wave-alt text-dark-75"></i>
-                                                        </span>
-                                                        <span class="navi-text">Günlük Oda Ücretini Yansıt</span>
-                                                    </a>
-                                                </li>
-                                                @endAuthority
-
                                                 @Authority(13)
                                                 <li class="navi-item">
                                                     <a onclick="getPaymentModal({{ $room->activeReservation()->id ?? null }})" class="navi-link cursor-pointer">
