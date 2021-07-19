@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" id="getPaymentButton">Sil</button>
+                    <button type="button" class="btn btn-success" id="getPaymentButton">Ödeme Al</button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Vazgeç</button>
                 </div>
             </form>

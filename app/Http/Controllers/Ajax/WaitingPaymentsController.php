@@ -3,9 +3,15 @@
 namespace App\Http\Controllers\Ajax;
 
 use App\Http\Controllers\Controller;
+use App\Models\PaymentType;
+use App\Models\Receipt;
 use App\Models\Reservation;
+use App\Models\SafeActivity;
 use App\Models\WaitingPayment;
+use App\Services\ReceiptService;
+use App\Services\SafeActivityService;
 use App\Services\WaitingPaymentService;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
@@ -70,6 +76,33 @@ class WaitingPaymentsController extends Controller
             1,
             $request->paid_date,
             auth()->user()->id()
+        );
+
+        $safeActivityService = new SafeActivityService;
+        $safeActivityService->setSafeActivity(new SafeActivity);
+        $safeActivity = $safeActivityService->save(
+            auth()->user()->id(),
+            1,
+            $waitingPaymentService->getWaitingPayment()->reservation_id,
+            0,
+            $waitingPaymentService->getWaitingPayment()->price,
+            'Bekleyen Ödeme Alındı',
+            date('Y-m-d H:i:s'),
+            null,
+            2
+        );
+
+        $receiptService = new ReceiptService;
+        $receiptService->setReceipt(new Receipt);
+        $receiptService->save(
+            auth()->user()->id(),
+            1,
+            0,
+            date('Y-m-d H:i:s'),
+            $waitingPaymentService->getWaitingPayment()->price,
+            '#' . $waitingPaymentService->getWaitingPayment()->reservation_id . ' Numaralı Rezervasyonun Bekleyen Ödemesi Alındı',
+            2,
+            $waitingPaymentService->getWaitingPayment()->reservation_id
         );
     }
 }
