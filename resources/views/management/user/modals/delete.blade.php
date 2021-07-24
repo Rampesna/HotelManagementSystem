@@ -8,13 +8,13 @@
                 </button>
             </div>
             <div class="modal-body">
-                <input type="hidden" name="deleted_user_id" id="deleted_user_id">
+                <input type="hidden">
                 <p>
                     Kullanıcıyı silmek istediğinizden emin misiniz?
                 </p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" id="delete_user">Sil</button>
+                <button type="button" class="btn btn-success" id="DeleteButton">Sil</button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Vazgeç</button>
             </div>
         </div>

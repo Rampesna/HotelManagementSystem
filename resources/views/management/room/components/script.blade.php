@@ -1214,6 +1214,21 @@
             String(formattedDate.getMinutes()).padStart(2, '0') + ' ';
     }
 
+    function getRoomStatuses() {
+        $.ajax({
+            async: false,
+            type: 'get',
+            url: '{{ route('ajax.room-statuses.index') }}',
+            data: {},
+            success: function (roomStatuses) {
+                allRoomStatuses = roomStatuses;
+            },
+            error: function () {
+
+            }
+        });
+    }
+
     function getRooms(id) {
         var room_type_id = roomTypeSelector.val();
         var pan_type_id = panTypeSelector.val();

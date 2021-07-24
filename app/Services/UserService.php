@@ -32,8 +32,8 @@ class UserService
         $this->user->email = $request->email;
         $this->user->phone_number = $request->phone_number;
         $this->user->identification_number = $request->identification_number;
-        $this->user->password = bcrypt($request->password);
-        $this->user->email_verified_at = $request->activate_type == 0 ? date('Y-m-d H:i:s') : null;
+        $this->user->password = $request->password ? bcrypt($request->password) : ($this->user->password ?? null);
+        $this->user->email_verified_at = date('Y-m-d H:i:s');
         $this->user->save();
 
         return $this->user;

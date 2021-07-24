@@ -39,6 +39,18 @@ class RoomsController extends Controller
         make(true);
     }
 
+    public function listing()
+    {
+        return response()->json(
+            Room::with([
+                'status',
+                'type',
+                'panType',
+                'badType'
+            ])->get()
+        );
+    }
+
     public function save(Request $request)
     {
         $roomService = new RoomService;

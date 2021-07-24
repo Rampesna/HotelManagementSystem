@@ -47,6 +47,10 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
         Route::post('delete', 'RoomUseTypesController@delete')->name('ajax.room-use-types.delete');
     });
 
+    Route::prefix('room-statuses')->group(function () {
+        Route::get('index', 'RoomStatusesController@index')->name('ajax.room-statuses.index');
+    });
+
     Route::prefix('rooms')->group(function () {
         Route::get('index', 'RoomsController@index')->name('ajax.rooms.index');
         Route::post('save', 'RoomsController@save')->name('ajax.rooms.save');
@@ -120,6 +124,10 @@ Route::namespace('App\\Http\\Controllers\\Ajax')->group(function () {
     });
 
     Route::prefix('user')->group(function () {
+        Route::get('index', 'UserController@index')->name('ajax.user.index');
+        Route::get('show', 'UserController@show')->name('ajax.user.show');
+        Route::post('save', 'UserController@save')->name('ajax.user.save');
+        Route::delete('delete', 'UserController@delete')->name('ajax.user.delete');
         Route::post('emailControl', 'UserController@emailControl')->name('ajax.user.emailControl');
     });
 

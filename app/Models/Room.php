@@ -13,6 +13,8 @@ class Room extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $appends = ['active_reservation'];
+
     public function status()
     {
         return $this->belongsTo(RoomStatus::class, 'room_status_id', 'id');

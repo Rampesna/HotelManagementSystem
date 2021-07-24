@@ -3,9 +3,13 @@
 
 <script>
 
-    var updateUserManagementDepartmentsButton = $("#updateUserManagementDepartmentsButton");
+    var CreateButton = $("#CreateButton");
+    var UpdateButton = $("#UpdateButton");
+    var DeleteButton = $("#DeleteButton");
 
-    var table = $('#users').DataTable({
+    var editContexts = $("#editContexts");
+
+    var users = $('#users').DataTable({
         language: {
             info: "_TOTAL_ Kayıttan _START_ - _END_ Arasındaki Kayıtlar Gösteriliyor.",
             infoEmpty: "Gösterilecek Hiç Kayıt Yok.",
@@ -35,36 +39,126 @@
             }
         },
 
-        dom: 'frtipl',
+        dom: 'rtipl',
 
-        columnDefs: [
-            {
-                targets: 5,
-                width: "5%",
-                orderable: false,
-                order: false
-            },
+        initComplete: function () {
+            var r = $('#users tfoot tr');
+            $('#users thead').append(r);
+            this.api().columns().every(function (index) {
+                var column = this;
+                var input = document.createElement('input');
+                input.className = 'form-control';
+                $(input).appendTo($(column.footer()).empty())
+                    .on('change', function () {
+                        column.search($(this).val(), false, false, true).draw();
+                    });
+            });
+        },
+
+        processing: true,
+        serverSide: true,
+        ajax: '{!! route('ajax.user.index') !!}',
+        columns: [
+            {data: 'name', name: 'name'},
+            {data: 'role_id', name: 'role_id'},
+            {data: 'suspend', name: 'suspend'},
+            {data: 'email', name: 'email'},
+            {data: 'phone_number', name: 'phone_number'},
+            {data: 'identification_number', name: 'identification_number'}
         ],
 
-        responsive: true
+        responsive: true,
+        select: 'single'
     });
-</script>
 
-<script>
-    $("#user_create").click(function () {
-        var companies = $("#companies_create").val();
-        var name = $("#name_create").val();
-        var email = $("#email_create").val();
-        var phone_number = $("#phone_number_create").val();
-        var activate_type = $("#activate_type_create").val();
-        var identification_number = $("#identification_number_create").val();
-        var role_id = $("#role_id_create").val();
-        var password = $("#password_create").val();
+    $('#users tbody').on('mousedown', 'tr', function (e) {
+        if (e.button === 0) {
+            return false;
+        } else {
+            users.row(this).select();
+        }
+    });
+
+    $('body').on('contextmenu', function (e) {
+        var selectedRows = users.rows({selected: true});
+        if (selectedRows.count() > 0) {
+            var id = selectedRows.data()[0].id;
+            $("#id_edit").val(id);
+
+            editContexts.show();
+        } else {
+            editContexts.hide();
+        }
+
+        var top = e.pageY - 10;
+        var left = e.pageX - 10;
+
+        $("#context-menu").css({
+            display: "block",
+            top: top,
+            left: left
+        });
+
+        return false;
+    }).on("click", function () {
+        $("#context-menu").hide();
+    }).on('focusout', function () {
+        $("#context-menu").hide();
+    });
+
+    $(document).click((e) => {
+        if ($.contains($("#usersCard").get(0), e.target)) {
+        } else {
+            $("#context-menu").hide();
+            users.rows().deselect();
+        }
+    });
+
+    function create() {
+        $("#CreateModal").modal('show');
+    }
+
+    function edit() {
+        var id = $("#id_edit").val();
+
+        $.ajax({
+            type: 'get',
+            url: '{{ route('ajax.user.show') }}',
+            data: {
+                id: id
+            },
+            success: function (user) {
+                $('#name_edit').val(user.name);
+                $('#email_edit').val(user.email);
+                $('#phone_number_edit').val(user.phone_number);
+                $('#identification_number_edit').val(user.identification_number);
+                $('#role_id_edit').val(user.role_id);
+                $("#EditModal").modal('show');
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    }
+
+    function drop() {
+        $("#DeleteModal").modal('show');
+    }
+
+    CreateButton.click(function () {
+        var role_id = $('#role_id_create').val();
+        var name = $('#name_create').val();
+        var email = $('#email_create').val();
+        var phone_number = $('#phone_number_create').val();
+        var identification_number = $('#identification_number_create').val();
+        var password = $('#password_create').val();
 
         if (name == null || name === '') {
-            toastr.warning('Ad Soyad Girilmesi Zorunludur');
+            toastr.warning('Ad Soyad Boş Olamaz!');
         } else if (email == null || email === '') {
-            toastr.warning('E-posta Adresi Girilmesi Zorunludur!');
+            toastr.warning('E-posta Adresi Boş Olamaz!');
+        } else if (password == null || password === '') {
+            toastr.warning('Şifre Boş Olamaz!');
         } else {
             $.ajax({
                 type: 'post',
@@ -74,139 +168,112 @@
                     email: email
                 },
                 success: function (response) {
-                    if (response === 'exist') {
-                        toastr.warning('Bu E-posta Adresi Zaten Sistemde Kayıtlı!');
+                    if (response === 'not') {
+                        save({
+                            _token: '{{ csrf_token() }}',
+                            role_id: role_id,
+                            name: name,
+                            email: email,
+                            phone_number: phone_number,
+                            identification_number: identification_number,
+                            password: password,
+                        }, 0);
                     } else {
-                        if (activate_type == null || activate_type === '') {
-                            toastr.warning('Aktivasyon Türü Seçilmesi Zorunludur!');
-                        } else if (role_id == null || role_id === '') {
-                            toastr.warning('Kullanıcı Rolü Seçilmesi Zorunludur!');
-                        } else if (password == null || password === '') {
-                            toastr.warning('Şifre Boş Olamaz');
-                        } else if (password.length < 8) {
-                            toastr.warning('Şifre En Az 8 Haneli Olmalıdır!');
-                        } else {
-                            $.ajax({
-                                type: 'post',
-                                url: '{{ route('management.users.save') }}',
-                                dataType: 'json',
-                                data: {
-                                    _token: '{{ csrf_token() }}',
-                                    companies: companies,
-                                    name: name,
-                                    email: email,
-                                    phone_number: phone_number,
-                                    identification_number: identification_number,
-                                    activate_type: activate_type,
-                                    role_id: role_id,
-                                    password: password,
-                                    create: 1
-                                },
-                                success: function () {
-                                    toastr.success('Yeni Kullanıcı Başarıyla Oluşturuldu');
-                                    $("#CreateModal").modal('hide');
-                                    setTimeout(location.reload(), 1000);
-                                },
-                                error: function (error) {
-                                    console.log(error);
-                                    toastr.eror('Sistemsel Bir Hata Oluştu!');
-                                }
-                            });
-                        }
+                        toastr.warning('Bu E-posta Adresi Başka Bir Kullanıcıya Ait!');
                     }
                 },
-                error: function () {
-                    toastr.warning('E-posta Kontrolü Yapılırken Bir Hata Oluştu!');
+                error: function (error) {
+                    toastr.error('E-posta Kontrolü Yapılırken Sistemsel Bir Hata Oluştu!');
+                    console.log(error)
                 }
             });
         }
     });
-</script>
 
-<script>
-    $(".edit").click(function () {
-        var id = $(this).data('id');
-        $("#updated_user_id").val(id);
-        $.ajax({
-            type: 'get',
-            url: '{{ route('management.users.edit') }}',
-            dataType: 'json',
-            data: {
-                id: id
-            },
-            success: function (user) {
-                $("#companies_edit").val(user.companies).selectpicker('refresh');
-                $("#name_edit").val(user.name);
-            },
-            error: function () {
+    UpdateButton.click(function () {
+        var id = $('#id_edit').val();
+        var role_id = $('#role_id_edit').val();
+        var name = $('#name_edit').val();
+        var email = $('#email_edit').val();
+        var phone_number = $('#phone_number_edit').val();
+        var identification_number = $('#identification_number_edit').val();
+        var password = $('#password_edit').val();
 
-            }
-        });
-    });
-</script>
-
-<script>
-    $("#user_update").click(function () {
-        var id = $("#updated_user_id").val();
-        var companies = $("#companies_edit").val();
-        var name = $("#name_edit").val();
-
-        if (id == null || id === '') {
-            toastr.warning('Bir Hata Oluştu. Lütfen Sayfayı Yenileyip Tekrar Deneyin.');
-        } else if (companies == null || companies === '') {
-            toastr.warning('Firma Seçilmesi Zorunludur');
-        } else if (name == null || name === '') {
-            toastr.warning('Yetkinlik Adı Girilmesi Zorunludur');
+        if (name == null || name === '') {
+            toastr.warning('Ad Soyad Boş Olamaz!');
+        } else if (email == null || email === '') {
+            toastr.warning('E-posta Adresi Boş Olamaz!');
         } else {
             $.ajax({
                 type: 'post',
-                url: '{{ route('management.users.save') }}',
-                dataType: 'json',
+                url: '{{ route('ajax.user.emailControl') }}',
                 data: {
                     _token: '{{ csrf_token() }}',
-                    id: id,
-                    companies: companies,
-                    name: name
+                    email: email,
+                    except_id: id
                 },
-                success: function () {
-                    toastr.success('Kullanıcı Başarıyla Güncellendi');
-                    $("#EditModal").modal('hide');
-                    setTimeout(location.reload(), 1000);
+                success: function (response) {
+                    if (response === 'not') {
+                        save({
+                            _token: '{{ csrf_token() }}',
+                            id: id,
+                            role_id: role_id,
+                            name: name,
+                            email: email,
+                            phone_number: phone_number,
+                            identification_number: identification_number,
+                            password: password,
+                        }, 1);
+                    } else {
+                        toastr.warning('Bu E-posta Adresi Başka Bir Kullanıcıya Ait!');
+                    }
                 },
-                error: function () {
-
+                error: function (error) {
+                    toastr.error('E-posta Kontrolü Yapılırken Sistemsel Bir Hata Oluştu!');
+                    console.log(error)
                 }
             });
         }
     });
-</script>
 
-<script>
-    $(".delete").click(function () {
-        var id = $(this).data('id');
-        $("#deleted_user_id").val(id);
-    });
-</script>
+    DeleteButton.click(function () {
+        var id = $("#id_edit").val();
 
-<script>
-    $("#delete_user").click(function () {
-        var id = $("#deleted_user_id").val();
         $.ajax({
-            type: 'post',
-            url: '{{ route('management.users.delete') }}',
-            dataType: 'json',
+            type: 'delete',
+            url: '{{ route('ajax.user.delete') }}',
             data: {
                 _token: '{{ csrf_token() }}',
                 id: id
             },
             success: function () {
-                table.row($("#row-" + id).closest('tr')).remove().draw();
-                toastr.success('Kullanıcı Başarıyla Silindi');
+                toastr.success('Kullanıcı Silindi');
                 $("#DeleteModal").modal('hide');
+                users.ajax.reload();
             },
-            error: function () {
-
+            error: function (error) {
+                console.log(error)
             }
         });
     });
+
+    function save(data, direction) {
+        $.ajax({
+            type: 'post',
+            url: '{{ route('ajax.user.save') }}',
+            data: data,
+            success: function () {
+                if (direction === 0) {
+                    $('#CreateModal').modal('hide');
+                } else {
+                    $('#EditModal').modal('hide');
+                }
+                users.ajax.reload();
+            },
+            error: function (error) {
+                toastr.error('Kaydedilirken Sistemsel Bir Hata Oluştu!');
+                console.log(error)
+            }
+        });
+    }
 </script>
