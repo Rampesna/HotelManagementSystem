@@ -1618,8 +1618,8 @@
                 room_id: room_id
             },
             success: function (room) {
-                if (parseInt(room.room_status_id) == 1 || parseInt(room.room_status_id) == 2) {
-                    if (room.room_status_id == 2 && room.activeReservation != null) {
+                if (parseInt(room.room_status_id) === 1 || parseInt(room.room_status_id) === 2) {
+                    if (parseInt(room.room_status_id) === 2 && room.activeReservation != null) {
                         $.ajax({
                             async: false,
                             type: 'get',

@@ -511,54 +511,38 @@
         var selectedRows = reservations.rows({selected: true});
         if (selectedRows.count() > 0) {
             var reservation_id = selectedRows.data()[0].id.replace('#', '');
+            var status_id_control = selectedRows.data()[0].status_id_control;
             $("#editing_reservation_id").val(reservation_id);
 
-            reservation = null;
-
-            $.ajax({
-                async: false,
-                type: 'get',
-                url: '{{ route('ajax.reservations.edit') }}',
-                data: {
-                    reservation_id: reservation_id
-                },
-                success: function (response) {
-                    reservation = response;
-                },
-                error: function (error) {
-                    console.log(error)
-                }
-            });
-
-            if (reservation.status_id == 1) {
+            if (status_id_control === 1) {
                 reservationEditContext.show();
                 reservationStartStayContext.hide();
                 reservationStopStayContext.hide();
                 reservationApproveContext.show();
                 reservationDenyContext.show();
                 downloadInvoiceContext.hide();
-            } else if (reservation.status_id == 2) {
+            } else if (status_id_control === 2) {
                 reservationEditContext.show();
                 reservationStartStayContext.show();
                 reservationStopStayContext.hide();
                 reservationApproveContext.hide();
                 reservationDenyContext.show();
                 downloadInvoiceContext.hide();
-            } else if (reservation.status_id == 3) {
+            } else if (status_id_control === 3) {
                 reservationEditContext.show();
                 reservationStartStayContext.hide();
                 reservationStopStayContext.hide();
                 reservationApproveContext.show();
                 reservationDenyContext.hide();
                 downloadInvoiceContext.hide();
-            } else if (reservation.status_id == 4) {
+            } else if (status_id_control === 4) {
                 reservationEditContext.show();
                 reservationStartStayContext.hide();
                 reservationStopStayContext.hide();
                 reservationApproveContext.hide();
                 reservationDenyContext.hide();
                 downloadInvoiceContext.hide();
-            } else if (reservation.status_id == 5) {
+            } else if (status_id_control === 5) {
                 reservationEditContext.hide();
                 reservationStartStayContext.hide();
                 reservationStopStayContext.hide();

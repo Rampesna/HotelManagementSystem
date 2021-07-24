@@ -97,6 +97,9 @@ class ReservationsController extends Controller
         addColumn('debt', function ($reservation) {
             return number_format(($reservation->debtControl() ?? 0), 2) . ' TL';
         })->
+        addColumn('status_id_control', function ($reservation) {
+            return $reservation->status_id;
+        })->
         rawColumns(['customer_id', 'status_id'])->
         make(true);
     }
