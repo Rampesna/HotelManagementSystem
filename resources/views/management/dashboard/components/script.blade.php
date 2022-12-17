@@ -147,7 +147,6 @@
                             url: 'javascript:void(0)',
                             className: `fc-event-light fc-event-solid-${reservations[index].status.color}`,
                             reservation_id: reservations[index].id,
-
                         });
                     });
                     callback(events);
